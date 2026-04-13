@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lx-red: #c41230;
+  --lx-dark: #1a1a1a;
+  --lx-mid: #4a4a4a;
+  --lx-light: #f5f5f3;
+  --lx-white: #ffffff;
+  --lx-border: #e5e5e5;
+  --lx-hero-overlay: rgba(10, 10, 10, 0.52);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: var(--lx-dark);
+  background: var(--lx-white);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--lx-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--lx-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lx-mid);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--lx-red);
+  outline-offset: 2px;
+}
+
+@layer utilities {
+  .ease-premium {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
