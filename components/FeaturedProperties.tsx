@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import PropertyCard from '@/components/PropertyCard'
+import { SectionLabel } from '@/components/SectionLabel'
 import { properties } from '@/lib/properties'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -18,15 +19,13 @@ export default function FeaturedProperties() {
           transition={{ duration: 0.5, ease }}
           className="mb-10 sm:mb-14"
         >
-          <span className="block text-[11px] font-medium tracking-[0.22em] uppercase text-lx-red mb-3">
-            Destacadas
-          </span>
+          <SectionLabel>Destacadas</SectionLabel>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <h2 className="text-[32px] sm:text-[38px] font-light text-lx-dark leading-tight tracking-tight">
               Propiedades seleccionadas
             </h2>
             <a
-              href="/propiedades"
+              href="/"
               className="inline-flex items-center gap-2 text-[12px] font-medium text-lx-mid hover:text-lx-dark tracking-[0.08em] transition-colors duration-150 cursor-pointer shrink-0"
             >
               Ver todas las propiedades
@@ -53,7 +52,7 @@ export default function FeaturedProperties() {
         {/* Mobile CTA */}
         <div className="mt-10 text-center sm:hidden">
           <a
-            href="/propiedades"
+            href="/"
             className="inline-flex items-center gap-2 border border-lx-dark text-lx-dark text-[12px] font-medium tracking-[0.1em] uppercase px-8 py-3.5 rounded-[4px] hover:bg-lx-dark hover:text-white transition-colors duration-200 cursor-pointer"
           >
             Ver todas las propiedades

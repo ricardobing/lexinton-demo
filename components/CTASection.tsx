@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { SectionLabel } from '@/components/SectionLabel'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -14,9 +15,9 @@ export default function CTASection() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.55, ease }}
         >
-          <span className="block text-[11px] font-medium tracking-[0.22em] uppercase text-lx-red mb-4">
-            Comenzá ahora
-          </span>
+          <div className="flex justify-center">
+            <SectionLabel>Comenzá ahora</SectionLabel>
+          </div>
           <h2 className="text-[28px] sm:text-[38px] font-light text-white leading-tight tracking-tight mb-4 text-balance">
             Conocé el valor real
             <br />
@@ -30,7 +31,7 @@ export default function CTASection() {
           {/* CTAs */}
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="/tasar"
+              href="/"
               className="inline-flex items-center gap-2 bg-lx-red text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 rounded-[4px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer"
             >
               Tasar mi inmueble gratis
@@ -45,8 +46,8 @@ export default function CTASection() {
           </div>
 
           {/* Trust note */}
-          <p className="mt-8 text-[11px] text-white/35 tracking-[0.06em]">
-            Sin compromiso · Respuesta en 24 hs · Palermo y Vicente López
+          <p className="mt-6 text-[13px] text-white/40">
+            Sin compromiso &middot; Respuesta en menos de 24 horas &middot; Gratis
           </p>
         </motion.div>
       </div>

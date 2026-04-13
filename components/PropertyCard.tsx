@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { Property } from '@/lib/types'
 
@@ -10,16 +13,22 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const isAlquiler = property.operation === 'Alquiler' || property.operation === 'Alquiler Temporal'
 
   return (
-    <article className="group bg-white border border-lx-border flex flex-col cursor-pointer">
+    <article className="bg-white border border-lx-border flex flex-col cursor-pointer">
       {/* Image */}
       <div className="relative w-full aspect-[4/3] overflow-hidden">
-        <Image
-          src={property.image}
-          alt={property.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-        />
+        <motion.div
+          className="absolute inset-0"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Image
+            src={property.image}
+            alt={property.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover"
+          />
+        </motion.div>
         {/* Operation badge */}
         <span
           className={cn(

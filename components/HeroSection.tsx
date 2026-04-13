@@ -28,10 +28,10 @@ export default function HeroSection() {
           Inmobiliaria en Palermo · Buenos Aires
         </span>
 
-        <h1 className="text-[clamp(36px,6vw,62px)] font-light leading-[1.1] tracking-tight max-w-3xl text-balance mb-5">
+        <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-light leading-[1.15] tracking-[-0.02em] max-w-3xl text-balance mb-5">
           ¿Necesitás vender
           <br />
-          <em className="not-italic font-normal">para comprar?</em>
+          <em className="not-italic font-medium">para comprar?</em>
         </h1>
 
         <p className="text-[15px] sm:text-[17px] text-white/80 font-light max-w-md leading-relaxed">
@@ -45,7 +45,7 @@ export default function HeroSection() {
         {/* CTAs */}
         <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
           <a
-            href="/tasar"
+            href="/"
             className="inline-flex items-center gap-2 bg-lx-red text-white text-[12px] font-medium tracking-[0.1em] uppercase px-7 py-3.5 rounded-[4px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer"
           >
             Tasar mi inmueble

@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { label: 'EMPRENDIMIENTOS', href: '/emprendimientos' },
-  { label: 'INVERSOR', href: '/quiero-vender' },
-  { label: 'CONTACTO', href: '/contacto' },
-  { label: 'TASAR INMUEBLE', href: '/tasar', highlight: true },
+  { label: 'EMPRENDIMIENTOS', href: '/' },
+  { label: 'INVERSOR', href: '/' },
+  { label: 'CONTACTO', href: '/' },
+  { label: 'TASAR INMUEBLE', href: '/', highlight: true },
 ]
 
 export default function Navbar() {
@@ -16,7 +16,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 40)
+    const handler = () => setScrolled(window.scrollY > 80)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
@@ -26,9 +26,9 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
         scrolled || menuOpen
-          ? 'bg-white border-b border-lx-border'
+          ? 'bg-white border-b border-lx-border shadow-sm'
           : 'bg-transparent',
       )}
     >

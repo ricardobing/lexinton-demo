@@ -96,7 +96,7 @@ export default function SearchBar() {
           )}
         </Select>
 
-        <button className="col-span-2 sm:col-span-4 lg:col-span-1 lg:flex-none bg-lx-red text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-3 rounded-[4px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer whitespace-nowrap flex items-center justify-center gap-2">
+        <button className="col-span-2 sm:col-span-4 lg:col-span-1 lg:flex-none bg-lx-red text-white text-[12px] font-medium tracking-[0.08em] uppercase px-8 py-3 rounded-[2px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer whitespace-nowrap flex items-center justify-center gap-2">
           <SearchIcon />
           Buscar
         </button>

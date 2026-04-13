@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { stats } from '@/lib/properties'
+import { AnimatedCounter } from '@/components/AnimatedCounter'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -20,7 +21,13 @@ export default function StatsBar() {
               className="px-4 sm:px-8"
             >
               <span className="block text-[40px] sm:text-[46px] font-light text-lx-dark tracking-tight leading-none mb-2">
-                {stat.value}
+                {stat.label === 'años de trayectoria' && (
+                  <AnimatedCounter end={20} />
+                )}
+                {stat.label === 'clientes satisfechos' && (
+                  <AnimatedCounter end={5000} suffix="+" />
+                )}
+                {stat.label === 'en operaciones simultáneas' && 'N°1'}
               </span>
               <span className="block text-[12px] text-lx-mid uppercase tracking-[0.14em] font-medium">
                 {stat.label}

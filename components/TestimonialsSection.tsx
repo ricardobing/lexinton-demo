@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { testimonials } from '@/lib/properties'
+import { SectionLabel } from '@/components/SectionLabel'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -17,9 +18,9 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.5, ease }}
           className="text-center mb-12 sm:mb-14"
         >
-          <span className="block text-[11px] font-medium tracking-[0.22em] uppercase text-lx-red mb-3">
-            Testimonios
-          </span>
+          <div className="flex justify-center">
+            <SectionLabel>Testimonios</SectionLabel>
+          </div>
           <h2 className="text-[30px] sm:text-[36px] font-light text-lx-dark leading-tight tracking-tight">
             Lo que dicen nuestros clientes
           </h2>

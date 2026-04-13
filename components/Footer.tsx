@@ -1,18 +1,18 @@
 import Link from 'next/link'
 
 const propertyLinks = [
-  { label: 'Departamentos en venta', href: '/propiedades' },
-  { label: 'Casas en venta', href: '/propiedades' },
-  { label: 'Alquileres', href: '/propiedades' },
-  { label: 'Emprendimientos', href: '/emprendimientos' },
-  { label: 'Cocheras y locales', href: '/propiedades' },
+  { label: 'Departamentos en venta', href: '/' },
+  { label: 'Casas en venta', href: '/' },
+  { label: 'Alquileres', href: '/' },
+  { label: 'Emprendimientos', href: '/' },
+  { label: 'Cocheras y locales', href: '/' },
 ]
 
 const serviceLinks = [
-  { label: 'Tasar mi inmueble', href: '/tasar' },
-  { label: 'Quiero vender', href: '/quiero-vender' },
-  { label: 'Inversor', href: '/quiero-vender' },
-  { label: 'Contacto', href: '/contacto' },
+  { label: 'Tasar mi inmueble', href: '/' },
+  { label: 'Quiero vender', href: '/' },
+  { label: 'Inversor', href: '/' },
+  { label: 'Contacto', href: '/' },
 ]
 
 const officeLinks = [
@@ -129,13 +129,13 @@ export default function Footer() {
           </span>
           <div className="flex items-center gap-4">
             <Link
-              href="/privacidad"
+              href="/"
               className="hover:text-lx-dark transition-colors duration-150 cursor-pointer"
             >
               Privacidad
             </Link>
             <Link
-              href="/terminos"
+              href="/"
               className="hover:text-lx-dark transition-colors duration-150 cursor-pointer"
             >
               Términos

@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { SectionLabel } from '@/components/SectionLabel'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -27,18 +28,16 @@ export default function AboutSection() {
             className="relative aspect-[4/3] lg:aspect-auto lg:h-[500px] overflow-hidden rounded-[4px]"
           >
             <Image
-              src="https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?w=800&q=80"
-              alt="Equipo Lexinton Propiedades"
+              src="https://images.unsplash.com/photo-1630673245362-f69d2b93880e?w=800&q=80"
+              alt="Interior departamento moderno Buenos Aires"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover object-center"
             />
-            {/* Accent badge */}
-            <div className="absolute bottom-6 right-6 bg-lx-red text-white px-5 py-4 text-center shadow-lg">
-              <span className="block text-[32px] font-light leading-none">20</span>
-              <span className="block text-[10px] tracking-[0.18em] uppercase mt-1 font-medium">
-                años
-              </span>
+            {/* Credibility badge — bottom-left, white bg */}
+            <div className="absolute bottom-6 left-6 bg-white px-4 py-3 shadow-md">
+              <p className="text-[10px] text-lx-mid uppercase tracking-[0.14em] mb-1">Desde</p>
+              <p className="text-[28px] font-light text-lx-dark leading-none">2004</p>
             </div>
           </motion.div>
 
@@ -49,9 +48,7 @@ export default function AboutSection() {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.6, ease, delay: 0.1 }}
           >
-            <span className="block text-[11px] font-medium tracking-[0.22em] uppercase text-lx-red mb-4">
-              Quiénes somos
-            </span>
+            <SectionLabel>Quiénes somos</SectionLabel>
             <h2 className="text-[30px] sm:text-[36px] font-light text-lx-dark leading-tight tracking-tight mb-5">
               Tu próximo hogar,
               <br />
@@ -77,13 +74,13 @@ export default function AboutSection() {
             {/* CTAs */}
             <div className="flex flex-wrap gap-3">
               <a
-                href="/tasar"
+                href="/"
                 className="inline-flex items-center gap-2 bg-lx-red text-white text-[12px] font-medium tracking-[0.1em] uppercase px-7 py-3.5 rounded-[4px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer"
               >
                 Tasar mi inmueble
               </a>
               <a
-                href="/contacto"
+                href="/"
                 className="inline-flex items-center gap-2 border border-lx-border text-lx-mid text-[12px] font-medium tracking-[0.1em] uppercase px-7 py-3.5 rounded-[4px] hover:border-lx-dark hover:text-lx-dark transition-colors duration-200 cursor-pointer"
               >
                 Contactar

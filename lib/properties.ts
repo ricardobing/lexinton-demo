@@ -15,7 +15,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: false,
     surface: 40,
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80',
     slug: 'concepcion-arenal-3505',
   },
   {
@@ -32,7 +32,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: true,
     surface: 72,
-    image: 'https://images.unsplash.com/photo-1567767292278-a8ec40652a98?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
     slug: 'altolaguirre-1321',
   },
   {
@@ -49,7 +49,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: true,
     surface: 29,
-    image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1502005097973-6a7082348e28?w=600&q=80',
     slug: 'tamborini-3768',
   },
   {
@@ -64,7 +64,7 @@ export const properties: Property[] = [
     priceLabel: 'USD 17.000',
     garage: true,
     surface: 12.5,
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
     slug: 'padilla-736',
   },
   {
@@ -81,7 +81,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: true,
     surface: 73,
-    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80',
     slug: 'gutierrez-3771',
   },
   {
@@ -98,7 +98,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: false,
     surface: 70,
-    image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=75',
+    image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80',
     slug: 'maipu-1901',
   },
 ]
