@@ -2,47 +2,53 @@
 
 import { motion } from 'framer-motion'
 import PropertyCard from '@/components/PropertyCard'
-import { SectionLabel } from '@/components/SectionLabel'
 import { properties } from '@/lib/properties'
 
 const ease = [0.22, 1, 0.36, 1] as const
+const featured = properties.slice(0, 3)
 
 export default function FeaturedProperties() {
   return (
-    <section id="propiedades" className="bg-lx-light py-20 sm:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="seleccion" className="bg-lx-parchment py-24 sm:py-32">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5, ease }}
-          className="mb-10 sm:mb-14"
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6, ease }}
+          className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16"
         >
-          <SectionLabel>Destacadas</SectionLabel>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <h2 className="text-[32px] sm:text-[38px] font-light text-lx-dark leading-tight tracking-tight">
-              Propiedades seleccionadas
+          <div>
+            <div className="flex items-center gap-4 mb-5">
+              <div className="w-6 h-px bg-lx-accent" />
+              <span className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent">
+                Selección
+              </span>
+            </div>
+            <h2 className="font-serif text-[clamp(1.8rem,3.5vw,2.8rem)] font-normal text-lx-ink leading-[1.12] tracking-[-0.01em]">
+              Propiedades<br />
+              <em className="italic text-lx-stone">con criterio propio.</em>
             </h2>
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-[12px] font-medium text-lx-mid hover:text-lx-dark tracking-[0.08em] transition-colors duration-150 cursor-pointer shrink-0"
-            >
-              Ver todas las propiedades
-              <ArrowIcon />
-            </a>
           </div>
+          <a
+            href="/"
+            className="hidden sm:inline-flex items-center gap-3 text-[11.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors duration-200 group shrink-0"
+          >
+            Ver todas
+            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
         </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {properties.map((property, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-lx-line">
+          {featured.map((property, i) => (
             <motion.div
               key={property.id}
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.5, ease, delay: i * 0.08 }}
+              transition={{ duration: 0.55, ease, delay: i * 0.1 }}
             >
               <PropertyCard property={property} />
             </motion.div>
@@ -50,32 +56,22 @@ export default function FeaturedProperties() {
         </div>
 
         {/* Mobile CTA */}
-        <div className="mt-10 text-center sm:hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, ease, delay: 0.35 }}
+          className="mt-10 text-center sm:hidden"
+        >
           <a
             href="/"
-            className="inline-flex items-center gap-2 border border-lx-dark text-lx-dark text-[12px] font-medium tracking-[0.1em] uppercase px-8 py-3.5 rounded-[4px] hover:bg-lx-dark hover:text-white transition-colors duration-200 cursor-pointer"
+            className="inline-flex items-center gap-2 text-[12px] font-bold tracking-[0.14em] uppercase text-lx-accent hover:text-lx-ink transition-colors duration-200 group"
           >
             Ver todas las propiedades
+            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
-  )
-}
-
-function ArrowIcon() {
-  return (
-    <svg
-      className="w-4 h-4"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
   )
 }

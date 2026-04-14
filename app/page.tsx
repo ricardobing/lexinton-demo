@@ -1,11 +1,12 @@
 import Navbar from '@/components/Navbar'
 import HeroSection from '@/components/HeroSection'
-import StatsBar from '@/components/StatsBar'
+import CredibilityBar from '@/components/StatsBar'
+import MetodoSection from '@/components/MetodoSection'
 import FeaturedProperties from '@/components/FeaturedProperties'
-import AboutSection from '@/components/AboutSection'
 import TestimonialsSection from '@/components/TestimonialsSection'
 import CTASection from '@/components/CTASection'
 import Footer from '@/components/Footer'
+import MobileSticky from '@/components/MobileSticky'
 
 export default function HomePage() {
   return (
@@ -13,13 +14,15 @@ export default function HomePage() {
       <Navbar />
       <main>
         <HeroSection />
-        <StatsBar />
+        <CredibilityBar />
+        <MetodoSection />
         <FeaturedProperties />
-        <AboutSection />
         <TestimonialsSection />
         <CTASection />
       </main>
       <Footer />
+      <MobileSticky />
     </>
   )
 }
+

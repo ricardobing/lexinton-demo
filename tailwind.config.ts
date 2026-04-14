@@ -9,21 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'lx-red': '#C41230',
-        'lx-dark': '#1a1a1a',
-        'lx-mid': '#4a4a4a',
-        'lx-light': '#f5f5f3',
-        'lx-white': '#ffffff',
+        // Legacy (keep for backward compat with Footer etc.)
+        'lx-red':    '#C41230',
+        'lx-dark':   '#1a1a1a',
+        'lx-mid':    '#4a4a4a',
+        'lx-light':  '#f5f5f3',
+        'lx-white':  '#ffffff',
         'lx-border': '#e5e5e5',
+        // Premium palette
+        'lx-ink':    '#111111',
+        'lx-stone':  '#7a7570',
+        'lx-cream':  '#f8f6f2',
+        'lx-parchment': '#f0ede6',
+        'lx-accent': '#3d5a6c',   // blue-grey petróleo
+        'lx-line':   '#ddd9d0',
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        sans:  ['var(--font-inter)',   'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)',   'Georgia',   'serif'],
       },
       transitionTimingFunction: {
         premium: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
       letterSpacing: {
         eyebrow: '0.14em',
+        wide2: '0.20em',
+      },
+      animation: {
+        'fade-up': 'fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both',
+      },
+      keyframes: {
+        fadeUp: {
+          '0%':   { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },

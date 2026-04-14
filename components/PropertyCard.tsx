@@ -13,13 +13,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const isAlquiler = property.operation === 'Alquiler' || property.operation === 'Alquiler Temporal'
 
   return (
-    <article className="bg-white border border-lx-border flex flex-col cursor-pointer">
+    <article className="bg-lx-cream border border-lx-line flex flex-col cursor-pointer group overflow-hidden">
       {/* Image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden">
+      <div className="relative w-full aspect-[16/10] overflow-hidden">
         <motion.div
           className="absolute inset-0"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ scale: 1.04 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <Image
             src={property.image}
@@ -32,10 +32,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         {/* Operation badge */}
         <span
           className={cn(
-            'absolute top-3 left-3 text-[10px] font-medium tracking-[0.12em] uppercase px-2.5 py-1',
+            'absolute top-4 left-4 text-[9px] font-bold tracking-[0.18em] uppercase px-2.5 py-1',
             isAlquiler
-              ? 'bg-lx-dark text-white'
-              : 'bg-lx-red text-white',
+              ? 'bg-lx-ink/80 text-white backdrop-blur-sm'
+              : 'bg-lx-accent/90 text-white backdrop-blur-sm',
           )}
         >
           {property.operation}
@@ -43,27 +43,24 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       </div>
 
       {/* Body */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1">
+      <div className="p-6 flex flex-col flex-1">
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-lx-mid text-[11px] uppercase tracking-[0.1em] mb-2">
-          <LocationIcon />
-          <span>
-            {property.neighborhood}, {property.city}
-          </span>
-        </div>
+        <p className="text-[10.5px] font-bold tracking-[0.18em] uppercase text-lx-stone mb-2">
+          {property.neighborhood}, {property.city}
+        </p>
 
-        {/* Address / Title */}
-        <h3 className="text-[14px] font-medium text-lx-dark leading-snug mb-3">
+        {/* Address */}
+        <h3 className="text-[15px] font-medium text-lx-ink leading-snug mb-4">
           {property.address}
         </h3>
 
         {/* Price */}
-        <p className="text-[19px] font-medium text-lx-dark tracking-tight mb-4">
+        <p className="font-serif text-[1.75rem] font-normal text-lx-ink tracking-tight leading-none mb-5">
           {property.priceLabel}
         </p>
 
         {/* Amenities */}
-        <div className="flex flex-wrap items-center gap-3 mt-auto pt-3 border-t border-lx-border text-lx-mid text-[12px]">
+        <div className="flex flex-wrap items-center gap-4 mt-auto pt-4 border-t border-lx-line text-lx-stone text-[11.5px]">
           {typeof property.bedrooms === 'number' && (
             <span className="flex items-center gap-1.5">
               <BedIcon />
@@ -89,15 +86,6 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         </div>
       </div>
     </article>
-  )
-}
-
-function LocationIcon() {
-  return (
-    <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
   )
 }
 

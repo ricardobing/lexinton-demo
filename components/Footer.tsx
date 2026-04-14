@@ -1,20 +1,5 @@
 import Link from 'next/link'
 
-const propertyLinks = [
-  { label: 'Departamentos en venta', href: '/' },
-  { label: 'Casas en venta', href: '/' },
-  { label: 'Alquileres', href: '/' },
-  { label: 'Emprendimientos', href: '/' },
-  { label: 'Cocheras y locales', href: '/' },
-]
-
-const serviceLinks = [
-  { label: 'Tasar mi inmueble', href: '/' },
-  { label: 'Quiero vender', href: '/' },
-  { label: 'Inversor', href: '/' },
-  { label: 'Contacto', href: '/' },
-]
-
 const officeLinks = [
   {
     label: 'Palermo',
@@ -30,64 +15,48 @@ const officeLinks = [
   },
 ]
 
+const links = [
+  { label: 'Propiedades en venta', href: '/' },
+  { label: 'Alquileres', href: '/' },
+  { label: 'Tasar mi inmueble', href: '#tasacion' },
+  { label: 'Quiero vender', href: '#tasacion' },
+  { label: 'Contacto', href: '#tasacion' },
+]
+
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-lx-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12">
-          {/* Brand column */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex flex-col leading-[1.1] mb-4">
-              <span className="text-base font-bold tracking-[0.22em] text-lx-red">
-                LEXINTON
-              </span>
-              <span className="text-[8.5px] tracking-[0.32em] font-medium text-lx-mid">
-                PROPIEDADES
-              </span>
+    <footer className="bg-lx-ink border-t border-white/8">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-12">
+
+          {/* Brand */}
+          <div>
+            <Link href="/" className="flex flex-col leading-[1.1] mb-5">
+              <span className="text-[15px] font-bold tracking-[0.28em] text-white">LEXINTON</span>
+              <span className="text-[8px] tracking-[0.38em] font-semibold text-white/35">PROPIEDADES</span>
             </Link>
-            <p className="text-[13px] text-lx-mid leading-[1.75] mb-5">
-              Líderes en operaciones simultáneas. 20 años asesorando a familias
-              en la compra, venta y alquiler de propiedades en CABA y GBA.
+            <p className="text-[13px] text-white/40 leading-[1.8] mb-5 max-w-[220px]">
+              20 años asesorando a familias en compra, venta y operaciones simultáneas en CABA y GBA.
             </p>
             <a
               href="mailto:info@lexinton.com.ar"
-              className="text-[12px] text-lx-mid hover:text-lx-dark transition-colors duration-150 flex items-center gap-2"
+              className="text-[12px] text-white/35 hover:text-white/60 transition-colors duration-200"
             >
-              <MailIcon />
               info@lexinton.com.ar
             </a>
           </div>
 
-          {/* Properties */}
+          {/* Links */}
           <div>
-            <h4 className="text-[11px] font-medium tracking-[0.18em] uppercase text-lx-dark mb-4">
-              Propiedades
-            </h4>
-            <ul className="space-y-2.5">
-              {propertyLinks.map((l) => (
-                <li key={l.label}>
-                  <Link
-                    href={l.href}
-                    className="text-[13px] text-lx-mid hover:text-lx-dark transition-colors duration-150 cursor-pointer"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="text-[11px] font-medium tracking-[0.18em] uppercase text-lx-dark mb-4">
+            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/30 mb-5">
               Servicios
             </h4>
-            <ul className="space-y-2.5">
-              {serviceLinks.map((l) => (
+            <ul className="space-y-3">
+              {links.map((l) => (
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className="text-[13px] text-lx-mid hover:text-lx-dark transition-colors duration-150 cursor-pointer"
+                    className="text-[13px] text-white/40 hover:text-white/70 transition-colors duration-200"
                   >
                     {l.label}
                   </Link>
@@ -98,21 +67,18 @@ export default function Footer() {
 
           {/* Offices */}
           <div>
-            <h4 className="text-[11px] font-medium tracking-[0.18em] uppercase text-lx-dark mb-4">
+            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/30 mb-5">
               Sucursales
             </h4>
             <div className="space-y-6">
               {officeLinks.map((o) => (
                 <div key={o.label}>
-                  <p className="text-[12px] font-medium text-lx-dark mb-1">
-                    {o.label}
-                  </p>
-                  <p className="text-[12px] text-lx-mid mb-1">{o.address}</p>
+                  <p className="text-[12px] font-semibold text-white/60 mb-1">{o.label}</p>
+                  <p className="text-[12px] text-white/35">{o.address}</p>
                   <a
                     href={o.href}
-                    className="text-[12px] text-lx-mid hover:text-lx-dark transition-colors duration-150 flex items-center gap-1.5"
+                    className="text-[12px] text-white/35 hover:text-white/60 transition-colors duration-200 mt-0.5 inline-block"
                   >
-                    <PhoneIcon />
                     {o.phone}
                   </a>
                 </div>
@@ -122,55 +88,20 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-lx-border flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-lx-mid">
-          <span>
-            © {new Date().getFullYear()} Lexinton Propiedades. Todos los derechos
-            reservados.
-          </span>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="hover:text-lx-dark transition-colors duration-150 cursor-pointer"
-            >
-              Privacidad
-            </Link>
-            <Link
-              href="/"
-              className="hover:text-lx-dark transition-colors duration-150 cursor-pointer"
-            >
-              Términos
-            </Link>
-            {/* WhatsApp */}
-            <a
-              href="https://wa.me/5491131519928"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-lx-dark transition-colors duration-150"
-            >
-              <WhatsAppIcon />
-              WhatsApp
-            </a>
-          </div>
+        <div className="mt-12 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/25">
+          <span>© {new Date().getFullYear()} Lexinton Propiedades. Todos los derechos reservados.</span>
+          <a
+            href="https://wa.me/5491131519928"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-white/25 hover:text-white/50 transition-colors duration-200"
+          >
+            <WhatsAppIcon />
+            WhatsApp
+          </a>
         </div>
       </div>
     </footer>
-  )
-}
-
-function MailIcon() {
-  return (
-    <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="16" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-    </svg>
-  )
-}
-
-function PhoneIcon() {
-  return (
-    <svg className="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 13 19.79 19.79 0 0 1 1.93 4.36a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
   )
 }
 

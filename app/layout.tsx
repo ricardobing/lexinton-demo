@@ -1,24 +1,37 @@
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
+import { Inter, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'Inmobiliaria en Palermo — Lexinton Propiedades',
+  title: 'Lexinton Propiedades — Especialistas en operaciones inmobiliarias en Palermo',
   description:
-    'Somos una empresa dedicada al asesoramiento y soluciones integrales del rubro inmobiliario con 20 años de trayectoria. Líderes en operaciones simultáneas en CABA y GBA.',
+    'Coordinamos venta, compra y tasación con una estrategia clara, tiempos sincronizados y acompañamiento experto. 20 años de trayectoria en CABA y zona norte.',
   keywords: [
     'inmobiliaria palermo',
-    'propiedades Buenos Aires',
-    'venta departamentos CABA',
-    'alquiler Buenos Aires',
-    'Lexinton Propiedades',
     'operaciones simultáneas',
+    'vender para comprar Buenos Aires',
+    'tasación inmueble CABA',
+    'Lexinton Propiedades',
   ].join(', '),
   authors: [{ name: 'Lexinton Propiedades' }],
   openGraph: {
-    title: 'Lexinton Propiedades | Inmobiliaria en Palermo',
+    title: 'Lexinton Propiedades — Especialistas en operaciones inmobiliarias',
     description:
-      'Líderes en operaciones simultáneas. 20 años de trayectoria en el mercado inmobiliario de CABA y GBA.',
+      'Coordinamos venta, compra y tasación con estrategia clara y tiempos sincronizados. Palermo y zona norte.',
     url: 'https://lexinton.com.ar',
     siteName: 'Lexinton Propiedades',
     locale: 'es_AR',
@@ -32,8 +45,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className={GeistSans.variable}>
-      <body className="font-sans antialiased">{children}</body>
+    <html lang="es" className={`${inter.variable} ${instrumentSerif.variable}`}>
+      <body className="font-sans antialiased bg-lx-cream text-lx-ink">{children}</body>
     </html>
   )
 }

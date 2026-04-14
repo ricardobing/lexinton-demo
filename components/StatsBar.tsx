@@ -1,36 +1,45 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { stats } from '@/lib/properties'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-export default function StatsBar() {
+const items = [
+  { value: '20', suffix: '', label: 'años de trayectoria', numeric: true, end: 20 },
+  { value: '+5.000', suffix: '', label: 'clientes acompañados', numeric: true, end: 5000 },
+  { value: null, label: 'Especialistas en\noperaciones simultáneas', numeric: false },
+  { value: null, label: 'Palermo\ny zona norte', numeric: false },
+]
+
+export default function CredibilityBar() {
   return (
-    <section className="bg-lx-white border-y border-lx-border">
-      <div className="max-w-4xl mx-auto px-6 py-12 sm:py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0 sm:divide-x sm:divide-lx-border text-center">
-          {stats.map((stat, i) => (
+    <section className="bg-lx-ink">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
+          {items.map((item, i) => (
             <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 16 }}
+              key={item.label}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.5, ease, delay: i * 0.1 }}
-              className="px-4 sm:px-8"
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, ease, delay: i * 0.08 }}
+              className="px-6 sm:px-10 py-2 text-center first:pl-0 last:pr-0"
             >
-              <span className="block text-[40px] sm:text-[46px] font-light text-lx-dark tracking-tight leading-none mb-2">
-                {stat.label === 'años de trayectoria' && (
-                  <AnimatedCounter end={20} />
-                )}
-                {stat.label === 'clientes satisfechos' && (
-                  <AnimatedCounter end={5000} suffix="+" />
-                )}
-                {stat.label === 'en operaciones simultáneas' && 'N°1'}
-              </span>
-              <span className="block text-[12px] text-lx-mid uppercase tracking-[0.14em] font-medium">
-                {stat.label}
+              {item.numeric ? (
+                <span className="block font-serif text-[clamp(2rem,4vw,3rem)] font-normal text-white leading-none mb-2">
+                  {item.end === 5000
+                    ? <><span className="text-[0.6em] mr-0.5 align-middle">+</span><AnimatedCounter end={5000} /></>
+                    : <AnimatedCounter end={item.end!} />
+                  }
+                </span>
+              ) : (
+                <span className="block font-serif text-[clamp(1rem,2vw,1.4rem)] font-normal text-white leading-tight mb-2 whitespace-pre-line italic">
+                  {item.label.split('\n')[0]}
+                </span>
+              )}
+              <span className="block text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-white/45 font-medium leading-snug">
+                {item.numeric ? item.label : item.label.split('\n')[1] ?? ''}
               </span>
             </motion.div>
           ))}
@@ -39,3 +48,4 @@ export default function StatsBar() {
     </section>
   )
 }
+

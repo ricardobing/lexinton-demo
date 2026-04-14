@@ -1,72 +1,137 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { SectionLabel } from '@/components/SectionLabel'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
 export default function CTASection() {
+  const [form, setForm] = useState({ nombre: '', contacto: '', tipo: '' })
+  const [sent, setSent] = useState(false)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // Future: POST to API
+    setSent(true)
+  }
+
   return (
-    <section className="bg-lx-dark py-20 sm:py-24">
-      <div className="max-w-3xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.55, ease }}
-        >
-          <div className="flex justify-center">
-            <SectionLabel>Comenzá ahora</SectionLabel>
-          </div>
-          <h2 className="text-[28px] sm:text-[38px] font-light text-white leading-tight tracking-tight mb-4 text-balance">
-            Conocé el valor real
-            <br />
-            de tu propiedad
-          </h2>
-          <p className="text-[15px] text-white/60 leading-[1.8] mb-8 max-w-xl mx-auto">
-            Tasación gratuita y sin compromiso. Nuestro equipo de especialistas
-            te da un informe detallado del mercado actual en menos de 24 horas.
-          </p>
+    <section id="tasacion" className="bg-lx-ink py-24 sm:py-32">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 sm:gap-20 items-center">
 
-          {/* CTAs */}
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 bg-lx-red text-white text-[12px] font-medium tracking-[0.12em] uppercase px-8 py-4 rounded-[4px] hover:bg-[#a80f28] transition-colors duration-200 cursor-pointer"
-            >
-              Tasar mi inmueble gratis
-            </a>
-            <a
-              href="tel:01147765003"
-              className="inline-flex items-center gap-2 border border-white/20 text-white/80 text-[12px] font-medium tracking-[0.1em] uppercase px-8 py-4 rounded-[4px] hover:border-white/50 hover:text-white transition-colors duration-200 cursor-pointer"
-            >
-              <PhoneIcon />
-              011 4776-5003
-            </a>
-          </div>
+          {/* Copy */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease }}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-6 h-px bg-white/25" />
+              <span className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-white/40">
+                Tasación
+              </span>
+            </div>
+            <h2 className="font-serif text-[clamp(2rem,4vw,3.2rem)] font-normal text-white leading-[1.1] tracking-[-0.01em] mb-6">
+              Descubrí el valor real<br />
+              <em className="italic text-white/50">de tu propiedad.</em>
+            </h2>
+            <p className="text-[15px] text-white/55 leading-[1.85] max-w-md">
+              Tasación sin compromiso. Análisis real de mercado. Acompañamiento personalizado desde el primer día.
+            </p>
 
-          {/* Trust note */}
-          <p className="mt-6 text-[13px] text-white/40">
-            Sin compromiso &middot; Respuesta en menos de 24 horas &middot; Gratis
-          </p>
-        </motion.div>
+            <ul className="mt-8 space-y-3">
+              {[
+                'Informe de mercado incluido',
+                'Sin compromiso de exclusividad',
+                'Respuesta en menos de 24 hs',
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-3 text-[13.5px] text-white/50">
+                  <span className="w-4 h-px bg-white/20 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease, delay: 0.1 }}
+          >
+            {sent ? (
+              <div className="border border-white/10 p-10 text-center">
+                <p className="font-serif text-[1.5rem] text-white font-normal mb-3">Recibimos tu consulta.</p>
+                <p className="text-[14px] text-white/50">Te contactamos en menos de 24 horas.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-[11px] font-bold tracking-[0.16em] uppercase text-white/35 mb-2">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    required
+                    value={form.nombre}
+                    onChange={handleChange}
+                    placeholder="Tu nombre completo"
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3.5 text-[14px] text-white placeholder:text-white/25 focus:outline-none focus:border-white/30 transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold tracking-[0.16em] uppercase text-white/35 mb-2">
+                    Email o WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    name="contacto"
+                    required
+                    value={form.contacto}
+                    onChange={handleChange}
+                    placeholder="email@ejemplo.com o +54 9 11..."
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3.5 text-[14px] text-white placeholder:text-white/25 focus:outline-none focus:border-white/30 transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold tracking-[0.16em] uppercase text-white/35 mb-2">
+                    Tipo de operación
+                  </label>
+                  <select
+                    name="tipo"
+                    required
+                    value={form.tipo}
+                    onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-white/30 transition-colors duration-200 appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled className="bg-lx-ink text-white/50">Seleccioná una opción</option>
+                    <option value="venta" className="bg-lx-ink text-white">Quiero vender</option>
+                    <option value="compra" className="bg-lx-ink text-white">Quiero comprar</option>
+                    <option value="simultanea" className="bg-lx-ink text-white">Vendo y compro al mismo tiempo</option>
+                    <option value="tasacion" className="bg-lx-ink text-white">Solo necesito tasación</option>
+                  </select>
+                </div>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="w-full bg-white text-lx-ink text-[12px] font-bold tracking-[0.16em] uppercase py-4 hover:bg-lx-cream transition-colors duration-200"
+                  >
+                    Quiero mi tasación
+                  </button>
+                </div>
+              </form>
+            )}
+          </motion.div>
+        </div>
       </div>
     </section>
-  )
-}
-
-function PhoneIcon() {
-  return (
-    <svg
-      className="w-3.5 h-3.5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 13 19.79 19.79 0 0 1 1.93 4.36a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
   )
 }

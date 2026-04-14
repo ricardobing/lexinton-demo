@@ -5,10 +5,9 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { label: 'EMPRENDIMIENTOS', href: '/' },
-  { label: 'INVERSOR', href: '/' },
-  { label: 'CONTACTO', href: '/' },
-  { label: 'TASAR INMUEBLE', href: '/', highlight: true },
+  { label: 'Emprendimientos', href: '/' },
+  { label: 'Inversores', href: '/' },
+  { label: 'Contacto', href: '/' },
 ]
 
 export default function Navbar() {
@@ -18,49 +17,46 @@ export default function Navbar() {
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 80)
     window.addEventListener('scroll', handler, { passive: true })
+    handler()
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
-  const isDark = !scrolled && !menuOpen
+  const dark = scrolled || menuOpen
 
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        scrolled || menuOpen
-          ? 'bg-white border-b border-lx-border shadow-sm'
-          : 'bg-transparent',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out',
+        dark ? 'bg-lx-cream border-b border-lx-line' : 'bg-transparent',
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[68px] flex items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[68px] flex items-center justify-between gap-8">
+
         {/* Logo */}
-        <Link href="/" className="flex flex-col leading-[1.1] shrink-0">
-          <span className="text-base font-bold tracking-[0.22em] text-lx-red">
+        <Link href="/" className="flex flex-col leading-[1.0] shrink-0">
+          <span className={cn(
+            'text-[13px] font-bold tracking-[0.28em] transition-colors duration-300',
+            dark ? 'text-lx-ink' : 'text-white',
+          )}>
             LEXINTON
           </span>
-          <span
-            className={cn(
-              'text-[8.5px] tracking-[0.32em] font-medium transition-colors duration-300',
-              isDark ? 'text-white/75' : 'text-lx-mid',
-            )}
-          >
+          <span className={cn(
+            'text-[7.5px] tracking-[0.38em] font-semibold transition-colors duration-300',
+            dark ? 'text-lx-stone' : 'text-white/70',
+          )}>
             PROPIEDADES
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-7">
+        <nav className="hidden lg:flex items-center gap-8 flex-1 justify-center">
           {navLinks.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
               className={cn(
-                'text-[11px] font-medium tracking-[0.12em] transition-colors duration-200 cursor-pointer',
-                link.highlight
-                  ? 'text-lx-red hover:text-lx-red/80'
-                  : isDark
-                    ? 'text-white/90 hover:text-white'
-                    : 'text-lx-mid hover:text-lx-dark',
+                'text-[11.5px] font-semibold tracking-[0.15em] uppercase transition-colors duration-200',
+                dark ? 'text-lx-stone hover:text-lx-ink' : 'text-white/95 hover:text-white',
               )}
             >
               {link.label}
@@ -68,24 +64,36 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Phone */}
-        <a
-          href="tel:01147765003"
-          className={cn(
-            'hidden md:flex items-center gap-2 text-[12px] font-medium transition-colors duration-200 shrink-0',
-            isDark ? 'text-white/90 hover:text-white' : 'text-lx-mid hover:text-lx-dark',
-          )}
-        >
-          <PhoneIcon className={isDark ? 'text-white/70' : 'text-lx-red'} />
-          011 4776-5003
-        </a>
+        {/* Right side */}
+        <div className="hidden md:flex items-center gap-5 shrink-0">
+          <a
+            href="tel:01147765003"
+            className={cn(
+              'text-[11px] font-semibold tracking-[0.08em] transition-colors duration-200',
+              dark ? 'text-lx-stone hover:text-lx-ink' : 'text-white/85 hover:text-white',
+            )}
+          >
+            011 4776-5003
+          </a>
+          <a
+            href="/"
+            className={cn(
+              'text-[10.5px] font-bold tracking-[0.14em] uppercase px-5 py-2.5 border transition-all duration-200',
+              dark
+                ? 'border-lx-ink text-lx-ink hover:bg-lx-ink hover:text-lx-cream'
+                : 'border-white text-white hover:bg-white hover:text-lx-ink',
+            )}
+          >
+            Tasar inmueble
+          </a>
+        </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile toggle */}
         <button
           onClick={() => setMenuOpen((v) => !v)}
           className={cn(
-            'lg:hidden p-2 -mr-2 transition-colors duration-200',
-            isDark ? 'text-white' : 'text-lx-dark',
+            'lg:hidden p-2 -mr-1 transition-colors duration-200',
+            dark ? 'text-lx-ink' : 'text-white',
           )}
           aria-label="Menú"
         >
@@ -95,29 +103,23 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-lx-border">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
+        <div className="lg:hidden bg-lx-cream border-t border-lx-line">
+          <div className="max-w-7xl mx-auto px-5 py-5 flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={cn(
-                  'text-[12px] font-medium tracking-[0.1em] py-3 px-2 border-b border-lx-border last:border-0 transition-colors duration-150',
-                  link.highlight
-                    ? 'text-lx-red'
-                    : 'text-lx-mid hover:text-lx-dark',
-                )}
+                className="text-[12px] font-semibold tracking-[0.12em] uppercase py-3 border-b border-lx-line last:border-0 text-lx-stone hover:text-lx-ink transition-colors"
               >
                 {link.label}
               </Link>
             ))}
             <a
-              href="tel:01147765003"
-              className="text-[12px] font-medium text-lx-mid py-3 px-2 flex items-center gap-2"
+              href="/"
+              className="mt-3 text-center text-[11px] font-bold tracking-[0.14em] uppercase px-5 py-3 border border-lx-ink text-lx-ink"
             >
-              <PhoneIcon className="text-lx-red" />
-              011 4776-5003
+              Tasar inmueble
             </a>
           </div>
         </div>
@@ -126,32 +128,9 @@ export default function Navbar() {
   )
 }
 
-function PhoneIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={cn('w-3.5 h-3.5', className)}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 13 19.79 19.79 0 0 1 1.93 4.36a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  )
-}
-
 function MenuIcon() {
   return (
-    <svg
-      className="w-5 h-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-    >
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
       <line x1="3" y1="6" x2="21" y2="6" />
       <line x1="3" y1="12" x2="21" y2="12" />
       <line x1="3" y1="18" x2="21" y2="18" />
@@ -161,16 +140,10 @@ function MenuIcon() {
 
 function CloseIcon() {
   return (
-    <svg
-      className="w-5 h-5"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-    >
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   )
 }
+
