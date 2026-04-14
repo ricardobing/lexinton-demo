@@ -32,7 +32,7 @@ export const properties: Property[] = [
     bathrooms: 1,
     garage: true,
     surface: 72,
-    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80',
     slug: 'altolaguirre-1321',
   },
   {

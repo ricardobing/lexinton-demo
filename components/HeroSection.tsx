@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -8,25 +7,23 @@ const ease = [0.22, 1, 0.36, 1] as const
 export default function HeroSection() {
   return (
     <section className="relative h-[100svh] min-h-[680px] flex flex-col overflow-hidden">
-      {/* Background with subtle zoom */}
+      {/* Background — video with image fallback */}
       <div className="absolute inset-0">
-        <motion.div
-          className="absolute inset-0"
-          initial={{ scale: 1.06 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=1920&q=85"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         >
-          <Image
-            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=85"
-            alt="Interior premium Buenos Aires"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="100vw"
+          {/* Buenos Aires aerial skyline — Pexels free license */}
+          <source
+            src="https://videos.pexels.com/video-files/32551249/13881455_1920_1080_24fps.mp4"
+            type="video/mp4"
           />
-        </motion.div>
+        </video>
         <div className="absolute inset-0" style={{ background: 'var(--lx-hero-overlay)' }} />
-        {/* Gradient bottom to ensure SearchBar/content readability */}
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
