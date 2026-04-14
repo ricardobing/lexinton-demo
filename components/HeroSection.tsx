@@ -1,31 +1,73 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 const ease = [0.22, 1, 0.36, 1] as const
+const VIDEO_SRC = 'https://videos.pexels.com/video-files/32551249/13881455_1920_1080_24fps.mp4'
+
+type RIC = (cb: () => void, opts?: { timeout: number }) => void
 
 export default function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+
+  useEffect(() => {
+    const loadVideo = () => {
+      const video = videoRef.current
+      if (!video) return
+      // Assign src dynamically — browser won't start downloading until here
+      video.src = VIDEO_SRC
+      video.load()
+      video.play().catch(() => {})
+    }
+
+    // Wait until browser is idle so LCP image renders first
+    const ric = (window as unknown as { requestIdleCallback?: RIC }).requestIdleCallback
+    if (ric) {
+      ric(loadVideo, { timeout: 2000 })
+    } else {
+      setTimeout(loadVideo, 1500)
+    }
+  }, [])
+
   return (
     <section className="relative h-[100svh] min-h-[680px] flex flex-col overflow-hidden">
-      {/* Background — video with image fallback */}
-      <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=1920&q=85"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        >
-          {/* Buenos Aires aerial skyline — Pexels free license */}
-          <source
-            src="https://videos.pexels.com/video-files/32551249/13881455_1920_1080_24fps.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0" style={{ background: 'var(--lx-hero-overlay)' }} />
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/40 to-transparent" />
+
+      {/* POSTER — LCP target, preloaded by next/image with priority */}
+      <div
+        className={`absolute inset-0 transition-opacity duration-1000 ${
+          videoLoaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <Image
+          src="/hero-poster.jpg"
+          alt="Vista aérea de Buenos Aires"
+          fill
+          priority
+          quality={85}
+          className="object-cover object-center"
+          sizes="100vw"
+        />
       </div>
+
+      {/* VIDEO — no src in HTML, assigned lazily; fades in on canplay */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        onCanPlay={() => setVideoLoaded(true)}
+        className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ${
+          videoLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Overlay */}
+      <div className="absolute inset-0" style={{ background: 'var(--lx-hero-overlay)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/40 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-white text-center px-5 sm:px-10 pt-[68px]">
