@@ -18,6 +18,12 @@ const nextConfig = {
         hostname: 'static.tokkobroker.com',
         pathname: '/**',
       },
+      {
+        // Tokko sometimes serves images over http in older entries
+        protocol: 'http',
+        hostname: 'static.tokkobroker.com',
+        pathname: '/**',
+      },
     ],
   },
 }

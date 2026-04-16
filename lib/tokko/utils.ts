@@ -173,14 +173,15 @@ export function getOperationLabel(property: TokkoProperty): string {
  * Obtiene la foto de portada (is_front_cover: true) o la primera foto.
  * Retorna la URL de la imagen watermarked (apta para web).
  */
-export function getCoverPhoto(property: TokkoProperty): string {
+export function getCoverPhoto(property: TokkoProperty): string | null {
   if (!property.photos || property.photos.length === 0) {
-    return '/placeholder-property.jpg'
+    return null
   }
 
   const sorted = [...property.photos].sort((a, b) => a.order - b.order)
   const cover = sorted.find((p) => p.is_front_cover) ?? sorted[0]
-  return cover.image  // URL con watermark de Lexinton
+  // Normalize to https — Tokko sometimes serves http:// URLs
+  return cover.image.replace(/^http:\/\//i, 'https://')
 }
 
 /**
@@ -189,15 +190,17 @@ export function getCoverPhoto(property: TokkoProperty): string {
 export function getSortedPhotos(property: TokkoProperty): TokkoPhoto[] {
   if (!property.photos || property.photos.length === 0) return []
 
-  return [...property.photos].sort((a, b) => {
-    // Planos siempre al final
-    if (a.is_blueprint && !b.is_blueprint) return 1
-    if (!a.is_blueprint && b.is_blueprint) return -1
-    // Portada primero
-    if (a.is_front_cover && !b.is_front_cover) return -1
-    if (!a.is_front_cover && b.is_front_cover) return 1
-    return a.order - b.order
-  })
+  return [...property.photos]
+    .sort((a, b) => {
+      // Planos siempre al final
+      if (a.is_blueprint && !b.is_blueprint) return 1
+      if (!a.is_blueprint && b.is_blueprint) return -1
+      // Portada primero
+      if (a.is_front_cover && !b.is_front_cover) return -1
+      if (!a.is_front_cover && b.is_front_cover) return 1
+      return a.order - b.order
+    })
+    .map((p) => ({ ...p, image: p.image.replace(/^http:\/\//i, 'https://') }))
 }
 
 // ─── Ubicación ────────────────────────────────────────────────────────────────

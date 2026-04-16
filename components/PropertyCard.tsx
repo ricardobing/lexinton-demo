@@ -9,7 +9,6 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { TokkoProperty } from '@/lib/tokko/types'
 import {
@@ -49,21 +48,24 @@ export default function PropertyCard({ property, featured = false, priority = fa
     <Link href={href} className="group block h-full outline-none focus-visible:ring-2 focus-visible:ring-lx-accent">
       <article className="bg-lx-cream border border-lx-line flex flex-col h-full cursor-pointer overflow-hidden">
         {/* Imagen */}
-        <div className={cn('relative w-full overflow-hidden', featured ? 'aspect-[3/2]' : 'aspect-[16/10]')}>
-          <motion.div
-            className="absolute inset-0"
-            whileHover={{ scale: 1.04 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
+        <div className={cn('relative w-full overflow-hidden bg-lx-parchment', featured ? 'aspect-[3/2]' : 'aspect-[16/10]')}>
+          {coverPhoto ? (
             <Image
               src={coverPhoto}
               alt={property.fake_address || property.address}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
               priority={priority}
             />
-          </motion.div>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-lx-parchment">
+              <svg className="w-12 h-12 text-lx-line" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                <polyline strokeLinecap="round" strokeLinejoin="round" points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </div>
+          )}
 
           {/* Overlay hover */}
           <div className="absolute inset-0 bg-lx-ink/0 group-hover:bg-lx-ink/20 transition-colors duration-500 flex items-center justify-center">

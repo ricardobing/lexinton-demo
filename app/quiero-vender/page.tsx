@@ -47,7 +47,7 @@ export default function QuieroVenderPage() {
     <main className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="bg-lx-ink text-white py-24 sm:py-32 border-b border-white/5">
+      <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5">
             Lexinton Propiedades · Vendedores

@@ -155,7 +155,7 @@ export default function PropiedadesPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-lx-parchment">
       {/* Header de página */}
-      <div className="bg-lx-ink text-white py-16 sm:py-20">
+      <div className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-16 sm:pt-[calc(68px+5rem)] sm:pb-20">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-4">
             Lexinton Propiedades

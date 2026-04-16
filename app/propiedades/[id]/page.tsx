@@ -110,7 +110,7 @@ export default async function PropiedadDetallePage({ params }: PageProps) {
     <main className="min-h-screen bg-white">
 
       {/* ── BREADCRUMB ─────────────────────────────────── */}
-      <div className="bg-lx-parchment border-b border-lx-line">
+      <div className="bg-lx-parchment border-b border-lx-line pt-[68px]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-3 flex items-center gap-2 text-[10.5px] text-lx-stone">
           <Link href="/" className="hover:text-lx-ink transition-colors">Inicio</Link>
           <span>/</span>
