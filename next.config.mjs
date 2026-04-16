@@ -12,6 +12,12 @@ const nextConfig = {
         hostname: 'lexinton.com.ar',
         pathname: '/**',
       },
+      // Tokko Broker CDN — fotos de propiedades (watermarked, original, thumb)
+      {
+        protocol: 'https',
+        hostname: 'static.tokkobroker.com',
+        pathname: '/**',
+      },
     ],
   },
 }
