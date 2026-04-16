@@ -14,10 +14,21 @@ import PropertySearch from '@/components/properties/PropertySearch'
 import { getProperties } from '@/lib/tokko/queries'
 import type { PropertyFilters } from '@/lib/tokko/types'
 
-export const metadata: Metadata = {
-  title: 'Propiedades | Lexinton Propiedades',
-  description: 'Encontrá tu próxima propiedad en Lexinton. Departamentos, casas, PHs y locales en Palermo, Belgrano, Villa Urquiza, Coghlan y toda Capital Federal.',
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const hasFilters = !!(searchParams.operation || searchParams.minRooms || searchParams.type || searchParams.location)
+  const opLabel = searchParams.operation === 'Sale' ? 'en Venta'
+    : searchParams.operation === 'Rent' ? 'en Alquiler'
+    : 'en Venta y Alquiler'
+  return {
+    title: `Propiedades ${opLabel} | Lexinton Propiedades`,
+    description: 'Encontrá tu próxima propiedad en Lexinton. Departamentos, casas, PHs y locales en Palermo, Belgrano, Villa Urquiza, Coghlan y toda Capital Federal.',
+    alternates: { canonical: 'https://lexinton.com.ar/propiedades' },
+    robots: hasFilters
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+  }
 }
+
 
 interface PageProps {
   searchParams: {

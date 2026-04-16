@@ -46,13 +46,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const operationLabel = getOperationLabel(property)
   const priceLabel = getPropertyPriceLabel(property)
 
+  const slug = makePropertySlug(property.id, property.address)
+  const canonical = `https://lexinton.com.ar/propiedades/${slug}`
+  const metaDesc = description ||
+    `${getPropertyTypeLabel(property)} de ${property.room_amount ? property.room_amount + ' ambientes' : ''} en ${operationLabel.toLowerCase()} en ${getNeighborhood(property)}. ${priceLabel}.`.trim()
+
   return {
     title: `${property.address} · ${operationLabel} ${priceLabel} | Lexinton`,
-    description: description || `${getPropertyTypeLabel(property)} en ${operationLabel.toLowerCase()} en ${getNeighborhood(property)}.`,
+    description: metaDesc,
+    alternates: {
+      canonical,
+    },
+    robots: { index: true, follow: true },
     openGraph: {
       title: `${property.address} — Lexinton Propiedades`,
-      description: description,
-      images: coverPhoto ? [{ url: coverPhoto }] : [],
+      description: metaDesc,
+      url: canonical,
+      images: coverPhoto ? [{ url: coverPhoto, alt: `${getPropertyTypeLabel(property)} en ${getNeighborhood(property)} — ${property.address}` }] : [],
+      type: 'website',
     },
   }
 }
