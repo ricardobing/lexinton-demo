@@ -16,11 +16,13 @@ const officeLinks = [
 ]
 
 const links = [
-  { label: 'Propiedades en venta', href: '/' },
-  { label: 'Alquileres', href: '/' },
-  { label: 'Tasar mi inmueble', href: '#tasacion' },
-  { label: 'Quiero vender', href: '#tasacion' },
-  { label: 'Contacto', href: '#tasacion' },
+  { label: 'Propiedades en venta', href: '/propiedades?operation=Sale' },
+  { label: 'Alquileres', href: '/propiedades?operation=Rent' },
+  { label: 'Emprendimientos', href: '/emprendimientos' },
+  { label: 'Inversores', href: '/inversor' },
+  { label: 'Tasar mi inmueble', href: '/tasar' },
+  { label: 'Quiero vender', href: '/quiero-vender' },
+  { label: 'Contacto', href: '/contacto' },
 ]
 
 export default function Footer() {

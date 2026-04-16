@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { label: 'Emprendimientos', href: '/' },
-  { label: 'Inversores', href: '/' },
-  { label: 'Contacto', href: '/' },
+  { label: 'Propiedades', href: '/propiedades' },
+  { label: 'Emprendimientos', href: '/emprendimientos' },
+  { label: 'Inversores', href: '/inversor' },
+  { label: 'Contacto', href: '/contacto' },
 ]
 
 export default function Navbar() {
@@ -76,7 +77,7 @@ export default function Navbar() {
             011 4776-5003
           </a>
           <a
-            href="/"
+            href="/tasar"
             className={cn(
               'text-[10.5px] font-bold tracking-[0.14em] uppercase px-5 py-2.5 border transition-all duration-200',
               dark
@@ -116,7 +117,7 @@ export default function Navbar() {
               </Link>
             ))}
             <a
-              href="/"
+              href="/tasar"
               className="mt-3 text-center text-[11px] font-bold tracking-[0.14em] uppercase px-5 py-3 border border-lx-ink text-lx-ink"
             >
               Tasar inmueble

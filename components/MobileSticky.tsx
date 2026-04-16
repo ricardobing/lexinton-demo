@@ -13,7 +13,7 @@ export default function MobileSticky() {
         WhatsApp
       </a>
       <a
-        href="#tasacion"
+        href="/tasar"
         className="flex-1 flex items-center justify-center gap-2 py-4 text-[11.5px] font-bold tracking-[0.12em] uppercase text-white hover:bg-white/5 transition-colors duration-200"
       >
         Tasar inmueble

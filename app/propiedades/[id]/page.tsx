@@ -7,8 +7,8 @@
 
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getPropertyById, getSimilarProperties, getAllPropertyIds } from '@/lib/tokko/queries'
 import {
   getCoverPhoto, getSortedPhotos, getOperationLabel, getPropertyPriceLabel,
@@ -18,6 +18,7 @@ import {
 } from '@/lib/tokko/utils'
 import PropertyCard from '@/components/PropertyCard'
 import PropertyContact from '@/components/properties/PropertyContact'
+import { PropertyGallery } from '@/components/properties/PropertyGallery'
 
 export const revalidate = 300
 
@@ -123,54 +124,7 @@ export default async function PropiedadDetallePage({ params }: PageProps) {
       {photos.length > 0 && (
         <section className="bg-lx-ink">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 sm:py-6">
-            {/* Foto principal */}
-            <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden mb-2">
-              <Image
-                src={photos[0].image}
-                alt={`${property.address} — foto principal`}
-                fill
-                className="object-cover"
-                priority
-                sizes="(max-width: 768px) 100vw, 90vw"
-              />
-              {/* Badge operacion */}
-              <div className="absolute top-4 left-4">
-                <span className={`px-3 py-1 text-[10px] font-bold tracking-[0.15em] uppercase text-white ${
-                  isRent ? 'bg-[#3d5a6c]' : 'bg-lx-ink/80 border border-white/30'
-                }`}>
-                  {operationLabel}
-                </span>
-              </div>
-              {/* Contador fotos */}
-              {photos.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-black/60 text-white text-[11px] px-3 py-1.5">
-                  1 / {photos.length}
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnails */}
-            {photos.length > 1 && (
-              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
-                {photos.slice(1, 9).map((photo, i) => (
-                  <div key={i} className="relative aspect-[4/3] overflow-hidden bg-lx-stone/20">
-                    <Image
-                      src={photo.thumb ?? photo.image}
-                      alt={`${property.address} — foto ${i + 2}`}
-                      fill
-                      className="object-cover opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
-                      sizes="100px"
-                    />
-                    {/* Overlay "+N más" en último visible si hay más */}
-                    {i === 7 && photos.length > 9 && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">+{photos.length - 9}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            <PropertyGallery photos={photos} title={property.address} />
           </div>
         </section>
       )}
