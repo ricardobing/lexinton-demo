@@ -64,22 +64,13 @@ export async function getProperties(
   } = filters
 
   // Params que la API acepta nativamente
+  // NOTA: order_by no funciona en la API de Tokko (retorna 400 para todos los valores).
+  // El ordenamiento se aplica post-fetch server-side.
   const apiParams: Record<string, string | number | boolean> = {}
 
   if (locationId) {
     apiParams['current_localization_id'] = locationId
     apiParams['current_localization_type'] = 'location'
-  }
-
-  // Para ordenamiento que la API soporta
-  if (orderBy === 'newest') {
-    apiParams['order_by'] = '-created_at'
-  } else if (orderBy === 'oldest') {
-    apiParams['order_by'] = 'created_at'
-  } else if (orderBy === 'price_asc') {
-    apiParams['order_by'] = 'price'
-  } else if (orderBy === 'price_desc') {
-    apiParams['order_by'] = '-price'
   }
 
   // Traer todas para filtrar (la API no filtra bien por operación)
@@ -134,6 +125,26 @@ export async function getProperties(
 
   const total = filtered.length
 
+  // Ordenamiento post-fetch (la API no acepta order_by)
+  if (orderBy === 'price_asc') {
+    filtered.sort((a, b) => {
+      const pa = a.operations?.[0]?.prices?.[0]?.price ?? 0
+      const pb = b.operations?.[0]?.prices?.[0]?.price ?? 0
+      return pa - pb
+    })
+  } else if (orderBy === 'price_desc') {
+    filtered.sort((a, b) => {
+      const pa = a.operations?.[0]?.prices?.[0]?.price ?? 0
+      const pb = b.operations?.[0]?.prices?.[0]?.price ?? 0
+      return pb - pa
+    })
+  } else if (orderBy === 'oldest') {
+    filtered.sort((a, b) => a.id - b.id)
+  } else {
+    // newest (default): IDs desc — IDs más altos son más recientes en Tokko
+    filtered.sort((a, b) => b.id - a.id)
+  }
+
   // Paginación del resultado filtrado
   const paginated = filtered.slice(offset, offset + limit)
 
@@ -143,7 +154,7 @@ export async function getProperties(
 /**
  * Obtiene el detalle completo de una propiedad por ID.
  */
-export async function getPropertyById(id: number, revalidate = 300): Promise<TokkoProperty> {
+export async function getPropertyById(id: number, revalidate = 300): Promise<TokkoProperty | null> {
   return tokkoFetch<TokkoProperty>(`property/${id}`, {}, revalidate)
 }
 
@@ -154,18 +165,20 @@ export async function getPropertyById(id: number, revalidate = 300): Promise<Tok
 export async function getFeaturedProperties(limit = 6): Promise<TokkoProperty[]> {
   const response = await tokkoFetch<TokkoPropertyListResponse>(
     'property',
-    { limit: 50, order_by: '-created_at' },
+    { limit: 50 },
     300
   )
 
-  const starred = response.objects.filter((p) => p.is_starred_on_web)
+  // IDs más altos = más recientes en Tokko
+  const sorted = [...response.objects].sort((a, b) => b.id - a.id)
+  const starred = sorted.filter((p) => p.is_starred_on_web)
 
   if (starred.length >= limit) {
     return starred.slice(0, limit)
   }
 
   // Complementar con las más recientes si no hay suficientes destacadas
-  const rest = response.objects.filter((p) => !p.is_starred_on_web)
+  const rest = sorted.filter((p) => !p.is_starred_on_web)
   return [...starred, ...rest].slice(0, limit)
 }
 
@@ -176,23 +189,24 @@ export async function getSimilarProperties(
   property: TokkoProperty,
   limit = 3
 ): Promise<TokkoProperty[]> {
-  const locationId = property.location?.id
+  try {
+    // Sin current_localization_id — causa 403 en algunos barrios
+    const response = await tokkoFetch<TokkoPropertyListResponse>(
+      'property',
+      { limit: 20 },
+      300
+    )
 
-  const params: Record<string, string | number | boolean> = {
-    limit: 10,
-    order_by: '-created_at',
+    const locationId = property.location?.id
+    const typeId = property.type?.id
+
+    return response.objects
+      .filter((p) => p.id !== property.id)
+      .filter((p) => p.location?.id === locationId || p.type?.id === typeId)
+      .slice(0, limit)
+  } catch {
+    return []
   }
-
-  if (locationId) {
-    params['current_localization_id'] = locationId
-    params['current_localization_type'] = 'location'
-  }
-
-  const response = await tokkoFetch<TokkoPropertyListResponse>('property', params, 300)
-
-  return response.objects
-    .filter((p) => p.id !== property.id)
-    .slice(0, limit)
 }
 
 /**
@@ -202,8 +216,8 @@ export async function getSimilarProperties(
 export async function getAllPropertyIds(): Promise<number[]> {
   const response = await tokkoFetch<TokkoPropertyListResponse>(
     'property',
-    { limit: 100 },
-    3600 // cache 1 hora
+    { limit: 50 },
+    3600
   )
   return response.objects.map((p) => p.id)
 }
@@ -229,13 +243,11 @@ export async function getPropertyTypes() {
  * Cache largo (1 hora) porque cambian muy poco.
  */
 export async function getLocations(stateId = CABA_STATE_ID) {
-  // Tokko tiene 272k locations globales — filtramos por estado
   const response = await tokkoFetch<TokkoLocationListResponse>(
     'location',
     {
       limit: 100,
       state: stateId,
-      order_by: '-weight', // los más populares primero
     },
     3600
   )

@@ -22,6 +22,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getProperties } from '@/lib/tokko/queries'
 import type { PropertyFilters } from '@/lib/tokko/types'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl

@@ -121,7 +121,6 @@ export interface TokkoProperty {
   rich_description: string         // HTML con formato
   description_only: string         // HTML solo de la descripción
   footer: string                   // texto de pie de ficha
-  publication_title: string
   seo_description: string
   seo_keywords: string
 

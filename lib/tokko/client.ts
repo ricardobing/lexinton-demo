@@ -38,7 +38,6 @@ export async function tokkoFetch<T>(
   const searchParams = new URLSearchParams({
     key: TOKKO_API_KEY!,
     format: 'json',
-    lang: 'es',
     ...Object.fromEntries(
       Object.entries(params).map(([k, v]) => [k, String(v)])
     ),
@@ -54,10 +53,13 @@ export async function tokkoFetch<T>(
   })
 
   if (!res.ok) {
-    throw new Error(
-      `[Tokko] API error en /${endpoint}: ${res.status} ${res.statusText}\n` +
-      `URL: ${url.replace(TOKKO_API_KEY!, '[KEY_HIDDEN]')}`
-    )
+    // 404 → el recurso no existe (propiedad archivada, ID incorrecto)
+    if (res.status === 404) {
+      return null as T
+    }
+    const errorUrl = url.replace(TOKKO_API_KEY!, '[KEY_HIDDEN]')
+    console.error(`[Tokko] API error ${res.status} en /${endpoint} → ${errorUrl}`)
+    throw new Error(`[Tokko] ${res.status} ${res.statusText} en /${endpoint}`)
   }
 
   return res.json() as Promise<T>

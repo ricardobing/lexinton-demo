@@ -63,13 +63,14 @@ export const CREDIT_LABELS: Record<string, string> = {
  * @example formatPrice(1500000, 'ARS') → "$ 1.500.000"
  * @example formatPrice(0, 'USD') → "Consultar"
  */
-export function formatPrice(price: number, currency: string): string {
-  if (!price || price === 0) return 'Consultar'
+export function formatPrice(price: number | string | null | undefined, currency: string): string {
+  const num = typeof price === 'string' ? parseFloat(price) : (price ?? 0)
+  if (!num || isNaN(num) || num === 0) return 'Consultar'
 
   const formatted = new Intl.NumberFormat('es-AR', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(price)
+  }).format(num)
 
   if (currency === 'USD') return `USD ${formatted}`
   if (currency === 'ARS') return `$ ${formatted}`
@@ -81,9 +82,10 @@ export function formatPrice(price: number, currency: string): string {
  * Formatea gastos de expensas.
  * @example formatExpenses(150000) → "$ 150.000/mes"
  */
-export function formatExpenses(expenses: number): string {
-  if (!expenses || expenses === 0) return ''
-  return `$ ${new Intl.NumberFormat('es-AR').format(expenses)}/mes`
+export function formatExpenses(expenses: number | string | null | undefined): string {
+  const num = typeof expenses === 'string' ? parseFloat(expenses) : (expenses ?? 0)
+  if (!num || isNaN(num) || num === 0) return ''
+  return `$ ${new Intl.NumberFormat('es-AR').format(num)}/mes`
 }
 
 // ─── Superficies ──────────────────────────────────────────────────────────────
@@ -93,9 +95,10 @@ export function formatExpenses(expenses: number): string {
  * @example formatArea(73.5) → "73,5 m²"
  * @example formatArea(73) → "73 m²"
  */
-export function formatArea(area: number | null | undefined): string {
-  if (!area) return ''
-  const formatted = area % 1 === 0 ? area.toString() : area.toFixed(1)
+export function formatArea(area: number | string | null | undefined): string {
+  const num = typeof area === 'string' ? parseFloat(area) : (area ?? 0)
+  if (!num || isNaN(num)) return ''
+  const formatted = num % 1 === 0 ? num.toString() : num.toFixed(1)
   return `${formatted} m²`
 }
 
