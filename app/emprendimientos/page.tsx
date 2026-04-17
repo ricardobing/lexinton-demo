@@ -36,7 +36,15 @@ const diferenciadores = [
 ]
 
 async function DevelopmentsGrid() {
-  const devs = await getDevelopments()
+  const allDevs = await getDevelopments()
+
+  // Filtramos entradas promocionales que el cliente carga en Tokko
+  // (ej: "TASACIONES VIRTUALES" con QR, que no son emprendimientos reales)
+  const devs = allDevs.filter((d) => {
+    const name = (d.name ?? '').toLowerCase()
+    const addr = (d.address ?? '').toLowerCase()
+    return !name.includes('tasacion') && !addr.includes('whatsapp') && !addr.includes('online por')
+  })
 
   if (!devs.length) {
     return (
