@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     const filters: PropertyFilters = {}
 
     const operation = searchParams.get('operation')
-    if (operation === 'Sale' || operation === 'Rent' || operation === 'Temporary Rent') {
+    if (operation === 'Sale' || operation === 'Rent') {
       filters.operation = operation
     }
 

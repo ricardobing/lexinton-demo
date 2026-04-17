@@ -299,7 +299,7 @@ export interface TokkoLeadPayload {
 // ─── Filtros de búsqueda (para el proxy interno) ──────────────────────────────
 
 export interface PropertyFilters {
-  operation?: 'Sale' | 'Rent' | 'Temporary Rent'
+  operation?: 'Sale' | 'Rent'
   propertyType?: number            // ID del tipo (2=Apartment, 3=House, etc.)
   locationId?: number              // ID del barrio/zona
   minRooms?: number

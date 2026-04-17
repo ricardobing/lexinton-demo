@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -14,6 +15,8 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const isHome = pathname === '/'
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 80)
@@ -22,7 +25,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
-  const dark = scrolled || menuOpen
+  const dark = !isHome || scrolled || menuOpen
 
   return (
     <header

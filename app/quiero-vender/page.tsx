@@ -5,6 +5,7 @@
 
 import type { Metadata } from 'next'
 import { LeadForm } from '@/components/LeadForm'
+import { PageHero } from '@/components/PageHero'
 
 export const metadata: Metadata = {
   title: 'Quiero Vender mi Propiedad | Lexinton Propiedades',
@@ -46,21 +47,11 @@ export default function QuieroVenderPage() {
   return (
     <main className="min-h-screen">
 
-      {/* ── HERO ─────────────────────────────────────── */}
-      <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5">
-            Lexinton Propiedades · Vendedores
-          </p>
-          <h1 className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl">
-            Vendé con quienes<br />
-            <em className="italic text-white/50">conocen tu barrio</em>
-          </h1>
-          <p className="text-[16px] text-white/60 leading-[1.85] max-w-xl">
-            Más de 20 años cerrando operaciones en Palermo, Belgrano y zona norte. Te acompañamos desde la tasación hasta la escritura.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Lexinton Propiedades · Vendedores"
+        title={<>Vendé con quienes<br /><em>conocen tu barrio</em></>}
+        subtitle="Más de 20 años cerrando operaciones en Palermo, Belgrano y zona norte. Te acompañamos desde la tasación hasta la escritura."
+      />
 
       {/* ── PROCESO ──────────────────────────────────── */}
       <section className="bg-white py-16 sm:py-20 border-b border-lx-line">

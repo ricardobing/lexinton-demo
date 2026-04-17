@@ -5,6 +5,7 @@
 
 import type { Metadata } from 'next'
 import { LeadForm } from '@/components/LeadForm'
+import { PageHero } from '@/components/PageHero'
 
 export const metadata: Metadata = {
   title: 'Tasar Propiedades en Buenos Aires | Lexinton Propiedades',
@@ -39,21 +40,11 @@ export default function TasarPage() {
   return (
     <main className="min-h-screen">
 
-      {/* ── HERO ─────────────────────────────────────── */}
-      <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5">
-            Lexinton Propiedades · Tasaciones
-          </p>
-          <h1 className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl">
-            Sabé cuánto vale<br />
-            <em className="italic text-white/50">tu propiedad hoy</em>
-          </h1>
-          <p className="text-[16px] text-white/60 leading-[1.85] max-w-xl">
-            Tasación gratuita por un broker especialista en tu zona. Sin sorpresas, sin números inflados. El valor real que te permite vender.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Lexinton Propiedades · Tasaciones"
+        title={<>Sabé cuánto vale<br /><em>tu propiedad hoy</em></>}
+        subtitle="Tasación gratuita por un broker especialista en tu zona. Sin sorpresas, sin números inflados. El valor real que te permite vender."
+      />
 
       {/* ── POR QUÉ ELEGIRNOS ────────────────────────── */}
       <section className="bg-white py-16 sm:py-20 border-b border-lx-line">

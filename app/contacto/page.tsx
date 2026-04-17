@@ -5,6 +5,7 @@
 
 import type { Metadata } from 'next'
 import { LeadForm } from '@/components/LeadForm'
+import { PageHero } from '@/components/PageHero'
 
 export const metadata: Metadata = {
   title: 'Contacto | Lexinton Propiedades Palermo y Vicente López',
@@ -39,20 +40,11 @@ export default function ContactoPage() {
   return (
     <main className="min-h-screen">
 
-      {/* ── HERO ─────────────────────────────────────── */}
-      <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5">
-            Lexinton Propiedades · Contacto
-          </p>
-          <h1 className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl">
-            Estamos para ayudarte
-          </h1>
-          <p className="text-[16px] text-white/60 leading-[1.85] max-w-xl">
-            Dos sucursales en Buenos Aires. Un equipo disponible para responder todas tus consultas sobre propiedades en venta, alquiler y tasaciones.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Lexinton Propiedades · Contacto"
+        title={<>Estamos para<br /><em>ayudarte</em></>}
+        subtitle="Dos sucursales en Buenos Aires. Un equipo disponible para responder todas tus consultas sobre propiedades en venta, alquiler y tasaciones."
+      />
 
       {/* ── FORMULARIO + DATOS ───────────────────────── */}
       <section className="bg-lx-cream py-16 sm:py-20 border-b border-lx-line">

@@ -24,7 +24,6 @@ const OPS = [
   { value: '', label: 'Todas' },
   { value: 'Sale', label: 'Venta' },
   { value: 'Rent', label: 'Alquiler' },
-  { value: 'Temporary Rent', label: 'Temporal' },
 ]
 
 const TYPES = [
@@ -52,7 +51,7 @@ const ORDERS = [
 ]
 
 const OP_LABEL: Record<string, string> = {
-  Sale: 'Venta', Rent: 'Alquiler', 'Temporary Rent': 'Temporal',
+  Sale: 'Venta', Rent: 'Alquiler',
 }
 
 const TYPE_LABEL: Record<string, string> = {

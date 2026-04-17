@@ -10,6 +10,7 @@ import { getCoverPhoto } from '@/lib/tokko/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { LeadForm } from '@/components/LeadForm'
+import { PageHero } from '@/components/PageHero'
 
 export const metadata: Metadata = {
   title: 'Emprendimientos Inmobiliarios en Palermo | Lexinton Propiedades',
@@ -137,21 +138,11 @@ export default function EmprendimientosPage() {
   return (
     <main className="min-h-screen">
 
-      {/* ── HERO ─────────────────────────────────────── */}
-      <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5">
-            Lexinton Propiedades · Emprendimientos
-          </p>
-          <h1 className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl">
-            Emprendimientos con visión de futuro
-          </h1>
-          <p className="text-[16px] text-white/60 leading-[1.85] max-w-xl">
-            Accedé a proyectos seleccionados en las zonas de mayor valorización de Buenos Aires.
-            Asesoramiento experto desde la preventa hasta la escritura.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Lexinton Propiedades · Emprendimientos"
+        title={<>Emprendimientos con<br /><em>visión de futuro</em></>}
+        subtitle="Accedé a proyectos seleccionados en las zonas de mayor valorización de Buenos Aires. Asesoramiento experto desde la preventa hasta la escritura."
+      />
 
       {/* ── DIFERENCIADORES ──────────────────────────── */}
       <section className="bg-lx-parchment border-b border-lx-line">
