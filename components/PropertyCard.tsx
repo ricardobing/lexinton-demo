@@ -62,10 +62,7 @@ export default function PropertyCard({
       <article className="bg-white rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer border border-lx-line/60">
 
         {/* ── Imagen ─────────────────────────────────────────────── */}
-        <div className={cn(
-          'relative w-full overflow-hidden bg-lx-parchment',
-          featured ? 'aspect-[3/2]' : 'aspect-[16/10]'
-        )}>
+        <div className="relative w-full aspect-[4/3] overflow-hidden bg-lx-parchment shrink-0">
           {coverPhoto ? (
             <Image
               src={coverPhoto}

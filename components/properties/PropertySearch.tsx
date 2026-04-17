@@ -1,35 +1,33 @@
 'use client'
 
 /**
- * PropertySearch — Barra de filtros avanzada para /propiedades
+ * PropertySearch — Barra de filtros premium para /propiedades
  *
- * Design system:
- * - Filtros como botones con chevron → abren paneles popover flotantes
- * - Popovers custom: sin HTML <select>, sin bibliotecas externas
- * - Desktop: sticky top bar, todos los filtros en una fila
- * - Mobile: barra compacta (operación) + botón "Filtros" → bottom drawer
- * - Feedback visual: botón activo resaltado, badge con cantidad
- *
- * URL params: operation, type, location, location_name,
- *             minRooms, minPrice, maxPrice, currency, orderBy, offset
+ * Principios de diseño:
+ * - Filtros como pill-buttons con estado activo claro (fondo ink)
+ * - Popovers custom animados con Framer Motion (scale + fade)
+ * - Desktop: barra sticky con todos los filtros en una fila limpia
+ * - Mobile: barra compacta + drawer desde abajo con spring animation
+ * - Sin HTML <select> en ningún lado — 100% custom
  */
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import {
   useCallback, useState, useTransition, useEffect, useRef, type ReactNode,
 } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import LocationAutocomplete from '@/components/search/LocationAutocomplete'
 
-// ─── Datos ────────────────────────────────────────────────────────────────────
+// ─── Constantes ───────────────────────────────────────────────────────────────
 
-const OPERATION_OPTIONS = [
+const OPS = [
   { value: '', label: 'Todas' },
   { value: 'Sale', label: 'Venta' },
   { value: 'Rent', label: 'Alquiler' },
   { value: 'Temporary Rent', label: 'Temporal' },
 ]
 
-const PROPERTY_TYPES = [
+const TYPES = [
   { value: '2', label: 'Departamento' },
   { value: '3', label: 'Casa' },
   { value: '13', label: 'PH' },
@@ -40,144 +38,152 @@ const PROPERTY_TYPES = [
   { value: '5', label: 'Oficina' },
 ]
 
-const ROOMS_OPTIONS = [
-  { value: '1', label: '1 amb.' },
-  { value: '2', label: '2 amb.' },
-  { value: '3', label: '3 amb.' },
-  { value: '4', label: '4+ amb.' },
+const ROOMS = [
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3' },
+  { value: '4', label: '4+' },
 ]
 
-const ORDER_OPTIONS = [
+const ORDERS = [
   { value: 'newest', label: 'Más recientes' },
   { value: 'price_asc', label: 'Precio: menor a mayor' },
   { value: 'price_desc', label: 'Precio: mayor a menor' },
 ]
 
 const OP_LABEL: Record<string, string> = {
-  Sale: 'Venta',
-  Rent: 'Alquiler',
-  'Temporary Rent': 'Temporal',
+  Sale: 'Venta', Rent: 'Alquiler', 'Temporary Rent': 'Temporal',
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  '2': 'Depto',
-  '3': 'Casa',
-  '13': 'PH',
-  '31': 'Monoamb.',
-  '1': 'Terreno',
-  '10': 'Cochera',
-  '7': 'Local',
-  '5': 'Oficina',
+  '2': 'Departamento', '3': 'Casa', '13': 'PH', '31': 'Monoambiente',
+  '1': 'Terreno', '10': 'Cochera', '7': 'Local', '5': 'Oficina',
 }
 
-function formatPriceLabel(min: string, max: string, currency: string): string {
-  const fmt = (v: string) => {
+function fmtPrice(min: string, max: string, cur: string) {
+  const f = (v: string) => {
     const n = parseInt(v, 10)
     if (isNaN(n)) return ''
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`
-    if (n >= 1_000) return `${Math.round(n / 1_000)}k`
-    return String(n)
+    return n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1).replace('.0', '')}M`
+      : n >= 1_000 ? `${Math.round(n / 1_000)}k` : String(n)
   }
-  const cur = currency || 'USD'
-  const a = fmt(min)
-  const b = fmt(max)
-  if (a && b) return `${cur} ${a}–${b}`
-  if (a) return `${cur} desde ${a}`
-  if (b) return `${cur} hasta ${b}`
+  const a = f(min), b = f(max), c = cur || 'USD'
+  if (a && b) return `${c} ${a}–${b}`
+  if (a) return `desde ${c} ${a}`
+  if (b) return `hasta ${c} ${b}`
   return ''
 }
 
-function countActive(p: {
+function activeCount(p: {
   operation: string; type: string; location: string
   minRooms: string; minPrice: string; maxPrice: string
 }) {
   return [p.operation, p.type, p.location, p.minRooms, p.minPrice || p.maxPrice].filter(Boolean).length
 }
 
-// ─── FilterButton ─────────────────────────────────────────────────────────────
-// Botón estándar para los dropdowns de la barra
+// ─── Animaciones ──────────────────────────────────────────────────────────────
 
-interface FilterButtonProps {
-  label: string
-  active?: boolean
-  onClick: () => void
-  open?: boolean
-  className?: string
+const popoverAnim = {
+  initial: { opacity: 0, y: -6, scale: 0.97 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] as number[] } },
+  exit:    { opacity: 0, y: -4, scale: 0.98, transition: { duration: 0.12 } },
 }
 
-function FilterButton({ label, active, onClick, open, className = '' }: FilterButtonProps) {
+const drawerAnim = {
+  initial: { y: '100%' },
+  animate: { y: 0, transition: { type: 'spring' as const, damping: 32, stiffness: 380 } },
+  exit:    { y: '100%', transition: { duration: 0.22, ease: [0.32, 0, 0.67, 0] as number[] } },
+}
+
+// ─── PillButton ───────────────────────────────────────────────────────────────
+
+function PillButton({
+  label, active = false, onClick, open = false, className = '',
+}: {
+  label: string; active?: boolean; onClick: () => void; open?: boolean; className?: string
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap border transition-all duration-150 ${
+      className={[
+        'relative flex items-center gap-1.5 h-9 px-4 text-[11px] font-semibold tracking-[0.06em] whitespace-nowrap',
+        'transition-all duration-150 select-none outline-none rounded-sm',
+        'focus-visible:ring-2 focus-visible:ring-lx-accent focus-visible:ring-offset-1',
         active
-          ? 'border-lx-ink bg-lx-ink text-white'
+          ? 'bg-lx-ink text-white shadow-sm'
           : open
-          ? 'border-lx-ink text-lx-ink bg-lx-parchment'
-          : 'border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink bg-white'
-      } ${className}`}
+          ? 'bg-lx-parchment text-lx-ink border border-lx-ink/30'
+          : 'bg-transparent text-lx-stone border border-lx-line hover:border-lx-stone/60 hover:text-lx-ink hover:bg-lx-cream/70',
+        className,
+      ].join(' ')}
     >
       {label}
-      <svg
-        className={`w-3 h-3 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+      <motion.svg
+        animate={{ rotate: open ? 180 : 0 }}
+        transition={{ duration: 0.2 }}
+        className="w-3 h-3 opacity-60 shrink-0"
         fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" />
-      </svg>
+      </motion.svg>
     </button>
   )
 }
 
-// ─── Popover container ────────────────────────────────────────────────────────
+// ─── Popover wrapper ──────────────────────────────────────────────────────────
 
 function Popover({
-  open, anchorRef, onClose, children, align = 'left',
+  open, anchorRef, onClose, children, align = 'left', width = 'min-w-[210px]',
 }: {
-  open: boolean
-  anchorRef: React.RefObject<HTMLDivElement>
-  onClose: () => void
-  children: ReactNode
-  align?: 'left' | 'right'
+  open: boolean; anchorRef: React.RefObject<HTMLDivElement>
+  onClose: () => void; children: ReactNode
+  align?: 'left' | 'right'; width?: string
 }) {
   useEffect(() => {
     if (!open) return
-    const handler = (e: MouseEvent) => {
+    const fn = (e: MouseEvent) => {
       if (!anchorRef.current?.contains(e.target as Node)) onClose()
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    const kfn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('mousedown', fn)
+    document.addEventListener('keydown', kfn)
+    return () => {
+      document.removeEventListener('mousedown', fn)
+      document.removeEventListener('keydown', kfn)
+    }
   }, [open, anchorRef, onClose])
 
-  if (!open) return null
   return (
-    <div
-      className={`absolute top-full mt-1.5 z-50 bg-white border border-lx-line shadow-xl min-w-[220px] ${
-        align === 'right' ? 'right-0' : 'left-0'
-      }`}
-    >
-      {children}
-    </div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          {...popoverAnim}
+          className={[
+            'absolute top-[calc(100%+6px)] z-50 origin-top',
+            'bg-white border border-lx-line/80 shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden rounded-sm',
+            align === 'right' ? 'right-0' : 'left-0',
+            width,
+          ].join(' ')}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
-// ─── PopoverCheckItem ─────────────────────────────────────────────────────────
+// ─── Items de popover ─────────────────────────────────────────────────────────
 
-function PopoverCheckItem({
-  label, checked, onToggle,
-}: {
-  label: string; checked: boolean; onToggle: () => void
-}) {
+function CheckItem({ label, checked, onToggle }: { label: string; checked: boolean; onToggle: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onToggle}
+    <button type="button" onClick={onToggle}
       className={`w-full flex items-center gap-3 px-4 py-2.5 text-[12.5px] text-left transition-colors duration-100 ${
-        checked ? 'text-lx-ink bg-lx-parchment/60' : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/60'
+        checked ? 'text-lx-ink bg-lx-parchment/50' : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/50'
       }`}
     >
-      <span className={`w-4 h-4 flex items-center justify-center border shrink-0 transition-colors ${
-        checked ? 'border-lx-ink bg-lx-ink' : 'border-lx-line'
+      <span className={`w-4 h-4 flex items-center justify-center border shrink-0 transition-all duration-100 rounded-[2px] ${
+        checked ? 'border-lx-ink bg-lx-ink' : 'border-lx-line/80'
       }`}>
         {checked && (
           <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -190,319 +196,269 @@ function PopoverCheckItem({
   )
 }
 
-// ─── PopoverRadioItem ─────────────────────────────────────────────────────────
-
-function PopoverRadioItem({
-  label, selected, onSelect,
-}: {
-  label: string; selected: boolean; onSelect: () => void
-}) {
+function RadioItem({ label, selected, onSelect }: { label: string; selected: boolean; onSelect: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onSelect}
+    <button type="button" onClick={onSelect}
       className={`w-full flex items-center gap-3 px-4 py-2.5 text-[12.5px] text-left transition-colors duration-100 ${
-        selected ? 'text-lx-ink bg-lx-parchment/60' : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/60'
+        selected ? 'text-lx-ink bg-lx-parchment/50' : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/50'
       }`}
     >
       <span className={`w-4 h-4 rounded-full flex items-center justify-center border shrink-0 transition-colors ${
-        selected ? 'border-lx-ink' : 'border-lx-line'
+        selected ? 'border-lx-ink' : 'border-lx-line/80'
       }`}>
-        {selected && <span className="w-2 h-2 rounded-full bg-lx-ink" />}
+        {selected && <span className="w-2 h-2 rounded-full bg-lx-ink block" />}
       </span>
       {label}
     </button>
   )
 }
 
+function PopLabel({ children }: { children: ReactNode }) {
+  return (
+    <p className="px-4 pt-3.5 pb-2 text-[9px] font-bold tracking-[0.20em] uppercase text-lx-stone/50 border-b border-lx-line/40">
+      {children}
+    </p>
+  )
+}
+
+// ─── Badge activo ─────────────────────────────────────────────────────────────
+
+function Badge({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.85 }}
+      transition={{ duration: 0.12 }}
+      className="inline-flex items-center gap-1.5 h-6 px-2.5 bg-lx-ink text-white text-[9.5px] font-semibold tracking-[0.04em] rounded-full"
+    >
+      {label}
+      <button type="button" onClick={onRemove}
+        className="opacity-60 hover:opacity-100 transition-opacity -mr-0.5"
+        aria-label={`Quitar ${label}`}
+      >
+        <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </motion.span>
+  )
+}
+
+function DrawerLabel({ children }: { children: ReactNode }) {
+  return <p className="text-[9.5px] font-bold tracking-[0.20em] uppercase text-lx-stone mb-3">{children}</p>
+}
+
 // ─── Props ────────────────────────────────────────────────────────────────────
 
-interface PropertySearchProps {
-  totalCount?: number
-}
+interface PropertySearchProps { totalCount?: number }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function PropertySearch({ totalCount }: PropertySearchProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const sp = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [openPop, setOpenPop] = useState<'type' | 'rooms' | 'price' | 'order' | null>(null)
 
-  // Popovers abiertos
-  const [openPopover, setOpenPopover] = useState<
-    'type' | 'rooms' | 'price' | 'order' | null
-  >(null)
-
-  // Refs para cada popover (click-outside)
-  const typeRef = useRef<HTMLDivElement>(null!)
+  const typeRef  = useRef<HTMLDivElement>(null!)
   const roomsRef = useRef<HTMLDivElement>(null!)
   const priceRef = useRef<HTMLDivElement>(null!)
   const orderRef = useRef<HTMLDivElement>(null!)
 
-  // Estado actual desde URL
-  const current = {
-    operation: searchParams.get('operation') ?? '',
-    type: searchParams.get('type') ?? '',
-    location: searchParams.get('location') ?? '',
-    locationName: searchParams.get('location_name') ?? '',
-    minRooms: searchParams.get('minRooms') ?? '',
-    minPrice: searchParams.get('minPrice') ?? '',
-    maxPrice: searchParams.get('maxPrice') ?? '',
-    currency: searchParams.get('currency') ?? 'USD',
-    orderBy: searchParams.get('orderBy') ?? 'newest',
+  const cur = {
+    operation:    sp.get('operation')     ?? '',
+    type:         sp.get('type')          ?? '',
+    location:     sp.get('location')      ?? '',
+    locationName: sp.get('location_name') ?? '',
+    minRooms:     sp.get('minRooms')      ?? '',
+    minPrice:     sp.get('minPrice')      ?? '',
+    maxPrice:     sp.get('maxPrice')      ?? '',
+    currency:     sp.get('currency')      ?? 'USD',
+    orderBy:      sp.get('orderBy')       ?? 'newest',
   }
 
-  // Drafts del popover precio
-  const [draftMin, setDraftMin] = useState(current.minPrice)
-  const [draftMax, setDraftMax] = useState(current.maxPrice)
-  const [draftCur, setDraftCur] = useState(current.currency)
+  const [dMin, setDMin] = useState(cur.minPrice)
+  const [dMax, setDMax] = useState(cur.maxPrice)
+  const [dCur, setDCur] = useState(cur.currency)
 
-  // Sync drafts cuando cambia la URL
   useEffect(() => {
-    setDraftMin(searchParams.get('minPrice') ?? '')
-    setDraftMax(searchParams.get('maxPrice') ?? '')
-    setDraftCur(searchParams.get('currency') ?? 'USD')
-  }, [searchParams])
+    setDMin(sp.get('minPrice') ?? '')
+    setDMax(sp.get('maxPrice') ?? '')
+    setDCur(sp.get('currency') ?? 'USD')
+  }, [sp])
 
-  // Bloquear scroll con drawer abierto
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [drawerOpen])
 
-  const activeCount = countActive(current)
-  const hasPriceFilter = !!(current.minPrice || current.maxPrice)
-  const priceLabel = formatPriceLabel(current.minPrice, current.maxPrice, current.currency)
+  const n = activeCount(cur)
+  const hasPrice = !!(cur.minPrice || cur.maxPrice)
+  const priceLabel = fmtPrice(cur.minPrice, cur.maxPrice, cur.currency)
 
-  // ── URL helpers ────────────────────────────────────────────────────────────
-
-  const updateParams = useCallback(
-    (updates: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams.toString())
-      for (const [key, val] of Object.entries(updates)) {
-        if (val) params.set(key, val)
-        else params.delete(key)
-      }
-      params.delete('offset')
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`, { scroll: false })
-      })
-    },
-    [router, pathname, searchParams]
-  )
+  const push = useCallback((updates: Record<string, string>) => {
+    const p = new URLSearchParams(sp.toString())
+    for (const [k, v] of Object.entries(updates)) v ? p.set(k, v) : p.delete(k)
+    p.delete('offset')
+    startTransition(() => { router.push(`${pathname}?${p.toString()}`, { scroll: false }) })
+  }, [router, pathname, sp])
 
   const clearAll = useCallback(() => {
     startTransition(() => { router.push(pathname, { scroll: false }) })
     setDrawerOpen(false)
-    setOpenPopover(null)
+    setOpenPop(null)
   }, [router, pathname])
 
-  const togglePopover = (name: typeof openPopover) => {
-    setOpenPopover((prev) => (prev === name ? null : name))
+  const toggle = (name: typeof openPop) => setOpenPop((p) => p === name ? null : name)
+  const orderLabel = ORDERS.find((o) => o.value === cur.orderBy)?.label ?? 'Ordenar'
+
+  const applyPrice = () => {
+    push({ minPrice: dMin, maxPrice: dMax, currency: dCur })
+    setOpenPop(null)
   }
-
-  // ── Render ─────────────────────────────────────────────────────────────────
-
-  const orderLabel = ORDER_OPTIONS.find((o) => o.value === current.orderBy)?.label ?? 'Ordenar'
 
   return (
     <>
       {/* ================================================================
           DESKTOP BAR (md+)
           ================================================================ */}
-      <div className="hidden md:block bg-white border-b border-lx-line sticky top-0 z-30 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <div className="max-w-7xl mx-auto px-5 lg:px-8 py-2.5">
-          <div className="flex items-center gap-2 flex-wrap">
+      <div className="hidden md:block bg-white/95 backdrop-blur-sm border-b border-lx-line sticky top-0 z-30 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+        <div className="max-w-7xl mx-auto px-5 lg:px-8">
+          <div className="flex items-center gap-1.5 h-14">
 
-            {/* Operación — pills */}
-            <div className="flex gap-1">
-              {OPERATION_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => updateParams({ operation: opt.value })}
-                  className={`px-3.5 py-2 text-[10.5px] font-bold tracking-[0.14em] uppercase transition-all duration-150 ${
-                    current.operation === opt.value
+            {/* Operación */}
+            <div className="flex items-center gap-0.5 shrink-0">
+              {OPS.map((op) => (
+                <button key={op.value} type="button"
+                  onClick={() => push({ operation: op.value })}
+                  className={[
+                    'h-9 px-4 text-[10.5px] font-bold tracking-[0.12em] uppercase transition-all duration-150 rounded-sm',
+                    cur.operation === op.value
                       ? 'bg-lx-ink text-white'
-                      : 'text-lx-stone border border-lx-line hover:border-lx-ink hover:text-lx-ink bg-white'
-                  }`}
+                      : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/70',
+                  ].join(' ')}
                 >
-                  {opt.label}
+                  {op.label}
                 </button>
               ))}
             </div>
 
-            <div className="w-px h-5 bg-lx-line shrink-0" />
+            <div className="w-px h-5 bg-lx-line/70 mx-1.5 shrink-0" />
 
             {/* Tipo */}
-            <div ref={typeRef} className="relative">
-              <FilterButton
-                label={current.type ? (TYPE_LABEL[current.type] ?? 'Tipo') : 'Tipo de propiedad'}
-                active={!!current.type}
-                open={openPopover === 'type'}
-                onClick={() => togglePopover('type')}
+            <div ref={typeRef} className="relative shrink-0">
+              <PillButton
+                label={cur.type ? (TYPE_LABEL[cur.type] ?? 'Tipo') : 'Tipo'}
+                active={!!cur.type} open={openPop === 'type'}
+                onClick={() => toggle('type')}
               />
-              <Popover open={openPopover === 'type'} anchorRef={typeRef} onClose={() => setOpenPopover(null)}>
-                <div className="py-2">
-                  <p className="px-4 pb-2 pt-1 text-[9.5px] font-bold tracking-[0.18em] uppercase text-lx-stone/60">
-                    Tipo de propiedad
-                  </p>
-                  {PROPERTY_TYPES.map((t) => (
-                    <PopoverCheckItem
-                      key={t.value}
-                      label={t.label}
-                      checked={current.type === t.value}
-                      onToggle={() => {
-                        updateParams({ type: current.type === t.value ? '' : t.value })
-                        setOpenPopover(null)
-                      }}
+              <Popover open={openPop === 'type'} anchorRef={typeRef} onClose={() => setOpenPop(null)} width="min-w-[196px]">
+                <PopLabel>Tipo de propiedad</PopLabel>
+                <div className="py-1">
+                  {TYPES.map((t) => (
+                    <CheckItem key={t.value} label={t.label} checked={cur.type === t.value}
+                      onToggle={() => { push({ type: cur.type === t.value ? '' : t.value }); setOpenPop(null) }}
                     />
                   ))}
-                  {current.type && (
-                    <div className="px-4 pt-3 pb-2 border-t border-lx-line mt-1">
-                      <button
-                        type="button"
-                        onClick={() => { updateParams({ type: '' }); setOpenPopover(null) }}
-                        className="text-[10px] text-lx-stone hover:text-lx-ink underline transition-colors"
-                      >
-                        Limpiar
-                      </button>
-                    </div>
-                  )}
                 </div>
               </Popover>
             </div>
 
             {/* Barrio */}
-            <div className="w-48 lg:w-56">
+            <div className="w-44 lg:w-52 shrink-0">
               <LocationAutocomplete
-                value={current.location}
-                displayName={current.locationName}
-                onChange={(id, name) => {
-                  updateParams({ location: id, location_name: name })
-                  setOpenPopover(null)
-                }}
-                placeholder="Barrio..."
-                theme="light"
+                value={cur.location} displayName={cur.locationName}
+                onChange={(id, name) => { push({ location: id, location_name: name }); setOpenPop(null) }}
+                placeholder="Barrio o zona..." theme="light"
               />
             </div>
 
             {/* Ambientes */}
-            <div ref={roomsRef} className="relative">
-              <FilterButton
-                label={current.minRooms ? `${current.minRooms}+ amb.` : 'Ambientes'}
-                active={!!current.minRooms}
-                open={openPopover === 'rooms'}
-                onClick={() => togglePopover('rooms')}
+            <div ref={roomsRef} className="relative shrink-0">
+              <PillButton
+                label={cur.minRooms ? `${cur.minRooms}+ amb.` : 'Ambientes'}
+                active={!!cur.minRooms} open={openPop === 'rooms'}
+                onClick={() => toggle('rooms')}
               />
-              <Popover open={openPopover === 'rooms'} anchorRef={roomsRef} onClose={() => setOpenPopover(null)}>
-                <div className="py-2">
-                  <p className="px-4 pb-2 pt-1 text-[9.5px] font-bold tracking-[0.18em] uppercase text-lx-stone/60">
-                    Mínimo de ambientes
-                  </p>
-                  <PopoverRadioItem
-                    label="Sin filtro"
-                    selected={!current.minRooms}
-                    onSelect={() => { updateParams({ minRooms: '' }); setOpenPopover(null) }}
-                  />
-                  {ROOMS_OPTIONS.map((r) => (
-                    <PopoverRadioItem
-                      key={r.value}
-                      label={r.label}
-                      selected={current.minRooms === r.value}
-                      onSelect={() => { updateParams({ minRooms: r.value }); setOpenPopover(null) }}
-                    />
+              <Popover open={openPop === 'rooms'} anchorRef={roomsRef} onClose={() => setOpenPop(null)} width="w-52">
+                <PopLabel>Mínimo de ambientes</PopLabel>
+                <div className="px-3 py-3 grid grid-cols-4 gap-1.5">
+                  {ROOMS.map((r) => (
+                    <button key={r.value} type="button"
+                      onClick={() => { push({ minRooms: cur.minRooms === r.value ? '' : r.value }); setOpenPop(null) }}
+                      className={[
+                        'py-2.5 text-[12px] font-bold border transition-colors duration-100 rounded-sm',
+                        cur.minRooms === r.value
+                          ? 'bg-lx-ink text-white border-lx-ink'
+                          : 'border-lx-line text-lx-stone hover:border-lx-ink/40 hover:text-lx-ink',
+                      ].join(' ')}
+                    >
+                      {r.label}
+                    </button>
                   ))}
                 </div>
+                {cur.minRooms && (
+                  <div className="border-t border-lx-line/40 px-4 py-2.5">
+                    <button type="button" onClick={() => { push({ minRooms: '' }); setOpenPop(null) }}
+                      className="text-[10px] text-lx-stone/60 hover:text-lx-ink underline underline-offset-2 transition-colors"
+                    >
+                      Limpiar
+                    </button>
+                  </div>
+                )}
               </Popover>
             </div>
 
             {/* Precio */}
-            <div ref={priceRef} className="relative">
-              <FilterButton
-                label={hasPriceFilter ? priceLabel : 'Precio'}
-                active={hasPriceFilter}
-                open={openPopover === 'price'}
-                onClick={() => togglePopover('price')}
+            <div ref={priceRef} className="relative shrink-0">
+              <PillButton
+                label={hasPrice ? priceLabel : 'Precio'}
+                active={hasPrice} open={openPop === 'price'}
+                onClick={() => toggle('price')}
               />
-              <Popover open={openPopover === 'price'} anchorRef={priceRef} onClose={() => setOpenPopover(null)}>
-                <div className="p-4 w-64">
-                  <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-lx-stone/60 mb-3">
-                    Rango de precio
-                  </p>
-                  {/* Moneda */}
+              <Popover open={openPop === 'price'} anchorRef={priceRef} onClose={() => setOpenPop(null)} width="w-72">
+                <div className="p-5">
+                  <p className="text-[9px] font-bold tracking-[0.20em] uppercase text-lx-stone/50 mb-3">Rango de precio</p>
                   <div className="flex gap-2 mb-4">
-                    {['USD', 'ARS'].map((cur) => (
-                      <button
-                        key={cur}
-                        type="button"
-                        onClick={() => setDraftCur(cur)}
-                        className={`flex-1 py-2 text-[10.5px] font-bold tracking-[0.12em] uppercase border transition-colors ${
-                          draftCur === cur
-                            ? 'bg-lx-ink text-white border-lx-ink'
-                            : 'border-lx-line text-lx-stone hover:border-lx-stone hover:text-lx-ink'
-                        }`}
+                    {['USD', 'ARS'].map((c) => (
+                      <button key={c} type="button" onClick={() => setDCur(c)}
+                        className={[
+                          'flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.10em] uppercase border transition-colors rounded-sm',
+                          dCur === c ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-stone',
+                        ].join(' ')}
                       >
-                        {cur}
+                        {c}
                       </button>
                     ))}
                   </div>
-                  {/* Rangos */}
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex gap-2 mb-5">
                     <div className="flex-1">
                       <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Desde</p>
-                      <input
-                        type="number"
-                        placeholder="Sin mínimo"
-                        value={draftMin}
-                        onChange={(e) => setDraftMin(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            updateParams({ minPrice: draftMin, maxPrice: draftMax, currency: draftCur })
-                            setOpenPopover(null)
-                          }
-                        }}
-                        className="w-full border border-lx-line px-3 py-2 text-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/40"
+                      <input type="number" placeholder="Sin mínimo" value={dMin}
+                        onChange={(e) => setDMin(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && applyPrice()}
+                        className="w-full border border-lx-line px-3 py-2 text-[13px] rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
                       />
                     </div>
                     <div className="flex-1">
                       <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Hasta</p>
-                      <input
-                        type="number"
-                        placeholder="Sin máximo"
-                        value={draftMax}
-                        onChange={(e) => setDraftMax(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            updateParams({ minPrice: draftMin, maxPrice: draftMax, currency: draftCur })
-                            setOpenPopover(null)
-                          }
-                        }}
-                        className="w-full border border-lx-line px-3 py-2 text-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/40"
+                      <input type="number" placeholder="Sin máximo" value={dMax}
+                        onChange={(e) => setDMax(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && applyPrice()}
+                        className="w-full border border-lx-line px-3 py-2 text-[13px] rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
                       />
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDraftMin(''); setDraftMax(''); setDraftCur('USD')
-                        updateParams({ minPrice: '', maxPrice: '', currency: '' })
-                        setOpenPopover(null)
-                      }}
-                      className="flex-1 py-2 text-[10.5px] font-bold tracking-[0.10em] uppercase border border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink transition-colors"
+                    <button type="button"
+                      onClick={() => { setDMin(''); setDMax(''); setDCur('USD'); push({ minPrice: '', maxPrice: '', currency: '' }); setOpenPop(null) }}
+                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase border border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink transition-colors rounded-sm"
                     >
                       Limpiar
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateParams({ minPrice: draftMin, maxPrice: draftMax, currency: draftCur })
-                        setOpenPopover(null)
-                      }}
-                      className="flex-1 py-2 text-[10.5px] font-bold tracking-[0.10em] uppercase bg-lx-ink text-white hover:bg-lx-accent transition-colors"
+                    <button type="button" onClick={applyPrice}
+                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase bg-lx-ink text-white hover:bg-lx-accent transition-colors rounded-sm"
                     >
                       Aplicar
                     </button>
@@ -511,60 +467,58 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
               </Popover>
             </div>
 
-            <div className="w-px h-5 bg-lx-line shrink-0" />
+            <div className="w-px h-5 bg-lx-line/70 mx-1.5 shrink-0" />
 
             {/* Ordenar */}
-            <div ref={orderRef} className="relative">
-              <FilterButton
+            <div ref={orderRef} className="relative shrink-0">
+              <PillButton
                 label={orderLabel}
-                open={openPopover === 'order'}
-                onClick={() => togglePopover('order')}
+                open={openPop === 'order'}
+                onClick={() => toggle('order')}
               />
-              <Popover open={openPopover === 'order'} anchorRef={orderRef} onClose={() => setOpenPopover(null)} align="right">
-                <div className="py-2 min-w-[200px]">
-                  <p className="px-4 pb-2 pt-1 text-[9.5px] font-bold tracking-[0.18em] uppercase text-lx-stone/60">
-                    Ordenar por
-                  </p>
-                  {ORDER_OPTIONS.map((o) => (
-                    <PopoverRadioItem
-                      key={o.value}
-                      label={o.label}
-                      selected={current.orderBy === o.value}
-                      onSelect={() => { updateParams({ orderBy: o.value }); setOpenPopover(null) }}
+              <Popover open={openPop === 'order'} anchorRef={orderRef} onClose={() => setOpenPop(null)} align="right" width="w-56">
+                <PopLabel>Ordenar por</PopLabel>
+                <div className="py-1">
+                  {ORDERS.map((o) => (
+                    <RadioItem key={o.value} label={o.label} selected={cur.orderBy === o.value}
+                      onSelect={() => { push({ orderBy: o.value }); setOpenPop(null) }}
                     />
                   ))}
                 </div>
               </Popover>
             </div>
 
-            <div className="flex-1" />
+            <div className="flex-1 min-w-0" />
 
-            {/* Estado */}
-            {isPending && (
-              <span className="text-[9.5px] font-medium tracking-[0.12em] uppercase text-lx-accent animate-pulse shrink-0">
-                Buscando…
-              </span>
-            )}
-
-            {/* Contador */}
-            {totalCount !== undefined && (
-              <span className={`text-[10.5px] text-lx-stone shrink-0 tabular-nums transition-opacity ${isPending ? 'opacity-30' : ''}`}>
-                {totalCount} {totalCount === 1 ? 'propiedad' : 'propiedades'}
-              </span>
-            )}
-
-            {activeCount > 0 && (
-              <>
-                <div className="w-px h-4 bg-lx-line shrink-0" />
-                <button
-                  type="button"
-                  onClick={clearAll}
-                  className="text-[10px] font-medium text-lx-stone/70 hover:text-lx-ink underline underline-offset-2 transition-colors shrink-0 whitespace-nowrap"
+            <AnimatePresence>
+              {isPending && (
+                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="text-[9px] font-bold tracking-[0.18em] uppercase text-lx-accent shrink-0"
                 >
-                  Limpiar filtros
-                </button>
-              </>
+                  Buscando…
+                </motion.span>
+              )}
+            </AnimatePresence>
+
+            {totalCount !== undefined && (
+              <span className={`text-[11px] font-medium text-lx-stone shrink-0 tabular-nums transition-opacity ${isPending ? 'opacity-30' : ''}`}>
+                <span className="font-bold text-lx-ink">{totalCount.toLocaleString('es-AR')}</span>{' '}
+                {totalCount === 1 ? 'propiedad' : 'propiedades'}
+              </span>
             )}
+
+            <AnimatePresence>
+              {n > 0 && (
+                <motion.button
+                  initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 6 }}
+                  type="button" onClick={clearAll}
+                  className="h-9 px-3 text-[10px] font-medium text-lx-stone/70 hover:text-lx-ink underline underline-offset-2 transition-colors shrink-0 whitespace-nowrap"
+                >
+                  Limpiar
+                </motion.button>
+              )}
+            </AnimatePresence>
+
           </div>
         </div>
       </div>
@@ -572,284 +526,234 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
       {/* ================================================================
           MOBILE BAR (< md)
           ================================================================ */}
-      <div className="md:hidden bg-white border-b border-lx-line sticky top-0 z-30 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-        <div className="px-4 py-2.5 flex items-center gap-2">
-          <div className="flex gap-1 flex-1 min-w-0 overflow-x-auto">
-            {OPERATION_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => updateParams({ operation: opt.value })}
-                className={`shrink-0 px-2.5 py-1.5 text-[9.5px] font-bold tracking-[0.12em] uppercase transition-colors ${
-                  current.operation === opt.value
-                    ? 'bg-lx-ink text-white'
-                    : 'text-lx-stone border border-lx-line bg-white'
-                }`}
+      <div className="md:hidden bg-white/95 backdrop-blur-sm border-b border-lx-line sticky top-0 z-30 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+        <div className="flex items-center gap-2 px-4 h-12">
+          <div className="flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-none">
+            {OPS.map((op) => (
+              <button key={op.value} type="button"
+                onClick={() => push({ operation: op.value })}
+                className={[
+                  'shrink-0 h-8 px-3 text-[9.5px] font-bold tracking-[0.12em] uppercase transition-colors rounded-sm',
+                  cur.operation === op.value ? 'bg-lx-ink text-white' : 'text-lx-stone',
+                ].join(' ')}
               >
-                {opt.label}
+                {op.label}
               </button>
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(true)}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 border border-lx-line text-lx-stone hover:text-lx-ink hover:border-lx-ink transition-colors bg-white"
+          <button type="button" onClick={() => setDrawerOpen(true)}
+            className="shrink-0 flex items-center gap-1.5 h-8 px-3 border border-lx-line/80 text-lx-stone hover:text-lx-ink hover:border-lx-ink/40 transition-colors bg-white rounded-sm"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
             </svg>
-            <span className="text-[9.5px] font-bold tracking-[0.12em] uppercase">
+            <span className="text-[9.5px] font-bold tracking-[0.10em] uppercase">
               Filtros
-              {activeCount > 0 && (
-                <span className="ml-1 inline-flex items-center justify-center min-w-[14px] h-3.5 bg-lx-accent text-white text-[8px] font-bold px-0.5">
-                  {activeCount}
+              {n > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center w-4 h-4 bg-lx-accent text-white text-[8px] font-bold rounded-full">
+                  {n}
                 </span>
               )}
             </span>
           </button>
 
           {totalCount !== undefined && (
-            <span className={`shrink-0 text-[9.5px] text-lx-stone tabular-nums ${isPending ? 'opacity-30' : ''}`}>
-              {isPending ? '...' : totalCount}
+            <span className={`shrink-0 text-[9px] text-lx-stone tabular-nums transition-opacity ${isPending ? 'opacity-30' : ''}`}>
+              {isPending ? '…' : totalCount.toLocaleString('es-AR')}
             </span>
           )}
         </div>
 
-        {/* Badges filtros activos */}
-        {activeCount > 0 && (
-          <div className="px-4 pb-2.5 flex items-center gap-1.5 flex-wrap">
-            {current.operation && (
-              <ActiveBadge label={OP_LABEL[current.operation]} onRemove={() => updateParams({ operation: '' })} />
-            )}
-            {current.type && (
-              <ActiveBadge label={TYPE_LABEL[current.type] ?? current.type} onRemove={() => updateParams({ type: '' })} />
-            )}
-            {current.locationName && (
-              <ActiveBadge label={current.locationName} onRemove={() => updateParams({ location: '', location_name: '' })} />
-            )}
-            {current.minRooms && (
-              <ActiveBadge label={`${current.minRooms}+ amb.`} onRemove={() => updateParams({ minRooms: '' })} />
-            )}
-            {hasPriceFilter && (
-              <ActiveBadge label={priceLabel} onRemove={() => updateParams({ minPrice: '', maxPrice: '', currency: '' })} />
-            )}
-            <button type="button" onClick={clearAll} className="text-[9.5px] text-lx-stone/60 hover:text-lx-ink underline transition-colors">
-              Limpiar
-            </button>
-          </div>
-        )}
+        <AnimatePresence>
+          {n > 0 && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2.5">
+                <AnimatePresence>
+                  {cur.operation && <Badge label={OP_LABEL[cur.operation]} onRemove={() => push({ operation: '' })} />}
+                  {cur.type && <Badge label={TYPE_LABEL[cur.type] ?? cur.type} onRemove={() => push({ type: '' })} />}
+                  {cur.locationName && <Badge label={cur.locationName} onRemove={() => push({ location: '', location_name: '' })} />}
+                  {cur.minRooms && <Badge label={`${cur.minRooms}+ amb.`} onRemove={() => push({ minRooms: '' })} />}
+                  {hasPrice && <Badge label={priceLabel} onRemove={() => push({ minPrice: '', maxPrice: '', currency: '' })} />}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ================================================================
           MOBILE DRAWER
           ================================================================ */}
-      <div
-        className={`md:hidden fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
-          drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-
-      <div
-        className={`md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white flex flex-col max-h-[90svh] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          drawerOpen ? 'translate-y-0' : 'translate-y-full'
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Filtros de búsqueda"
-      >
-        <div className="flex justify-center pt-3 pb-1 shrink-0">
-          <div className="w-10 h-1 bg-lx-line rounded-full" />
-        </div>
-
-        <div className="flex items-center justify-between px-5 py-3 border-b border-lx-line shrink-0">
-          <h2 className="text-[12px] font-bold tracking-[0.10em] uppercase text-lx-ink">
-            Filtros
-            {activeCount > 0 && <span className="ml-1.5 text-lx-accent">({activeCount})</span>}
-          </h2>
-          <button type="button" onClick={() => setDrawerOpen(false)} className="p-1.5 text-lx-stone hover:text-lx-ink transition-colors">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-
-          <DrawerGroup label="Tipo de propiedad">
-            <div className="grid grid-cols-2 gap-1.5">
-              {PROPERTY_TYPES.map((t) => (
-                <button
-                  key={t.value}
-                  type="button"
-                  onClick={() => updateParams({ type: current.type === t.value ? '' : t.value })}
-                  className={`py-2.5 px-3 text-[11.5px] font-medium border text-left transition-colors ${
-                    current.type === t.value
-                      ? 'border-lx-ink bg-lx-ink text-white'
-                      : 'border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          </DrawerGroup>
-
-          <DrawerGroup label="Barrio o zona">
-            <LocationAutocomplete
-              value={current.location}
-              displayName={current.locationName}
-              onChange={(id, name) => updateParams({ location: id, location_name: name })}
-              placeholder="Buscar barrio..."
-              theme="light"
+      <AnimatePresence>
+        {drawerOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
+              onClick={() => setDrawerOpen(false)}
             />
-          </DrawerGroup>
 
-          <DrawerGroup label="Ambientes mínimos">
-            <div className="flex gap-1.5">
-              <button
-                type="button"
-                onClick={() => updateParams({ minRooms: '' })}
-                className={`flex-1 py-2.5 text-[11px] font-bold border transition-colors ${
-                  !current.minRooms ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink'
-                }`}
-              >
-                Todos
-              </button>
-              {ROOMS_OPTIONS.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => updateParams({ minRooms: r.value })}
-                  className={`flex-1 py-2.5 text-[11px] font-bold border transition-colors ${
-                    current.minRooms === r.value
-                      ? 'bg-lx-accent text-white border-lx-accent'
-                      : 'border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink'
-                  }`}
-                >
-                  {r.value}+
-                </button>
-              ))}
-            </div>
-          </DrawerGroup>
-
-          <DrawerGroup label="Precio">
-            <div className="flex gap-2 mb-3">
-              {['USD', 'ARS'].map((cur) => (
-                <button
-                  key={cur}
-                  type="button"
-                  onClick={() => setDraftCur(cur)}
-                  className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.10em] uppercase border transition-colors ${
-                    draftCur === cur
-                      ? 'bg-lx-ink text-white border-lx-ink'
-                      : 'border-lx-line text-lx-stone hover:border-lx-stone'
-                  }`}
-                >
-                  {cur}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Desde</p>
-                <input
-                  type="number"
-                  placeholder="Sin mínimo"
-                  value={draftMin}
-                  onChange={(e) => setDraftMin(e.target.value)}
-                  className="w-full border border-lx-line px-3 py-3 text-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/40"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Hasta</p>
-                <input
-                  type="number"
-                  placeholder="Sin máximo"
-                  value={draftMax}
-                  onChange={(e) => setDraftMax(e.target.value)}
-                  className="w-full border border-lx-line px-3 py-3 text-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/40"
-                />
-              </div>
-            </div>
-          </DrawerGroup>
-
-          <DrawerGroup label="Ordenar por">
-            <div className="space-y-1">
-              {ORDER_OPTIONS.map((o) => (
-                <button
-                  key={o.value}
-                  type="button"
-                  onClick={() => updateParams({ orderBy: o.value })}
-                  className={`w-full text-left py-2.5 px-3 text-[12.5px] border transition-colors ${
-                    current.orderBy === o.value
-                      ? 'border-lx-ink text-lx-ink bg-lx-parchment/60'
-                      : 'border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink'
-                  }`}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </DrawerGroup>
-
-        </div>
-
-        <div className="shrink-0 px-5 py-4 border-t border-lx-line bg-white">
-          <div className="flex items-center gap-3">
-            {activeCount > 0 && (
-              <button type="button" onClick={clearAll} className="text-[11px] text-lx-stone hover:text-lx-ink underline transition-colors whitespace-nowrap">
-                Limpiar
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                if (draftMin !== current.minPrice || draftMax !== current.maxPrice || draftCur !== current.currency) {
-                  updateParams({ minPrice: draftMin, maxPrice: draftMax, currency: draftCur })
-                }
-                setDrawerOpen(false)
-              }}
-              className="flex-1 bg-lx-ink text-white text-[11px] font-bold tracking-[0.16em] uppercase py-4 hover:bg-lx-accent transition-colors duration-200"
+            <motion.div
+              {...drawerAnim}
+              className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white flex flex-col max-h-[92svh] rounded-t-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.15)]"
+              role="dialog" aria-modal="true" aria-label="Filtros"
             >
-              {totalCount !== undefined && !isPending
-                ? `Ver ${totalCount} ${totalCount === 1 ? 'propiedad' : 'propiedades'}`
-                : 'Ver resultados'}
-            </button>
-          </div>
-        </div>
-      </div>
+              <div className="flex justify-center pt-3 pb-1 shrink-0">
+                <div className="w-10 h-1 rounded-full bg-lx-line" />
+              </div>
+
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-lx-line shrink-0">
+                <h2 className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-ink">
+                  Filtros
+                  {n > 0 && (
+                    <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-lx-accent text-white text-[9px] font-bold rounded-full">
+                      {n}
+                    </span>
+                  )}
+                </h2>
+                <button type="button" onClick={() => setDrawerOpen(false)}
+                  className="w-8 h-8 flex items-center justify-center text-lx-stone hover:text-lx-ink transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-5 py-6 space-y-7">
+
+                <div>
+                  <DrawerLabel>Tipo de propiedad</DrawerLabel>
+                  <div className="grid grid-cols-2 gap-2">
+                    {TYPES.map((t) => (
+                      <button key={t.value} type="button"
+                        onClick={() => push({ type: cur.type === t.value ? '' : t.value })}
+                        className={[
+                          'py-3 px-3 text-[12px] font-medium border text-left transition-colors rounded-sm',
+                          cur.type === t.value ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-ink/40 hover:text-lx-ink',
+                        ].join(' ')}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <DrawerLabel>Barrio o zona</DrawerLabel>
+                  <LocationAutocomplete
+                    value={cur.location} displayName={cur.locationName}
+                    onChange={(id, name) => push({ location: id, location_name: name })}
+                    placeholder="Buscar barrio..." theme="light"
+                  />
+                </div>
+
+                <div>
+                  <DrawerLabel>Ambientes mínimos</DrawerLabel>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => push({ minRooms: '' })}
+                      className={`flex-1 py-3 text-[11px] font-bold border transition-colors rounded-sm ${
+                        !cur.minRooms ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-ink/40'
+                      }`}
+                    >
+                      Todos
+                    </button>
+                    {ROOMS.map((r) => (
+                      <button key={r.value} type="button" onClick={() => push({ minRooms: r.value })}
+                        className={[
+                          'flex-1 py-3 text-[11px] font-bold border transition-colors rounded-sm',
+                          cur.minRooms === r.value ? 'bg-lx-accent text-white border-lx-accent' : 'border-lx-line text-lx-stone hover:border-lx-ink/40',
+                        ].join(' ')}
+                      >
+                        {r.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <DrawerLabel>Precio</DrawerLabel>
+                  <div className="flex gap-2 mb-3">
+                    {['USD', 'ARS'].map((c) => (
+                      <button key={c} type="button" onClick={() => setDCur(c)}
+                        className={[
+                          'flex-1 py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase border transition-colors rounded-sm',
+                          dCur === c ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone',
+                        ].join(' ')}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Desde</p>
+                      <input type="number" placeholder="Sin mínimo" value={dMin}
+                        onChange={(e) => setDMin(e.target.value)}
+                        className="w-full border border-lx-line px-3 py-3 text-sm rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Hasta</p>
+                      <input type="number" placeholder="Sin máximo" value={dMax}
+                        onChange={(e) => setDMax(e.target.value)}
+                        className="w-full border border-lx-line px-3 py-3 text-sm rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <DrawerLabel>Ordenar por</DrawerLabel>
+                  <div className="space-y-1.5">
+                    {ORDERS.map((o) => (
+                      <button key={o.value} type="button" onClick={() => push({ orderBy: o.value })}
+                        className={[
+                          'w-full text-left py-3 px-4 text-[12.5px] border transition-colors rounded-sm',
+                          cur.orderBy === o.value ? 'border-lx-ink text-lx-ink bg-lx-parchment/50' : 'border-lx-line text-lx-stone hover:border-lx-ink/40',
+                        ].join(' ')}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="shrink-0 px-5 py-4 border-t border-lx-line bg-white">
+                <div className="flex items-center gap-3">
+                  {n > 0 && (
+                    <button type="button" onClick={clearAll}
+                      className="text-[10.5px] text-lx-stone hover:text-lx-ink underline underline-offset-2 transition-colors whitespace-nowrap"
+                    >
+                      Limpiar filtros
+                    </button>
+                  )}
+                  <button type="button"
+                    onClick={() => {
+                      if (dMin !== cur.minPrice || dMax !== cur.maxPrice || dCur !== cur.currency) {
+                        push({ minPrice: dMin, maxPrice: dMax, currency: dCur })
+                      }
+                      setDrawerOpen(false)
+                    }}
+                    className="flex-1 bg-lx-ink text-white text-[11px] font-bold tracking-[0.14em] uppercase py-4 rounded-sm hover:bg-lx-accent transition-colors duration-200"
+                  >
+                    {totalCount !== undefined && !isPending
+                      ? `Ver ${totalCount.toLocaleString('es-AR')} ${totalCount === 1 ? 'propiedad' : 'propiedades'}`
+                      : 'Ver resultados'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
-  )
-}
-
-// ─── Auxiliares ───────────────────────────────────────────────────────────────
-
-function DrawerGroup({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-lx-stone mb-2.5">{label}</p>
-      {children}
-    </div>
-  )
-}
-
-function ActiveBadge({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-lx-parchment border border-lx-line text-[9.5px] font-medium text-lx-ink rounded-sm">
-      {label}
-      <button
-        type="button"
-        onClick={onRemove}
-        className="text-lx-stone hover:text-lx-ink transition-colors ml-0.5"
-        aria-label={`Quitar filtro ${label}`}
-      >
-        <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </span>
   )
 }
