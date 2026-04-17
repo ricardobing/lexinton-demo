@@ -59,7 +59,7 @@ export function LeadForm({
 
   const dark = theme === 'dark'
   const input = dark
-    ? 'bg-white/10 border-white/25 text-white placeholder-white/50 focus:border-white/60 focus:bg-white/15'
+    ? 'bg-white/10 border-white/20 text-white placeholder-white/40 focus:border-white/50 [&>option]:bg-gray-900 [&>option]:text-white'
     : 'bg-white border-lx-line text-lx-ink placeholder-lx-stone/60 focus:border-lx-stone'
   const label = dark
     ? 'text-white/40'

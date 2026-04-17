@@ -1,46 +1,31 @@
 /**
  * /emprendimientos — Proyectos inmobiliarios seleccionados por Lexinton
- * URL idéntica a la del sitio actual para preservar indexación.
+ * Framer Motion + PageHero + premium visuals
  */
 
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getDevelopments } from '@/lib/tokko/queries'
-import { getCoverPhoto } from '@/lib/tokko/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { LeadForm } from '@/components/LeadForm'
-import { PageHero } from '@/components/PageHero'
+import PageHero from '@/components/PageHero'
+import AnimatedSection, { AnimatedItem } from '@/components/AnimatedSection'
 
 export const metadata: Metadata = {
   title: 'Emprendimientos Inmobiliarios en Palermo | Lexinton Propiedades',
-  description: 'Invertí en los mejores emprendimientos inmobiliarios de Palermo y zona norte. Unidades en pozo, desarrollos premium y oportunidades de inversión en CABA y GBA.',
+  description: 'Invertí en los mejores emprendimientos inmobiliarios de Palermo y zona norte.',
   alternates: { canonical: 'https://lexinton.com.ar/emprendimientos' },
 }
 
 const diferenciadores = [
-  {
-    titulo: 'Menor precio de entrada',
-    descripcion: 'Comprar en pozo o en construcción siempre es más económico que a estrenar. Accedés al precio más bajo del ciclo del proyecto.',
-    icono: '◈',
-  },
-  {
-    titulo: 'Valorización durante la construcción',
-    descripcion: 'A medida que avanza la obra, el valor de la unidad sube. Es habitual ver incrementos del 20–40% entre pozo y escritura.',
-    icono: '◈',
-  },
-  {
-    titulo: 'Asesoramiento en cada etapa',
-    descripcion: 'Desde la selección del proyecto hasta la escritura final, te acompañamos con criterio y sin presiones. Solo recomendamos lo que recomendaríamos para nosotros mismos.',
-    icono: '◈',
-  },
+  { titulo: 'Menor precio de entrada', descripcion: 'Comprar en pozo o en construcción siempre es más económico que a estrenar. Accedés al precio más bajo del ciclo del proyecto.', icono: '◈' },
+  { titulo: 'Valorización durante la construcción', descripcion: 'A medida que avanza la obra, el valor de la unidad sube. Es habitual ver incrementos del 20–40% entre pozo y escritura.', icono: '◈' },
+  { titulo: 'Asesoramiento en cada etapa', descripcion: 'Desde la selección del proyecto hasta la escritura final, te acompañamos con criterio y sin presiones.', icono: '◈' },
 ]
 
 async function DevelopmentsGrid() {
   const allDevs = await getDevelopments()
-
-  // Filtramos entradas promocionales que el cliente carga en Tokko
-  // (ej: "TASACIONES VIRTUALES" con QR, que no son emprendimientos reales)
   const devs = allDevs.filter((d) => {
     const name = (d.name ?? '').toLowerCase()
     const addr = (d.address ?? '').toLowerCase()
@@ -50,26 +35,21 @@ async function DevelopmentsGrid() {
   if (!devs.length) {
     return (
       <div className="py-20 text-center">
-        <p className="text-lx-stone text-lg mb-6">
-          Los emprendimientos disponibles se actualizan constantemente.
-        </p>
-        <p className="text-lx-stone/70 text-sm">
-          Consultanos para conocer los proyectos actuales.
-        </p>
+        <p className="text-lx-stone text-lg mb-6">Los emprendimientos disponibles se actualizan constantemente.</p>
+        <p className="text-lx-stone/70 text-sm">Consultanos para conocer los proyectos actuales.</p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-lx-line border border-lx-line">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {devs.map((dev) => {
         const photos = Array.isArray(dev.photos) ? dev.photos : []
         const coverPhoto = photos[0]?.image ?? null
         const location = dev.location?.name ?? ''
 
         return (
-          <article key={dev.id} className="bg-white group">
-            {/* Imagen */}
+          <article key={dev.id} className="bg-white rounded-xl border border-lx-line overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group">
             <div className="relative aspect-[4/3] overflow-hidden bg-lx-parchment">
               {coverPhoto ? (
                 <Image
@@ -86,28 +66,15 @@ async function DevelopmentsGrid() {
               )}
               {dev.is_starred_on_web && (
                 <div className="absolute top-4 left-4">
-                  <span className="bg-lx-ink text-white text-[9px] font-bold tracking-[0.18em] uppercase px-2.5 py-1">
-                    Destacado
-                  </span>
+                  <span className="bg-lx-ink text-white text-[9px] font-bold tracking-[0.18em] uppercase px-2.5 py-1 rounded-full">Destacado</span>
                 </div>
               )}
             </div>
-
-            {/* Info */}
             <div className="p-6">
-              {location && (
-                <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-lx-accent mb-2">
-                  {location}
-                </p>
-              )}
+              {location && <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-lx-accent mb-2">{location}</p>}
               <h3 className="font-serif text-xl text-lx-ink mb-2 leading-tight">{dev.name}</h3>
-              {dev.address && (
-                <p className="text-sm text-lx-stone mb-4">{dev.address}</p>
-              )}
-              <a
-                href={`/contacto?consulta=emprendimiento-${dev.id}`}
-                className="inline-block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-accent border-b border-lx-accent/40 hover:border-lx-accent transition-colors pb-0.5"
-              >
+              {dev.address && <p className="text-sm text-lx-stone mb-4">{dev.address}</p>}
+              <a href={`/contacto?consulta=emprendimiento-${dev.id}`} className="inline-block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-accent border-b border-lx-accent/40 hover:border-lx-accent transition-colors pb-0.5">
                 Consultar →
               </a>
             </div>
@@ -120,9 +87,9 @@ async function DevelopmentsGrid() {
 
 function DevelopmentsSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-lx-line border border-lx-line">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="bg-white">
+        <div key={i} className="bg-white rounded-xl border border-lx-line overflow-hidden">
           <div className="aspect-[4/3] bg-lx-parchment animate-pulse" />
           <div className="p-6 space-y-3">
             <div className="h-3 w-24 bg-lx-line rounded animate-pulse" />
@@ -137,77 +104,69 @@ function DevelopmentsSkeleton() {
 export default function EmprendimientosPage() {
   return (
     <main className="min-h-screen">
-
       <PageHero
-        eyebrow="Lexinton Propiedades · Emprendimientos"
-        title={<>Emprendimientos con<br /><em>visión de futuro</em></>}
-        subtitle="Accedé a proyectos seleccionados en las zonas de mayor valorización de Buenos Aires. Asesoramiento experto desde la preventa hasta la escritura."
+        label="Lexinton Propiedades · Emprendimientos"
+        title="Emprendimientos con visión"
+        titleEmphasis="de futuro"
+        description="Accedé a proyectos seleccionados en las zonas de mayor valorización de Buenos Aires. Asesoramiento experto desde la preventa hasta la escritura."
       />
 
       {/* ── DIFERENCIADORES ──────────────────────────── */}
-      <section className="bg-lx-parchment border-b border-lx-line">
+      <AnimatedSection className="bg-lx-parchment border-b border-lx-line" stagger>
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-lx-line border border-lx-line">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {diferenciadores.map((d) => (
-              <div key={d.titulo} className="bg-lx-parchment px-8 py-10">
-                <p className="text-lx-accent text-lg mb-4 font-serif">{d.icono}</p>
-                <h3 className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-ink mb-3">
-                  {d.titulo}
-                </h3>
-                <p className="text-sm text-lx-stone leading-relaxed">{d.descripcion}</p>
-              </div>
+              <AnimatedItem key={d.titulo}>
+                <div className="bg-white border border-lx-line rounded-xl p-8 h-full shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <p className="text-lx-accent text-lg mb-4 font-serif">{d.icono}</p>
+                  <h3 className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-ink mb-3">{d.titulo}</h3>
+                  <p className="text-sm text-lx-stone leading-relaxed">{d.descripcion}</p>
+                </div>
+              </AnimatedItem>
             ))}
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* ── GRID DE EMPRENDIMIENTOS ───────────────────── */}
-      <section className="bg-white py-16 sm:py-20">
+      <AnimatedSection className="bg-white py-16 sm:py-20" stagger>
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">
-                Proyectos Activos
-              </p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink">
-                Proyectos disponibles
-              </h2>
+          <AnimatedItem>
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">Proyectos Activos</p>
+                <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink">Proyectos disponibles</h2>
+              </div>
+              <Link href="/propiedades" className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors">
+                Ver todas las propiedades →
+              </Link>
             </div>
-            <Link
-              href="/propiedades"
-              className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors"
-            >
-              Ver todas las propiedades →
-            </Link>
-          </div>
+          </AnimatedItem>
           <Suspense fallback={<DevelopmentsSkeleton />}>
             <DevelopmentsGrid />
           </Suspense>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <section className="bg-lx-ink py-20 sm:py-28">
+      <AnimatedSection className="bg-lx-ink py-20 sm:py-28" stagger>
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-            <div>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-white/40 mb-5">
-                Inversión · Emprendimientos
-              </p>
+            <AnimatedItem>
+              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-white/40 mb-5">Inversión · Emprendimientos</p>
               <h2 className="font-serif text-3xl sm:text-4xl font-normal text-white leading-[1.1] mb-6">
-                ¿Querés invertir<br />
-                <em className="italic text-white/50">en un emprendimiento?</em>
+                ¿Querés invertir<br /><em className="italic text-white/50">en un emprendimiento?</em>
               </h2>
               <p className="text-[15px] text-white/55 leading-[1.85]">
-                Contanos tu situación y te asesoramos sobre los proyectos que mejor se
-                adaptan a tu presupuesto y objetivos de inversión.
+                Contanos tu situación y te asesoramos sobre los proyectos que mejor se adaptan a tu presupuesto y objetivos de inversión.
               </p>
-            </div>
-            <LeadForm tipo="Emprendimientos" showPresupuesto theme="dark" />
+            </AnimatedItem>
+            <AnimatedItem>
+              <LeadForm tipo="Emprendimientos" showPresupuesto theme="dark" />
+            </AnimatedItem>
           </div>
         </div>
-      </section>
-
+      </AnimatedSection>
     </main>
   )
 }

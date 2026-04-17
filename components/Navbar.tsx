@@ -25,6 +25,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  // On interior pages, always show solid navbar
   const dark = !isHome || scrolled || menuOpen
 
   return (

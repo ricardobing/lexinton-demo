@@ -1,94 +1,53 @@
-/**
- * PageHero — Hero reutilizable para páginas institucionales
- *
- * Uso:
- * <PageHero
- *   eyebrow="Lexinton · Tasaciones"
- *   title={<>Sabé cuánto vale<br /><em>tu propiedad hoy</em></>}
- *   subtitle="Tasación gratuita por un broker especialista en tu zona."
- * />
- */
-
 'use client'
 
 import { motion } from 'framer-motion'
+import { fadeInUp, viewportOnce } from '@/lib/animations'
 
 interface PageHeroProps {
-  eyebrow?: string
-  title: React.ReactNode
-  subtitle?: string
-  /** 'dark' (fondo oscuro lx-ink, texto blanco) | 'light' (fondo lx-parchment, texto lx-ink) */
-  theme?: 'dark' | 'light'
-  children?: React.ReactNode
+  label: string
+  title: string
+  /** Optional italic subtitle portion */
+  titleEmphasis?: string
+  description?: string
 }
 
-export function PageHero({
-  eyebrow,
-  title,
-  subtitle,
-  theme = 'dark',
-  children,
-}: PageHeroProps) {
-  const isDark = theme === 'dark'
-
+export default function PageHero({ label, title, titleEmphasis, description }: PageHeroProps) {
   return (
-    <section
-      className={[
-        isDark ? 'bg-lx-ink text-white' : 'bg-lx-parchment text-lx-ink',
-        'pt-[calc(68px+3.5rem)] pb-18 sm:pt-[calc(68px+5.5rem)] sm:pb-24 border-b',
-        isDark ? 'border-white/5' : 'border-lx-line',
-      ].join(' ')}
-    >
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        {eyebrow && (
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={[
-              'text-[10.5px] font-bold tracking-[0.22em] uppercase mb-5',
-              isDark ? 'text-lx-accent/80' : 'text-lx-stone',
-            ].join(' ')}
-          >
-            {eyebrow}
-          </motion.p>
-        )}
-
+    <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 relative overflow-hidden">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-lx-accent/[0.06]" />
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-accent/80 mb-5"
+        >
+          {label}
+        </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-          className={[
-            'font-serif text-[clamp(2rem,5vw,3.8rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl',
-            isDark ? '[&_em]:text-white/40' : '[&_em]:text-lx-stone',
-          ].join(' ')}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          className="font-serif text-[clamp(2.2rem,5vw,4rem)] font-normal leading-[1.1] tracking-[-0.01em] mb-6 max-w-2xl"
         >
           {title}
+          {titleEmphasis && (
+            <>
+              <br />
+              <em className="italic text-white/50">{titleEmphasis}</em>
+            </>
+          )}
         </motion.h1>
-
-        {subtitle && (
+        {description && (
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className={[
-              'text-[16px] leading-[1.85] max-w-xl',
-              isDark ? 'text-white/60' : 'text-lx-stone',
-            ].join(' ')}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="text-[16px] text-white/60 leading-[1.85] max-w-xl"
           >
-            {subtitle}
+            {description}
           </motion.p>
-        )}
-
-        {children && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-8"
-          >
-            {children}
-          </motion.div>
         )}
       </div>
     </section>

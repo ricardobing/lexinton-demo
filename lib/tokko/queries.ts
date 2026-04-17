@@ -73,20 +73,53 @@ export async function getProperties(
     apiParams['current_localization_type'] = 'location'
   }
 
-  // Traer todas para filtrar (la API no filtra bien por operación)
-  // Si hay filtros que reducen mucho, traer más del servidor
-  const fetchLimit = operation || propertyType || minRooms || minPrice ? 100 : limit
-  const fetchOffset = operation || propertyType ? 0 : offset
+  // Traer TODAS las propiedades para filtrar server-side.
+  // Tokko no filtra correctamente por operación, así que hacemos
+  // múltiples fetches de 100 y combinamos.
+  const needsFullFetch = !!(operation || propertyType || minRooms || minPrice || maxPrice)
 
-  const response = await tokkoFetch<TokkoPropertyListResponse>(
-    'property',
-    { limit: fetchLimit, offset: fetchOffset, ...apiParams },
-    revalidate
-  )
+  let allObjects: TokkoProperty[] = []
 
-  let filtered = response.objects
+  if (needsFullFetch) {
+    // Fetch batch 1
+    const r1 = await tokkoFetch<TokkoPropertyListResponse>(
+      'property',
+      { limit: 100, offset: 0, ...apiParams },
+      revalidate
+    )
+    allObjects = r1.objects
+    const totalInApi = r1.meta?.total_count ?? r1.objects.length
+    // Fetch remaining batches if needed
+    if (totalInApi > 100) {
+      const r2 = await tokkoFetch<TokkoPropertyListResponse>(
+        'property',
+        { limit: 100, offset: 100, ...apiParams },
+        revalidate
+      )
+      allObjects = [...allObjects, ...r2.objects]
+    }
+  } else {
+    // No filters — just fetch the page we need, but still get all for total count
+    const r1 = await tokkoFetch<TokkoPropertyListResponse>(
+      'property',
+      { limit: 100, offset: 0, ...apiParams },
+      revalidate
+    )
+    allObjects = r1.objects
+    const totalInApi = r1.meta?.total_count ?? r1.objects.length
+    if (totalInApi > 100) {
+      const r2 = await tokkoFetch<TokkoPropertyListResponse>(
+        'property',
+        { limit: 100, offset: 100, ...apiParams },
+        revalidate
+      )
+      allObjects = [...allObjects, ...r2.objects]
+    }
+  }
 
-  // Filtro por operación (Sale, Rent, Temporary Rent)
+  let filtered = allObjects
+
+  // Filtro por operación (Sale, Rent)
   if (operation) {
     filtered = filtered.filter((p) => {
       const ops = Array.isArray(p.operations) ? p.operations : [p.operations]
@@ -214,12 +247,22 @@ export async function getSimilarProperties(
  * Trae todas las propiedades para pre-renderizar las más visitadas.
  */
 export async function getAllPropertyIds(): Promise<number[]> {
-  const response = await tokkoFetch<TokkoPropertyListResponse>(
+  const r1 = await tokkoFetch<TokkoPropertyListResponse>(
     'property',
-    { limit: 50 },
+    { limit: 100, offset: 0 },
     3600
   )
-  return response.objects.map((p) => p.id)
+  const ids = r1.objects.map((p) => p.id)
+  const total = r1.meta?.total_count ?? r1.objects.length
+  if (total > 100) {
+    const r2 = await tokkoFetch<TokkoPropertyListResponse>(
+      'property',
+      { limit: 100, offset: 100 },
+      3600
+    )
+    ids.push(...r2.objects.map((p) => p.id))
+  }
+  return ids
 }
 
 // ─── Tipos de propiedad ───────────────────────────────────────────────────────
