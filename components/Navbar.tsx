@@ -97,7 +97,7 @@ export default function Navbar() {
         <button
           onClick={() => setMenuOpen((v) => !v)}
           className={cn(
-            'lg:hidden p-2 -mr-1 transition-colors duration-200',
+            'lg:hidden p-3 -mr-2 transition-colors duration-200',
             dark ? 'text-lx-ink' : 'text-white',
           )}
           aria-label="Menú"

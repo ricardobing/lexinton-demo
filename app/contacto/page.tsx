@@ -1,11 +1,12 @@
 /**
  * /contacto — Página de contacto con dos sucursales
- * Framer Motion animations + PageHero + improved visuals
+ * Design system: SectionHeader
  */
 
 import type { Metadata } from 'next'
 import { LeadForm } from '@/components/LeadForm'
 import PageHero from '@/components/PageHero'
+import SectionHeader from '@/components/ui/SectionHeader'
 import AnimatedSection, { AnimatedItem } from '@/components/AnimatedSection'
 
 export const metadata: Metadata = {
@@ -21,16 +22,16 @@ const sucursales = [
     localidad: 'Palermo, CABA',
     telefono: '+54 11 3151-9928',
     email: 'info@lexinton.com.ar',
-    horario: 'Lunes a viernes 9 a 18hs | Sabados 10 a 14hs',
+    horario: 'Lunes a viernes 9 a 18hs | Sábados 10 a 14hs',
     mapSrc: 'https://maps.google.com/maps?q=Migueletes+1183+Palermo+Buenos+Aires&output=embed',
   },
   {
-    nombre: 'Vicente Lopez',
+    nombre: 'Vicente López',
     direccion: 'Madero 351',
-    localidad: 'Vicente Lopez, GBA Norte',
+    localidad: 'Vicente López, GBA Norte',
     telefono: '+54 11 3151-9928',
     email: 'info@lexinton.com.ar',
-    horario: 'Lunes a viernes 9 a 18hs | Sabados 10 a 14hs',
+    horario: 'Lunes a viernes 9 a 18hs | Sábados 10 a 14hs',
     mapSrc: 'https://maps.google.com/maps?q=Madero+351+Vicente+Lopez+Buenos+Aires&output=embed',
   },
 ]
@@ -44,12 +45,12 @@ export default function ContactoPage() {
         description="Dos sucursales en Buenos Aires. Un equipo disponible para responder todas tus consultas sobre propiedades en venta, alquiler y tasaciones."
       />
 
-      <AnimatedSection className="bg-lx-cream py-16 sm:py-20 border-b border-lx-line" stagger>
+      {/* ── CONTACTO + FORMULARIO ────────────────────── */}
+      <section className="bg-lx-cream py-20 sm:py-24 border-b border-lx-line">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-            <AnimatedItem>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-5">Datos de contacto</p>
-              <h2 className="font-serif text-3xl font-normal text-lx-ink mb-10">Hablemos</h2>
+            <div>
+              <SectionHeader label="Datos de contacto" title="Hablemos" />
               <div className="space-y-6">
                 {sucursales.map((s) => (
                   <div key={s.nombre} className="border border-lx-line bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
@@ -75,37 +76,34 @@ export default function ContactoPage() {
                   </div>
                 ))}
               </div>
-            </AnimatedItem>
+            </div>
 
-            <AnimatedItem>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-5">Envianos un mensaje</p>
-              <h2 className="font-serif text-3xl font-normal text-lx-ink mb-10">Escribinos</h2>
+            <div>
+              <SectionHeader label="Envianos un mensaje" title="Escribinos" />
               <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
                 <LeadForm tipo="Contacto" showTipoSelector theme="light" messagePlaceholder="¿En qué podemos ayudarte?" />
               </div>
-            </AnimatedItem>
+            </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
-      <AnimatedSection className="bg-white py-16 sm:py-20" stagger>
+      {/* ── MAPAS ────────────────────────────────────── */}
+      <section className="bg-white py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <AnimatedItem>
-            <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">Nuestras Oficinas</p>
-            <h2 className="font-serif text-3xl font-normal text-lx-ink mb-10">Cómo llegar</h2>
-          </AnimatedItem>
+          <SectionHeader label="Nuestras Oficinas" title="Cómo llegar" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {sucursales.map((s) => (
-              <AnimatedItem key={s.nombre}>
+              <AnimatedSection key={s.nombre}>
                 <p className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-stone mb-3">Sucursal {s.nombre} — {s.direccion}</p>
                 <div className="rounded-xl overflow-hidden border border-lx-line shadow-sm">
                   <iframe src={s.mapSrc} width="100%" height="300" className="border-0 w-full" loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`Mapa sucursal ${s.nombre}`} />
                 </div>
-              </AnimatedItem>
+              </AnimatedSection>
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   )
 }

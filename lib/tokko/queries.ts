@@ -216,27 +216,86 @@ export async function getFeaturedProperties(limit = 6): Promise<TokkoProperty[]>
 }
 
 /**
- * Obtiene propiedades similares a una dada (misma ubicación o tipo).
+ * Obtiene propiedades similares a una dada.
+ *
+ * Lógica de filtrado inteligente:
+ * 1. Misma operación (Sale/Rent) — obligatorio
+ * 2. Mismo barrio/zona — preferido
+ * 3. Precio ±30% — preferido
+ * 4. Mismo tipo de propiedad — bonus
+ *
+ * Fallback: si no hay suficientes con zona+precio, relajar a solo operación+tipo.
  */
 export async function getSimilarProperties(
   property: TokkoProperty,
   limit = 3
 ): Promise<TokkoProperty[]> {
   try {
-    // Sin current_localization_id — causa 403 en algunos barrios
-    const response = await tokkoFetch<TokkoPropertyListResponse>(
+    // Fetch enough properties to find good matches
+    const r1 = await tokkoFetch<TokkoPropertyListResponse>(
       'property',
-      { limit: 20 },
+      { limit: 100, offset: 0 },
       300
     )
+    let allProps = r1.objects
+    const totalInApi = r1.meta?.total_count ?? r1.objects.length
+    if (totalInApi > 100) {
+      const r2 = await tokkoFetch<TokkoPropertyListResponse>(
+        'property',
+        { limit: 100, offset: 100 },
+        300
+      )
+      allProps = [...allProps, ...r2.objects]
+    }
 
+    // Exclude the current property
+    const candidates = allProps.filter((p) => p.id !== property.id)
+
+    // Determine current property's operation and price
+    const currentOps = Array.isArray(property.operations) ? property.operations : [property.operations]
+    const currentOp = currentOps[0]
+    const currentOpType = currentOp?.operation_type ?? ''
+    const currentPrice = currentOp?.prices?.[0]?.price ?? 0
+    const currentCurrency = currentOp?.prices?.[0]?.currency ?? 'USD'
     const locationId = property.location?.id
     const typeId = property.type?.id
 
-    return response.objects
-      .filter((p) => p.id !== property.id)
-      .filter((p) => p.location?.id === locationId || p.type?.id === typeId)
-      .slice(0, limit)
+    // Helper: get primary price of a property
+    const getPrice = (p: TokkoProperty) => {
+      const ops = Array.isArray(p.operations) ? p.operations : [p.operations]
+      const matchingOp = ops.find((op) => op?.operation_type === currentOpType)
+      const price = matchingOp?.prices?.find((pr) => pr.currency === currentCurrency)
+      return price?.price ?? 0
+    }
+
+    // Helper: check same operation type
+    const sameOp = (p: TokkoProperty) => {
+      const ops = Array.isArray(p.operations) ? p.operations : [p.operations]
+      return ops.some((op) => op?.operation_type === currentOpType)
+    }
+
+    // Filter 1: same operation (mandatory)
+    const sameOperation = candidates.filter(sameOp)
+
+    // Score each candidate
+    const scored = sameOperation.map((p) => {
+      let score = 0
+      if (p.location?.id === locationId) score += 3   // same zone
+      if (p.type?.id === typeId) score += 2            // same type
+      if (currentPrice > 0) {
+        const price = getPrice(p)
+        if (price > 0) {
+          const ratio = price / currentPrice
+          if (ratio >= 0.7 && ratio <= 1.3) score += 2  // within ±30%
+        }
+      }
+      return { property: p, score }
+    })
+
+    // Sort by score desc, then by ID desc (newest first)
+    scored.sort((a, b) => b.score - a.score || b.property.id - a.property.id)
+
+    return scored.slice(0, limit).map((s) => s.property)
   } catch {
     return []
   }

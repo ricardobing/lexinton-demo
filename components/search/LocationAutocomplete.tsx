@@ -221,7 +221,7 @@ export default function LocationAutocomplete({
             type="button"
             onMouseDown={(e) => e.preventDefault()}
             onClick={handleClear}
-            className={`px-2.5 py-2 transition-colors duration-150 ${clearCls}`}
+            className={`px-3 py-3 transition-colors duration-150 ${clearCls}`}
             aria-label="Limpiar barrio"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

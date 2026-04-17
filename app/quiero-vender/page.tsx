@@ -1,12 +1,14 @@
 /**
  * /quiero-vender — Propietarios que quieren vender su inmueble
- * Framer Motion + PageHero + premium visuals
+ * Design system: SectionHeader, NumberedSteps, FeatureCard
  */
 
 import type { Metadata } from 'next'
 import { LeadForm } from '@/components/LeadForm'
 import PageHero from '@/components/PageHero'
-import AnimatedSection, { AnimatedItem } from '@/components/AnimatedSection'
+import SectionHeader from '@/components/ui/SectionHeader'
+import NumberedSteps from '@/components/ui/NumberedSteps'
+import FeatureCard from '@/components/ui/FeatureCard'
 
 export const metadata: Metadata = {
   title: 'Quiero Vender mi Propiedad | Lexinton Propiedades',
@@ -15,17 +17,17 @@ export const metadata: Metadata = {
 }
 
 const pasos = [
-  { numero: '01', titulo: 'Tasación sin cargo', descripcion: 'Analizamos el valor real de mercado de tu propiedad con comparables reales, no fórmulas genéricas.' },
-  { numero: '02', titulo: 'Difusión premium', descripcion: 'Publicamos en los principales portales, redes sociales y nuestra base de compradores activos.' },
-  { numero: '03', titulo: 'Consultas y visitas', descripcion: 'Gestionamos todos los contactos y visitas. Vos solo recibís compradores serios y calificados.' },
-  { numero: '04', titulo: 'Cierre y escritura', descripcion: 'Negociamos en tu nombre y coordinamos escribanos, abogados y todo el proceso de cierre.' },
+  { title: 'Tasación sin cargo', description: 'Analizamos el valor real de mercado de tu propiedad con comparables reales, no fórmulas genéricas.' },
+  { title: 'Difusión premium', description: 'Publicamos en los principales portales, redes sociales y nuestra base de compradores activos.' },
+  { title: 'Consultas y visitas', description: 'Gestionamos todos los contactos y visitas. Vos solo recibís compradores serios y calificados.' },
+  { title: 'Cierre y escritura', description: 'Negociamos en tu nombre y coordinamos escribanos, abogados y todo el proceso de cierre.' },
 ]
 
 const ventajas = [
-  { titulo: 'Más de 20 años en el mercado', descripcion: 'Experiencia real en Palermo, Belgrano y zona norte.' },
-  { titulo: 'Base de compradores activos', descripcion: 'Miles de interesados en nuestra cartera antes de la publicación.' },
-  { titulo: 'Fotografía profesional incluida', descripcion: 'Fotos de alta calidad que maximizan las consultas online.' },
-  { titulo: 'Especialistas en simultáneas', descripcion: 'Si necesitás vender y comprar a la vez, somos los indicados.' },
+  { title: 'Más de 20 años en el mercado', description: 'Experiencia real en Palermo, Belgrano y zona norte.' },
+  { title: 'Base de compradores activos', description: 'Miles de interesados en nuestra cartera antes de la publicación.' },
+  { title: 'Fotografía profesional incluida', description: 'Fotos de alta calidad que maximizan las consultas online.' },
+  { title: 'Especialistas en simultáneas', description: 'Si necesitás vender y comprar a la vez, somos los indicados.' },
 ]
 
 export default function QuieroVenderPage() {
@@ -39,68 +41,45 @@ export default function QuieroVenderPage() {
       />
 
       {/* ── PROCESO ──────────────────────────────────── */}
-      <AnimatedSection className="bg-white py-16 sm:py-20 border-b border-lx-line" stagger>
+      <section className="bg-lx-cream py-20 sm:py-24 border-b border-lx-line">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <AnimatedItem>
-            <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">El Proceso</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink mb-12">¿Cómo trabajamos?</h2>
-          </AnimatedItem>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {pasos.map((p) => (
-              <AnimatedItem key={p.numero}>
-                <div className="bg-white border border-lx-line rounded-xl p-8 h-full shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <span className="font-serif text-5xl text-lx-accent/25 leading-none block mb-5">{p.numero}</span>
-                  <h3 className="text-[11px] font-bold tracking-[0.14em] uppercase text-lx-ink mb-3">{p.titulo}</h3>
-                  <p className="text-sm text-lx-stone leading-relaxed">{p.descripcion}</p>
-                </div>
-              </AnimatedItem>
-            ))}
-          </div>
+          <SectionHeader
+            label="El Proceso"
+            title="¿Cómo trabajamos?"
+            description="Cuatro etapas claras, sin sorpresas."
+          />
+          <NumberedSteps steps={pasos} columns={4} />
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* ── VENTAJAS ─────────────────────────────────── */}
-      <AnimatedSection className="bg-lx-parchment py-16 sm:py-20 border-b border-lx-line" stagger>
+      <section className="bg-lx-parchment py-20 sm:py-24 border-b border-lx-line">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <AnimatedItem>
-            <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">Por Qué Lexinton</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink mb-12">Ventajas de vender con nosotros</h2>
-          </AnimatedItem>
+          <SectionHeader label="Por Qué Lexinton" title="Ventajas de vender con nosotros" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {ventajas.map((v) => (
-              <AnimatedItem key={v.titulo}>
-                <div className="bg-white border border-lx-line rounded-xl p-8 h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex gap-4">
-                  <div className="w-px bg-lx-accent shrink-0 mt-1 self-stretch" />
-                  <div>
-                    <h3 className="text-[11px] font-bold tracking-[0.14em] uppercase text-lx-ink mb-2">{v.titulo}</h3>
-                    <p className="text-sm text-lx-stone leading-relaxed">{v.descripcion}</p>
-                  </div>
-                </div>
-              </AnimatedItem>
+              <FeatureCard key={v.title} title={v.title} description={v.description} />
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <AnimatedSection className="bg-lx-cream py-20 sm:py-28" stagger>
+      <section className="bg-lx-cream py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-xl mx-auto">
-            <AnimatedItem>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3 text-center">Quiero Vender</p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink mb-3 text-center">Comenzá el proceso</h2>
-              <p className="text-sm text-lx-stone text-center mb-10 leading-relaxed">
-                Completá el formulario y te contactamos para coordinar la tasación gratuita y sin compromiso.
-              </p>
-            </AnimatedItem>
-            <AnimatedItem>
-              <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
-                <LeadForm tipo="Quiero Vender" showTipoPropiedad showBarrio showPlazo theme="light" messagePlaceholder="Contanos sobre tu propiedad (m², ambientes, estado, piso...)" />
-              </div>
-            </AnimatedItem>
+            <SectionHeader
+              label="Quiero Vender"
+              title="Comenzá el proceso"
+              description="Completá el formulario y te contactamos para coordinar la tasación gratuita y sin compromiso."
+              center
+            />
+            <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
+              <LeadForm tipo="Quiero Vender" showTipoPropiedad showBarrio showPlazo theme="light" messagePlaceholder="Contanos sobre tu propiedad (m², ambientes, estado, piso...)" />
+            </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   )
 }

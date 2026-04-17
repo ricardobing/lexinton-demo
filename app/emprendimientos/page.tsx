@@ -1,6 +1,6 @@
 /**
  * /emprendimientos — Proyectos inmobiliarios seleccionados por Lexinton
- * Framer Motion + PageHero + premium visuals
+ * Design system: SectionHeader, FeatureCard
  */
 
 import type { Metadata } from 'next'
@@ -10,7 +10,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { LeadForm } from '@/components/LeadForm'
 import PageHero from '@/components/PageHero'
-import AnimatedSection, { AnimatedItem } from '@/components/AnimatedSection'
+import SectionHeader from '@/components/ui/SectionHeader'
+import FeatureCard from '@/components/ui/FeatureCard'
+import AnimatedSection from '@/components/AnimatedSection'
 
 export const metadata: Metadata = {
   title: 'Emprendimientos Inmobiliarios en Palermo | Lexinton Propiedades',
@@ -19,9 +21,9 @@ export const metadata: Metadata = {
 }
 
 const diferenciadores = [
-  { titulo: 'Menor precio de entrada', descripcion: 'Comprar en pozo o en construcción siempre es más económico que a estrenar. Accedés al precio más bajo del ciclo del proyecto.', icono: '◈' },
-  { titulo: 'Valorización durante la construcción', descripcion: 'A medida que avanza la obra, el valor de la unidad sube. Es habitual ver incrementos del 20–40% entre pozo y escritura.', icono: '◈' },
-  { titulo: 'Asesoramiento en cada etapa', descripcion: 'Desde la selección del proyecto hasta la escritura final, te acompañamos con criterio y sin presiones.', icono: '◈' },
+  { title: 'Menor precio de entrada', description: 'Comprar en pozo o en construcción siempre es más económico que a estrenar. Accedés al precio más bajo del ciclo del proyecto.', icon: '◈' },
+  { title: 'Valorización durante la construcción', description: 'A medida que avanza la obra, el valor de la unidad sube. Es habitual ver incrementos del 20–40% entre pozo y escritura.', icon: '◈' },
+  { title: 'Asesoramiento en cada etapa', description: 'Desde la selección del proyecto hasta la escritura final, te acompañamos con criterio y sin presiones.', icon: '◈' },
 ]
 
 async function DevelopmentsGrid() {
@@ -112,61 +114,50 @@ export default function EmprendimientosPage() {
       />
 
       {/* ── DIFERENCIADORES ──────────────────────────── */}
-      <AnimatedSection className="bg-lx-parchment border-b border-lx-line" stagger>
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-14 sm:py-16">
+      <section className="bg-lx-parchment py-20 sm:py-24 border-b border-lx-line">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {diferenciadores.map((d) => (
-              <AnimatedItem key={d.titulo}>
-                <div className="bg-white border border-lx-line rounded-xl p-8 h-full shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <p className="text-lx-accent text-lg mb-4 font-serif">{d.icono}</p>
-                  <h3 className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-ink mb-3">{d.titulo}</h3>
-                  <p className="text-sm text-lx-stone leading-relaxed">{d.descripcion}</p>
-                </div>
-              </AnimatedItem>
+              <FeatureCard key={d.title} title={d.title} description={d.description} icon={d.icon} />
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* ── GRID DE EMPRENDIMIENTOS ───────────────────── */}
-      <AnimatedSection className="bg-white py-16 sm:py-20" stagger>
+      <section className="bg-white py-20 sm:py-24">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <AnimatedItem>
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-lx-stone mb-3">Proyectos Activos</p>
-                <h2 className="font-serif text-3xl sm:text-4xl font-normal text-lx-ink">Proyectos disponibles</h2>
-              </div>
-              <Link href="/propiedades" className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors">
-                Ver todas las propiedades →
-              </Link>
-            </div>
-          </AnimatedItem>
+          <div className="flex items-end justify-between mb-14">
+            <SectionHeader label="Proyectos Activos" title="Proyectos disponibles" />
+            <Link href="/propiedades" className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors mb-16">
+              Ver todas las propiedades →
+            </Link>
+          </div>
           <Suspense fallback={<DevelopmentsSkeleton />}>
             <DevelopmentsGrid />
           </Suspense>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <AnimatedSection className="bg-lx-ink py-20 sm:py-28" stagger>
+      <section className="bg-lx-ink py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-            <AnimatedItem>
-              <p className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-white/40 mb-5">Inversión · Emprendimientos</p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-normal text-white leading-[1.1] mb-6">
-                ¿Querés invertir<br /><em className="italic text-white/50">en un emprendimiento?</em>
-              </h2>
-              <p className="text-[15px] text-white/55 leading-[1.85]">
-                Contanos tu situación y te asesoramos sobre los proyectos que mejor se adaptan a tu presupuesto y objetivos de inversión.
-              </p>
-            </AnimatedItem>
-            <AnimatedItem>
+            <AnimatedSection>
+              <SectionHeader
+                label="Inversión · Emprendimientos"
+                title="¿Querés invertir"
+                titleEmphasis="en un emprendimiento?"
+                description="Contanos tu situación y te asesoramos sobre los proyectos que mejor se adaptan a tu presupuesto y objetivos de inversión."
+                labelColor="white"
+              />
+            </AnimatedSection>
+            <AnimatedSection>
               <LeadForm tipo="Emprendimientos" showPresupuesto theme="dark" />
-            </AnimatedItem>
+            </AnimatedSection>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   )
 }

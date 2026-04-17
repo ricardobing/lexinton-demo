@@ -34,7 +34,7 @@ export default function HeroSection() {
   }, [])
 
   return (
-    <section className="relative h-[100svh] min-h-[680px] flex flex-col overflow-hidden">
+    <section className="relative h-[100svh] min-h-[680px] flex flex-col overflow-x-hidden">
 
       {/* POSTER — LCP target, preloaded by next/image with priority */}
       <div
