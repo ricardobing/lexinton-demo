@@ -149,7 +149,7 @@ async function PropertyContent({ searchParams }: PageProps) {
 
         {/* Grid */}
         {properties.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-lx-line">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -203,7 +203,7 @@ function PageSkeleton() {
       {/* Skeleton del grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
         <div className="h-4 w-48 bg-lx-line rounded animate-pulse mb-8" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-lx-line">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
           {Array.from({ length: 12 }).map((_, i) => (
             <PropertyCardSkeleton key={i} />
           ))}
