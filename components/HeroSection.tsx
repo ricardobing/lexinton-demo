@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import HeroSearch from '@/components/search/HeroSearch'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const VIDEO_SRC = 'https://videos.pexels.com/video-files/32551249/13881455_1920_1080_24fps.mp4'
@@ -108,25 +109,14 @@ export default function HeroSection() {
           tiempos sincronizados y acompañamiento experto.
         </motion.p>
 
-        {/* CTAs */}
+        {/* Search widget — reemplaza los CTAs de texto */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease, delay: 0.9 }}
-          className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+          className="w-full px-0"
         >
-          <a
-            href="#tasacion"
-            className="inline-flex items-center gap-2 bg-white text-lx-ink text-[11px] font-bold tracking-[0.16em] uppercase px-7 py-3.5 hover:bg-lx-cream transition-colors duration-200"
-          >
-            Solicitar tasación estratégica
-          </a>
-          <a
-            href="#seleccion"
-            className="inline-flex items-center gap-2 border border-white/50 text-white text-[11px] font-bold tracking-[0.16em] uppercase px-7 py-3.5 hover:border-white hover:bg-white/10 transition-all duration-200"
-          >
-            Ver propiedades seleccionadas
-          </a>
+          <HeroSearch />
         </motion.div>
       </div>
 
