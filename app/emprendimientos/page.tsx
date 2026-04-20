@@ -76,9 +76,9 @@ async function DevelopmentsGrid() {
               {location && <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-lx-accent mb-2">{location}</p>}
               <h3 className="font-serif text-xl text-lx-ink mb-2 leading-tight">{dev.name}</h3>
               {dev.address && <p className="text-sm text-lx-stone mb-4">{dev.address}</p>}
-              <a href={`/contacto?consulta=emprendimiento-${dev.id}`} className="inline-block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-accent border-b border-lx-accent/40 hover:border-lx-accent transition-colors pb-0.5">
-                Consultar →
-              </a>
+              <Link href={`/emprendimientos/${dev.id}`} className="inline-block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-accent border-b border-lx-accent/40 hover:border-lx-accent transition-colors pb-0.5">
+                Ver proyecto →
+              </Link>
             </div>
           </article>
         )

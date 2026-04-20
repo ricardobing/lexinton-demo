@@ -25,6 +25,7 @@ import type {
   TokkoPropertyTypeListResponse,
   TokkoLocationListResponse,
   TokkoDevelopmentListResponse,
+  TokkoDevelopment,
   PropertyFilters,
   TokkoLeadPayload,
 } from './types'
@@ -118,6 +119,11 @@ export async function getProperties(
   }
 
   let filtered = allObjects
+
+  // Filtro por ubicación (post-fetch — Tokko a veces ignora current_localization_id)
+  if (locationId) {
+    filtered = filtered.filter((p) => p.location?.id === locationId)
+  }
 
   // Filtro por operación (Sale, Rent)
   if (operation) {
@@ -360,10 +366,49 @@ export async function getLocations(stateId = CABA_STATE_ID) {
   return response.objects
 }
 
+/**
+ * Devuelve únicamente los barrios/zonas donde Lexinton tiene propiedades reales.
+ * Se construye haciendo fetch de todas las propiedades y extrayendo los
+ * location únicos — así el buscador solo muestra opciones que tienen resultados.
+ * Cache de 10 minutos.
+ */
+export async function getPropertyLocations() {
+  const r1 = await tokkoFetch<TokkoPropertyListResponse>(
+    'property',
+    { limit: 100, offset: 0 },
+    600
+  )
+  let allObjects = r1.objects
+  const total = r1.meta?.total_count ?? r1.objects.length
+  if (total > 100) {
+    const r2 = await tokkoFetch<TokkoPropertyListResponse>(
+      'property',
+      { limit: 100, offset: 100 },
+      600
+    )
+    allObjects = [...allObjects, ...r2.objects]
+  }
+
+  // Extract unique non-null locations
+  const seen = new Set<number>()
+  const locations = []
+  for (const p of allObjects) {
+    if (p.location && !seen.has(p.location.id)) {
+      seen.add(p.location.id)
+      locations.push(p.location)
+    }
+  }
+
+  // Sort alphabetically by name
+  locations.sort((a, b) => a.name.localeCompare(b.name, 'es'))
+  return locations
+}
+
 // ─── Emprendimientos ──────────────────────────────────────────────────────────
 
 /**
  * Obtiene los emprendimientos activos (5 en la cuenta de Lexinton).
+ * Filtra por display_on_web y al menos una foto para evitar items vacíos.
  */
 export async function getDevelopments() {
   const response = await tokkoFetch<TokkoDevelopmentListResponse>(
@@ -371,7 +416,26 @@ export async function getDevelopments() {
     { limit: 20 },
     300
   )
-  return response.objects.filter((d) => d.display_on_web)
+  return response.objects.filter((d) => {
+    if (!d.display_on_web) return false
+    const photos = Array.isArray(d.photos) ? d.photos : []
+    if (photos.length === 0) return false
+    const name = (d.name ?? '').trim()
+    if (name.length < 3) return false
+    if (name.toUpperCase().includes('QR')) return false
+    return true
+  })
+}
+
+/**
+ * Obtiene el detalle completo de un emprendimiento por ID.
+ */
+export async function getDevelopmentById(id: number): Promise<TokkoDevelopment | null> {
+  try {
+    return await tokkoFetch<TokkoDevelopment>(`development/${id}`, {}, 300)
+  } catch {
+    return null
+  }
 }
 
 // ─── Leads / Contacto ─────────────────────────────────────────────────────────
