@@ -4,7 +4,7 @@ import MetodoSection from '@/components/MetodoSection'
 import FeaturedProperties from '@/components/FeaturedProperties'
 import TestimonialsSection from '@/components/TestimonialsSection'
 import CTASection from '@/components/CTASection'
-import DevelopmentsCarousel from '@/components/DevelopmentsCarousel'
+import { DevelopmentsCarousel } from '@/components/DevelopmentsCarousel'
 import { getDevelopments } from '@/lib/tokko/queries'
 
 export default async function HomePage() {
@@ -13,10 +13,10 @@ export default async function HomePage() {
   return (
     <main>
       <HeroSection />
+      <DevelopmentsCarousel developments={developments} />
       <CredibilityBar />
       <MetodoSection />
       <FeaturedProperties />
-      <DevelopmentsCarousel developments={developments} />
       <TestimonialsSection />
       <CTASection />
     </main>

@@ -1,224 +1,267 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
-import Link from 'next/link'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
 import type { TokkoDevelopment } from '@/lib/tokko/types'
 
-interface Props {
-  developments: TokkoDevelopment[]
+interface Props { developments: TokkoDevelopment[] }
+
+const CONSTRUCTION_STATUS: Record<number, string> = {
+  0: 'En pozo',
+  1: 'En construcción',
+  2: 'Terminado',
+  3: 'Entrega inmediata',
 }
 
-const CONSTRUCTION_STATUS: Record<number, { label: string; color: string }> = {
-  0: { label: 'En pozo',        color: 'bg-amber-500/90' },
-  1: { label: 'En construcción', color: 'bg-blue-500/90' },
-  2: { label: 'Terminado',       color: 'bg-emerald-600/90' },
-  3: { label: 'Entrega inmediata', color: 'bg-lx-red/90' },
-}
+export function DevelopmentsCarousel({ developments }: Props) {
+  const [current, setCurrent] = useState(0)
+  const [direction, setDirection] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
-export default function DevelopmentsCarousel({ developments }: Props) {
-  const [active, setActive] = useState(0)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const total = developments.length
 
-  const dev = developments[active] ?? null
-  if (!developments.length || !dev) return null
+  const goTo = useCallback((index: number, dir?: number) => {
+    const newIndex = ((index % total) + total) % total
+    setDirection(dir ?? (newIndex > current ? 1 : -1))
+    setCurrent(newIndex)
+  }, [current, total])
 
-  const photos = Array.isArray(dev.photos) ? dev.photos : []
-  const cover = photos[0]?.image ?? null
-  const status = CONSTRUCTION_STATUS[dev.construction_status] ?? null
-  const title = dev.publication_title || dev.name
+  const prev = useCallback(() => goTo(current - 1, -1), [current, goTo])
+  const next = useCallback(() => goTo(current + 1, 1), [current, goTo])
 
-  const prev = useCallback(() => {
-    setActive((a) => (a === 0 ? developments.length - 1 : a - 1))
-  }, [developments.length])
+  // Autoplay
+  useEffect(() => {
+    if (isPaused || total <= 1) return
+    const timer = setInterval(() => goTo(current + 1, 1), 5000)
+    return () => clearInterval(timer)
+  }, [current, isPaused, goTo, total])
 
-  const next = useCallback(() => {
-    setActive((a) => (a === developments.length - 1 ? 0 : a + 1))
-  }, [developments.length])
+  // Drag to swipe
+  const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
+    const threshold = 80
+    if (info.offset.x < -threshold) next()
+    else if (info.offset.x > threshold) prev()
+  }
+
+  if (!developments.length) return null
+
+  const getIndex = (offset: number) =>
+    ((current + offset) % total + total) % total
+
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? '60%' : '-60%',
+      opacity: 0,
+      scale: 0.85,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? '-60%' : '60%',
+      opacity: 0,
+      scale: 0.85,
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const },
+    }),
+  }
 
   return (
-    <section className="py-20 sm:py-28 bg-lx-ink overflow-hidden">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+    <section
+      className="relative bg-gray-950 py-20 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Blurred background from active slide */}
+      <div className="absolute inset-0 opacity-10">
+        {Array.isArray(developments[current].photos) &&
+          (developments[current].photos as { image: string }[])[0] && (
+          <Image
+            src={(developments[current].photos as { image: string }[])[0].image}
+            alt=""
+            fill
+            className="object-cover blur-2xl scale-110"
+          />
+        )}
+      </div>
 
-        {/* ── Header ───────────────────────────────────────────── */}
-        <div className="flex items-end justify-between mb-10 sm:mb-14">
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+
+        {/* Header */}
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/40 mb-2">
+            <p className="text-[#C41230] text-xs uppercase tracking-[0.2em] mb-3">
               Emprendimientos
             </p>
-            <h2 className="font-serif text-[clamp(1.8rem,3vw,2.6rem)] font-normal text-white">
+            <h2 className="text-4xl font-light text-white">
               Proyectos seleccionados
             </h2>
           </div>
-          {/* Nav arrows */}
-          <div className="hidden sm:flex items-center gap-3">
-            <button
-              onClick={prev}
-              aria-label="Anterior"
-              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/60 transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <button
-              onClick={next}
-              aria-label="Siguiente"
-              className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/60 transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* ── Main card ────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
-
-          {/* Featured card */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: 'easeInOut' }}
-              className="relative rounded-2xl overflow-hidden bg-lx-stone/10 aspect-[16/9] lg:aspect-auto lg:min-h-[420px] group"
-            >
-              {cover ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={cover}
-                  alt={title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-lx-stone/20 to-lx-ink flex items-center justify-center">
-                  <span className="font-serif text-5xl text-white/10">{title[0]}</span>
-                </div>
-              )}
-
-              {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-lx-ink/80 via-lx-ink/20 to-transparent" />
-
-              {/* Status badge */}
-              {status && (
-                <div className="absolute top-5 left-5">
-                  <span className={`${status.color} text-white text-[9px] font-bold tracking-[0.18em] uppercase px-3 py-1.5 rounded-full backdrop-blur-sm`}>
-                    {status.label}
-                  </span>
-                </div>
-              )}
-
-              {/* Bottom info */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-                {dev.type?.name && (
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 mb-1.5">
-                    {dev.type.name}
-                  </p>
-                )}
-                <h3 className="font-serif text-[clamp(1.4rem,2.5vw,2rem)] font-normal text-white leading-tight mb-1">
-                  {title}
-                </h3>
-                {dev.address && (
-                  <p className="text-white/60 text-sm mb-5">{dev.address}</p>
-                )}
-                <Link
-                  href={`/emprendimientos/${dev.id}`}
-                  className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.16em] uppercase text-white border border-white/30 rounded-full px-5 py-2.5 hover:bg-white hover:text-lx-ink transition-all duration-300"
-                >
-                  Ver proyecto
-                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Sidebar list */}
-          <div ref={trackRef} className="flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto max-h-none lg:max-h-[420px] [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
-            {developments.map((d, i) => {
-              const thumb = Array.isArray(d.photos) && d.photos.length > 0 ? d.photos[0].image : null
-              const isActive = i === active
-              return (
-                <button
-                  key={d.id}
-                  onClick={() => setActive(i)}
-                  className={`shrink-0 lg:shrink relative flex items-center gap-3 rounded-xl overflow-hidden border transition-all duration-200 w-[260px] lg:w-auto ${
-                    isActive
-                      ? 'border-white/40 bg-white/10'
-                      : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
-                  }`}
-                >
-                  {/* Thumbnail */}
-                  <div className="shrink-0 w-[72px] h-[56px] lg:w-[80px] lg:h-[60px] relative overflow-hidden bg-lx-stone/20">
-                    {thumb ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={thumb} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-lx-stone/20" />
-                    )}
-                  </div>
-                  {/* Text */}
-                  <div className="flex-1 text-left pr-3 py-2 min-w-0">
-                    <p className={`text-[11px] font-semibold leading-tight truncate ${isActive ? 'text-white' : 'text-white/60'}`}>
-                      {d.publication_title || d.name}
-                    </p>
-                    {d.location?.name && (
-                      <p className="text-[10px] text-white/40 mt-0.5 truncate">{d.location.name}</p>
-                    )}
-                  </div>
-                  {/* Active indicator */}
-                  {isActive && (
-                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-lx-red rounded-r-full" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* ── Dots + mobile arrows ──────────────────────────────── */}
-        <div className="flex items-center justify-between mt-8">
-          {/* Dots */}
-          <div className="flex items-center gap-2">
-            {developments.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className={`rounded-full transition-all duration-300 ${
-                  i === active ? 'w-6 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/25 hover:bg-white/50'
-                }`}
-                aria-label={`Ir a emprendimiento ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          {/* Mobile arrows */}
-          <div className="flex sm:hidden items-center gap-3">
-            <button onClick={prev} aria-label="Anterior" className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/60 transition-colors">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-            </button>
-            <button onClick={next} aria-label="Siguiente" className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/60 transition-colors">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-            </button>
-          </div>
-
-          {/* Ver todos */}
           <Link
             href="/emprendimientos"
-            className="hidden sm:inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.16em] uppercase text-white/50 hover:text-white transition-colors"
+            className="text-sm text-gray-400 hover:text-white transition-colors underline underline-offset-4 hidden md:block"
           >
-            Ver todos
-            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-            </svg>
+            Ver todos →
           </Link>
         </div>
+
+        {/* Stage — 3 slides visible */}
+        <div className="relative flex items-center justify-center h-[480px] md:h-[520px]">
+
+          {/* Slide anterior — partial left */}
+          {total > 1 && (
+            <motion.div
+              className="absolute left-0 w-[28%] h-[85%] cursor-pointer hidden md:block"
+              style={{ opacity: 0.45, scale: 0.88 }}
+              whileHover={{ opacity: 0.65, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              onClick={prev}
+            >
+              <SlideCard dev={developments[getIndex(-1)]} />
+            </motion.div>
+          )}
+
+          {/* Slide central — featured with AnimatePresence */}
+          <div className="relative w-full md:w-[44%] h-full z-10 cursor-grab active:cursor-grabbing">
+            <AnimatePresence custom={direction} mode="wait">
+              <motion.div
+                key={current}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.15}
+                onDragEnd={handleDragEnd}
+                className="absolute inset-0"
+              >
+                <Link href={`/emprendimientos/${developments[current].id}`}>
+                  <SlideCard dev={developments[current]} featured />
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Slide siguiente — partial right */}
+          {total > 1 && (
+            <motion.div
+              className="absolute right-0 w-[28%] h-[85%] cursor-pointer hidden md:block"
+              style={{ opacity: 0.45, scale: 0.88 }}
+              whileHover={{ opacity: 0.65, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              onClick={next}
+            >
+              <SlideCard dev={developments[getIndex(1)]} />
+            </motion.div>
+          )}
+
+          {/* Arrow left */}
+          <button
+            onClick={prev}
+            className="absolute left-[30%] md:left-[31%] z-20 w-11 h-11 rounded-full bg-white/10 border border-white/25 text-white text-xl flex items-center justify-center hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
+            aria-label="Anterior"
+          >
+            ‹
+          </button>
+
+          {/* Arrow right */}
+          <button
+            onClick={next}
+            className="absolute right-[30%] md:right-[31%] z-20 w-11 h-11 rounded-full bg-white/10 border border-white/25 text-white text-xl flex items-center justify-center hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
+            aria-label="Siguiente"
+          >
+            ›
+          </button>
+        </div>
+
+        {/* Dots */}
+        <div className="flex justify-center items-center gap-2 mt-8">
+          {developments.map((_, i) => (
+            <motion.button
+              key={i}
+              onClick={() => goTo(i)}
+              animate={{
+                width: i === current ? 28 : 8,
+                backgroundColor: i === current ? '#C41230' : 'rgba(255,255,255,0.3)',
+              }}
+              transition={{ duration: 0.3 }}
+              className="h-2 rounded-full"
+              aria-label={`Ir a slide ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Counter */}
+        <p className="text-center text-gray-500 text-xs mt-4">
+          {current + 1} / {total}
+        </p>
 
       </div>
     </section>
   )
 }
+
+// ─── SlideCard ───────────────────────────────────────────────────────────────
+
+function SlideCard({ dev, featured = false }: { dev: TokkoDevelopment; featured?: boolean }) {
+  const photos = Array.isArray(dev.photos) ? dev.photos : []
+  const photo = photos[0]?.image ?? null
+  const addr = dev.address || dev.fake_address || ''
+  const statusLabel = CONSTRUCTION_STATUS[dev.construction_status] ?? null
+
+  return (
+    <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gray-900">
+      {photo && (
+        <Image
+          src={photo}
+          alt={dev.name}
+          fill
+          className="object-cover"
+          sizes={featured ? '44vw' : '28vw'}
+          priority={featured}
+        />
+      )}
+
+      {/* Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+
+      {/* Status badge */}
+      {statusLabel && (
+        <div className="absolute top-4 left-4">
+          <span className="bg-[#C41230] text-white text-xs px-3 py-1 rounded-full font-medium tracking-wide">
+            {statusLabel}
+          </span>
+        </div>
+      )}
+
+      {/* Info */}
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        {dev.location?.name && (
+          <p className="text-gray-300 text-xs uppercase tracking-widest mb-1">
+            {dev.location.name}
+          </p>
+        )}
+        <h3 className={`text-white font-medium leading-snug ${featured ? 'text-2xl' : 'text-base line-clamp-2'}`}>
+          {dev.publication_title || dev.name}
+        </h3>
+        {featured && addr && (
+          <p className="text-gray-400 text-sm mt-1">{addr}</p>
+        )}
+        {featured && (
+          <div className="mt-5 inline-flex items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2 hover:bg-white hover:text-gray-900 transition-all">
+            Ver emprendimiento →
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default DevelopmentsCarousel
+

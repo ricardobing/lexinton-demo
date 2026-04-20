@@ -409,6 +409,8 @@ export async function getPropertyLocations() {
 /**
  * Obtiene los emprendimientos activos (5 en la cuenta de Lexinton).
  * Filtra por display_on_web y al menos una foto para evitar items vacíos.
+ * Excluye entradas internas (e.g. dirección "TASACIONES") que son herramientas
+ * del CRM, no emprendimientos reales.
  */
 export async function getDevelopments() {
   const response = await tokkoFetch<TokkoDevelopmentListResponse>(
@@ -422,7 +424,11 @@ export async function getDevelopments() {
     if (photos.length === 0) return false
     const name = (d.name ?? '').trim()
     if (name.length < 3) return false
-    if (name.toUpperCase().includes('QR')) return false
+    // Excluir entradas internas del CRM (e.g. "TASACIONES")
+    const addr = (d.address || d.fake_address || '').toLowerCase()
+    if (addr.includes('tasacion')) return false
+    if (name.toLowerCase().includes('tasacion')) return false
+    if (name.toLowerCase().includes('qr')) return false
     return true
   })
 }

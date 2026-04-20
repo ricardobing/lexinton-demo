@@ -5,7 +5,7 @@
  * tanto en Server Components como en Client Components.
  */
 
-import type { TokkoProperty, TokkoOperation, TokkoPhoto, TokkoTag, TokkoLocation } from './types'
+import type { TokkoProperty, TokkoOperation, TokkoPhoto, TokkoTag, TokkoLocation, TokkoDevelopment } from './types'
 
 // ─── Traducciones ────────────────────────────────────────────────────────────
 
@@ -360,4 +360,106 @@ export function getCoordinates(property: TokkoProperty): { lat: number; lng: num
   const lng = parseFloat(property.geo_long ?? '')
   if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) return null
   return { lat, lng }
+}
+
+// ─── Development → Property adapter ──────────────────────────────────────────
+
+const CONSTRUCTION_STATUS_LABELS: Record<number, string> = {
+  0: 'En pozo',
+  1: 'En construcción',
+  2: 'Terminado',
+  3: 'Entrega inmediata',
+}
+
+/**
+ * Adapta un TokkoDevelopment al formato TokkoProperty para poder reutilizar
+ * los mismos componentes de detalle de propiedad en páginas de emprendimientos.
+ */
+export function developmentToProperty(dev: TokkoDevelopment): TokkoProperty {
+  // Normalizar fotos — la API devuelve TokkoPhoto[] pero sin algunos campos opcionales
+  const photos: TokkoPhoto[] = Array.isArray(dev.photos)
+    ? dev.photos.map((p, i) => ({
+        description: (p as TokkoPhoto & { description?: string }).description ?? null,
+        image: p.image.replace(/^http:\/\//i, 'https://'),
+        original: ((p as TokkoPhoto & { original?: string }).original ?? p.image).replace(/^http:\/\//i, 'https://'),
+        thumb: ((p as TokkoPhoto & { thumb?: string }).thumb ?? p.image).replace(/^http:\/\//i, 'https://'),
+        is_front_cover: i === 0,
+        is_blueprint: false,
+        order: i,
+      }))
+    : []
+
+  const tags: TokkoTag[] = Array.isArray(dev.tags) ? dev.tags as TokkoTag[] : []
+  const statusLabel = CONSTRUCTION_STATUS_LABELS[dev.construction_status]
+
+  return {
+    id: dev.id,
+    reference_code: dev.reference_code ?? '',
+    publication_title: dev.publication_title || dev.name,
+    address: dev.address || dev.fake_address || dev.name,
+    fake_address: dev.fake_address ?? '',
+    real_address: '',
+    address_complement: '',
+    type: dev.type
+      ? { id: dev.type.id, code: dev.type.code, name: dev.type.name }
+      : { id: 0, code: 'DEV', name: 'Emprendimiento' },
+    // construction_status encoded as property_condition so it shows in the stats bar
+    property_condition: statusLabel ?? '',
+    disposition: '',
+    orientation: '',
+    floor: '',
+    floors_amount: 0,
+    appartments_per_floor: 0,
+    surface: null,
+    roofed_surface: null,
+    semiroofed_surface: null,
+    unroofed_surface: null,
+    total_surface: null,
+    surface_measurement: 'M2',
+    room_amount: null,
+    suite_amount: null,
+    bathroom_amount: null,
+    toilet_amount: null,
+    parking_lot_amount: null,
+    covered_parking_lot: 0,
+    uncovered_parking_lot: 0,
+    expenses: 0,
+    web_price: false,
+    credit_eligible: 'Not specified',
+    down_payment: 0,
+    age: null,
+    location: dev.location,
+    geo_lat: dev.geo_lat,
+    geo_long: dev.geo_long,
+    gm_location_type: '',
+    operations: [],
+    photos,
+    videos: [],
+    files: [],
+    tags,
+    custom_tags: [],
+    extra_attributes: [],
+    description: dev.description ?? '',
+    rich_description: '',
+    description_only: '',
+    footer: '',
+    seo_description: '',
+    seo_keywords: '',
+    development: null,
+    producer: null,
+    created_at: '',
+    deleted_at: dev.deleted_at,
+    status: 2,
+    is_starred_on_web: dev.is_starred_on_web,
+    is_denounced: false,
+    legally_checked: '',
+    public_url: dev.web_url ?? '',
+    situation: '',
+    dining_room: 0,
+    living_amount: 0,
+    tv_rooms: 0,
+    guests_amount: 0,
+    has_temporary_rent: false,
+    internal_data: '',
+  } as unknown as TokkoProperty
 }
