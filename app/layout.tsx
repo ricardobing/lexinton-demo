@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import MobileSticky from '@/components/MobileSticky'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
-import { ChatWidget } from '@/components/ChatWidget'
+import { CliengoScript } from '@/components/CliengoScript'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,7 +57,7 @@ export default function RootLayout({
         <Footer />
         <MobileSticky />
         <WhatsAppButton />
-        <ChatWidget />
+        <CliengoScript />
       </body>
     </html>
   )
