@@ -188,7 +188,11 @@ export async function getProperties(
  * Obtiene el detalle completo de una propiedad por ID.
  */
 export async function getPropertyById(id: number, revalidate = 300): Promise<TokkoProperty | null> {
-  return tokkoFetch<TokkoProperty>(`property/${id}`, {}, revalidate)
+  try {
+    return await tokkoFetch<TokkoProperty>(`property/${id}`, {}, revalidate)
+  } catch {
+    return null
+  }
 }
 
 /**

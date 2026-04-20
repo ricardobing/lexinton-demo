@@ -35,9 +35,8 @@ export default function TasarPage() {
     <main className="min-h-screen">
       <PageHero
         label="Lexinton Propiedades · Tasaciones"
-        title="Sabé cuánto vale"
-        titleEmphasis="tu propiedad hoy"
-        description="Tasación gratuita por un broker especialista en tu zona. Sin sorpresas, sin números inflados. El valor real que te permite vender."
+        title="La venta de tu propiedad"
+        titleEmphasis="comienza acá."
       />
 
       {/* ── POR QUÉ ELEGIRNOS ────────────────────────── */}

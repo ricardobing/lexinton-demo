@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LinkedInIcon, InstagramIcon, FacebookIcon, YouTubeIcon } from '@/components/icons/social'
 
 const officeLinks = [
   {
@@ -46,6 +47,20 @@ export default function Footer() {
             >
               info@lexinton.com.ar
             </a>
+            <div className="flex items-center gap-3 mt-5">
+              <a href="https://www.linkedin.com/company/lexinton-propiedades/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+                <LinkedInIcon className="w-4 h-4" />
+              </a>
+              <a href="https://www.instagram.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+                <InstagramIcon className="w-4 h-4" />
+              </a>
+              <a href="https://www.facebook.com/LexintonPropiedadesOficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+                <FacebookIcon className="w-4 h-4" />
+              </a>
+              <a href="https://www.youtube.com/@LexintonPropiedades" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+                <YouTubeIcon className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
           {/* Links */}

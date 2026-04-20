@@ -107,13 +107,13 @@ function PillButton({
       onClick={onClick}
       className={[
         'relative flex items-center gap-1.5 h-9 px-4 text-[11px] font-semibold tracking-[0.06em] whitespace-nowrap',
-        'transition-all duration-150 select-none outline-none rounded-sm',
-        'focus-visible:ring-2 focus-visible:ring-lx-accent focus-visible:ring-offset-1',
+        'transition-all duration-150 select-none outline-none rounded-full',
+        'focus-visible:ring-2 focus-visible:ring-[#C41230] focus-visible:ring-offset-1',
         active
-          ? 'bg-lx-ink text-white shadow-sm'
+          ? 'bg-[#C41230] text-white shadow-sm border border-[#C41230]'
           : open
           ? 'bg-lx-parchment text-lx-ink border border-lx-ink/30'
-          : 'bg-transparent text-lx-stone border border-lx-line hover:border-lx-stone/60 hover:text-lx-ink hover:bg-lx-cream/70',
+          : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400 hover:text-gray-900',
         className,
       ].join(' ')}
     >
@@ -160,7 +160,7 @@ function Popover({
           {...popoverAnim}
           className={[
             'absolute top-[calc(100%+6px)] z-50 origin-top',
-            'bg-white border border-lx-line/80 shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden rounded-sm',
+            'bg-white border border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.12)] overflow-hidden rounded-2xl',
             align === 'right' ? 'right-0' : 'left-0',
             width,
           ].join(' ')}
@@ -181,8 +181,8 @@ function CheckItem({ label, checked, onToggle }: { label: string; checked: boole
         checked ? 'text-lx-ink bg-lx-parchment/50' : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/50'
       }`}
     >
-      <span className={`w-4 h-4 flex items-center justify-center border shrink-0 transition-all duration-100 rounded-[2px] ${
-        checked ? 'border-lx-ink bg-lx-ink' : 'border-lx-line/80'
+      <span className={`w-4 h-4 flex items-center justify-center border shrink-0 transition-all duration-100 rounded-[3px] ${
+        checked ? 'border-[#C41230] bg-[#C41230]' : 'border-gray-200'
       }`}>
         {checked && (
           <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -203,9 +203,9 @@ function RadioItem({ label, selected, onSelect }: { label: string; selected: boo
       }`}
     >
       <span className={`w-4 h-4 rounded-full flex items-center justify-center border shrink-0 transition-colors ${
-        selected ? 'border-lx-ink' : 'border-lx-line/80'
+        selected ? 'border-[#C41230]' : 'border-gray-200'
       }`}>
-        {selected && <span className="w-2 h-2 rounded-full bg-lx-ink block" />}
+        {selected && <span className="w-2 h-2 rounded-full bg-[#C41230] block" />}
       </span>
       {label}
     </button>
@@ -227,7 +227,7 @@ function Badge({ label, onRemove }: { label: string; onRemove: () => void }) {
     <motion.span
       initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.85 }}
       transition={{ duration: 0.12 }}
-      className="inline-flex items-center gap-1.5 h-6 px-2.5 bg-lx-ink text-white text-[9.5px] font-semibold tracking-[0.04em] rounded-full"
+      className="inline-flex items-center gap-1.5 h-6 px-2.5 bg-[#C41230] text-white text-[9.5px] font-semibold tracking-[0.04em] rounded-full"
     >
       {label}
       <button type="button" onClick={onRemove}
@@ -322,7 +322,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
       {/* ================================================================
           DESKTOP BAR (md+)
           ================================================================ */}
-      <div className="hidden md:block bg-white/95 backdrop-blur-sm border-b border-lx-line sticky top-0 z-30 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+      <div className="hidden md:block bg-white border-b border-gray-100 sticky top-[68px] z-30 shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
         <div className="max-w-7xl mx-auto px-5 lg:px-8">
           <div className="flex items-center gap-1.5 h-14">
 
@@ -332,10 +332,10 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                 <button key={op.value} type="button"
                   onClick={() => push({ operation: op.value })}
                   className={[
-                    'h-9 px-4 text-[10.5px] font-bold tracking-[0.12em] uppercase transition-all duration-150 rounded-sm',
+                    'h-9 px-4 text-[10.5px] font-bold tracking-[0.12em] uppercase transition-all duration-150 rounded-full',
                     cur.operation === op.value
-                      ? 'bg-lx-ink text-white'
-                      : 'text-lx-stone hover:text-lx-ink hover:bg-lx-cream/70',
+                      ? 'bg-[#C41230] text-white'
+                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50',
                   ].join(' ')}
                 >
                   {op.label}
@@ -387,10 +387,10 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                     <button key={r.value} type="button"
                       onClick={() => { push({ minRooms: cur.minRooms === r.value ? '' : r.value }); setOpenPop(null) }}
                       className={[
-                        'py-2.5 text-[12px] font-bold border transition-colors duration-100 rounded-sm',
-                        cur.minRooms === r.value
-                          ? 'bg-lx-ink text-white border-lx-ink'
-                          : 'border-lx-line text-lx-stone hover:border-lx-ink/40 hover:text-lx-ink',
+                          'py-2.5 text-[12px] font-bold border transition-colors duration-100 rounded-full',
+                          cur.minRooms === r.value
+                            ? 'bg-[#C41230] text-white border-[#C41230]'
+                            : 'border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-900',
                       ].join(' ')}
                     >
                       {r.label}
@@ -423,21 +423,39 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                     {['USD', 'ARS'].map((c) => (
                       <button key={c} type="button" onClick={() => setDCur(c)}
                         className={[
-                          'flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.10em] uppercase border transition-colors rounded-sm',
-                          dCur === c ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-stone',
+                          'flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.10em] uppercase border transition-colors rounded-full',
+                          dCur === c ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500 hover:border-gray-400',
                         ].join(' ')}
                       >
                         {c}
                       </button>
                     ))}
                   </div>
-                  <div className="flex gap-2 mb-5">
+                  {/* Presets rápidos */}
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {(dCur === 'USD'
+                      ? [['', '100000', '<100k'], ['100000', '200000', '100–200k'], ['200000', '350000', '200–350k'], ['350000', '', '+350k']]
+                      : [['', '30000000', '<30M'], ['30000000', '70000000', '30–70M'], ['70000000', '', '+70M']]
+                    ).map(([min, max, label]) => (
+                      <button key={label} type="button"
+                        onClick={() => { setDMin(min); setDMax(max) }}
+                        className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+                          dMin === min && dMax === max
+                            ? 'bg-[#C41230] text-white border-[#C41230]'
+                            : 'border-gray-200 text-gray-600 hover:border-[#C41230] hover:text-[#C41230]'
+                        }`}
+                      >
+                        {dCur} {label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 mb-3">
                     <div className="flex-1">
                       <p className="text-[9px] font-bold tracking-[0.14em] uppercase text-lx-stone mb-1.5">Desde</p>
                       <input type="number" placeholder="Sin mínimo" value={dMin}
                         onChange={(e) => setDMin(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && applyPrice()}
-                        className="w-full border border-lx-line px-3 py-2 text-[13px] rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
+                        className="w-full border border-gray-200 px-3 py-2 text-[13px] rounded-lg outline-none focus:border-[#C41230] placeholder:text-gray-300 transition-colors"
                       />
                     </div>
                     <div className="flex-1">
@@ -445,19 +463,19 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       <input type="number" placeholder="Sin máximo" value={dMax}
                         onChange={(e) => setDMax(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && applyPrice()}
-                        className="w-full border border-lx-line px-3 py-2 text-[13px] rounded-sm outline-none focus:border-lx-ink placeholder:text-lx-stone/30 transition-colors"
+                        className="w-full border border-gray-200 px-3 py-2 text-[13px] rounded-lg outline-none focus:border-[#C41230] placeholder:text-gray-300 transition-colors"
                       />
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <button type="button"
                       onClick={() => { setDMin(''); setDMax(''); setDCur('USD'); push({ minPrice: '', maxPrice: '', currency: '' }); setOpenPop(null) }}
-                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase border border-lx-line text-lx-stone hover:border-lx-ink hover:text-lx-ink transition-colors rounded-sm"
+                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase border border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors rounded-full"
                     >
                       Limpiar
                     </button>
                     <button type="button" onClick={applyPrice}
-                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase bg-lx-ink text-white hover:bg-lx-accent transition-colors rounded-sm"
+                      className="flex-1 py-2.5 text-[10.5px] font-bold tracking-[0.08em] uppercase bg-[#C41230] text-white hover:bg-[#a00f27] transition-colors rounded-full"
                     >
                       Aplicar
                     </button>
@@ -525,15 +543,15 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
       {/* ================================================================
           MOBILE BAR (< md)
           ================================================================ */}
-      <div className="md:hidden bg-white/95 backdrop-blur-sm border-b border-lx-line sticky top-0 z-30 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+      <div className="md:hidden bg-white border-b border-gray-100 sticky top-[68px] z-30 shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-2 px-4 h-12">
           <div className="flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-none">
             {OPS.map((op) => (
               <button key={op.value} type="button"
                 onClick={() => push({ operation: op.value })}
                 className={[
-                  'shrink-0 h-8 px-3 text-[9.5px] font-bold tracking-[0.12em] uppercase transition-colors rounded-sm',
-                  cur.operation === op.value ? 'bg-lx-ink text-white' : 'text-lx-stone',
+                  'shrink-0 h-8 px-3 text-[9.5px] font-bold tracking-[0.12em] uppercase transition-colors rounded-full',
+                  cur.operation === op.value ? 'bg-[#C41230] text-white' : 'text-gray-500',
                 ].join(' ')}
               >
                 {op.label}
@@ -542,7 +560,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
           </div>
 
           <button type="button" onClick={() => setDrawerOpen(true)}
-            className="shrink-0 flex items-center gap-1.5 h-8 px-3 border border-lx-line/80 text-lx-stone hover:text-lx-ink hover:border-lx-ink/40 transition-colors bg-white rounded-sm"
+            className="shrink-0 flex items-center gap-1.5 h-8 px-3 border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-400 transition-colors bg-white rounded-full"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
@@ -610,7 +628,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                 <h2 className="text-[11px] font-bold tracking-[0.16em] uppercase text-lx-ink">
                   Filtros
                   {n > 0 && (
-                    <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-lx-accent text-white text-[9px] font-bold rounded-full">
+                    <span className="ml-2 inline-flex items-center justify-center w-5 h-5 bg-[#C41230] text-white text-[9px] font-bold rounded-full">
                       {n}
                     </span>
                   )}
@@ -633,8 +651,8 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       <button key={t.value} type="button"
                         onClick={() => push({ type: cur.type === t.value ? '' : t.value })}
                         className={[
-                          'py-3 px-3 text-[12px] font-medium border text-left transition-colors rounded-sm',
-                          cur.type === t.value ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-ink/40 hover:text-lx-ink',
+                          'py-3 px-3 text-[12px] font-medium border text-left transition-colors rounded-xl',
+                          cur.type === t.value ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900',
                         ].join(' ')}
                       >
                         {t.label}
@@ -657,7 +675,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                   <div className="flex gap-2">
                     <button type="button" onClick={() => push({ minRooms: '' })}
                       className={`flex-1 py-3 text-[11px] font-bold border transition-colors rounded-sm ${
-                        !cur.minRooms ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone hover:border-lx-ink/40'
+                        !cur.minRooms ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500 hover:border-gray-400'
                       }`}
                     >
                       Todos
@@ -666,7 +684,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       <button key={r.value} type="button" onClick={() => push({ minRooms: r.value })}
                         className={[
                           'flex-1 py-3 text-[11px] font-bold border transition-colors rounded-sm',
-                          cur.minRooms === r.value ? 'bg-lx-accent text-white border-lx-accent' : 'border-lx-line text-lx-stone hover:border-lx-ink/40',
+                          cur.minRooms === r.value ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500 hover:border-gray-400',
                         ].join(' ')}
                       >
                         {r.label}
@@ -682,7 +700,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       <button key={c} type="button" onClick={() => setDCur(c)}
                         className={[
                           'flex-1 py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase border transition-colors rounded-sm',
-                          dCur === c ? 'bg-lx-ink text-white border-lx-ink' : 'border-lx-line text-lx-stone',
+                          dCur === c ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500',
                         ].join(' ')}
                       >
                         {c}
@@ -714,7 +732,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       <button key={o.value} type="button" onClick={() => push({ orderBy: o.value })}
                         className={[
                           'w-full text-left py-3 px-4 text-[12.5px] border transition-colors rounded-sm',
-                          cur.orderBy === o.value ? 'border-lx-ink text-lx-ink bg-lx-parchment/50' : 'border-lx-line text-lx-stone hover:border-lx-ink/40',
+                          cur.orderBy === o.value ? 'border-[#C41230] text-[#C41230] bg-red-50' : 'border-gray-200 text-gray-500 hover:border-gray-400',
                         ].join(' ')}
                       >
                         {o.label}
@@ -741,7 +759,7 @@ export default function PropertySearch({ totalCount }: PropertySearchProps) {
                       }
                       setDrawerOpen(false)
                     }}
-                    className="flex-1 bg-lx-ink text-white text-[11px] font-bold tracking-[0.14em] uppercase py-4 rounded-sm hover:bg-lx-accent transition-colors duration-200"
+                    className="flex-1 bg-[#C41230] text-white text-[11px] font-bold tracking-[0.14em] uppercase py-4 rounded-full hover:bg-[#a00f27] transition-colors duration-200"
                   >
                     {totalCount !== undefined && !isPending
                       ? `Ver ${totalCount.toLocaleString('es-AR')} ${totalCount === 1 ? 'propiedad' : 'propiedades'}`

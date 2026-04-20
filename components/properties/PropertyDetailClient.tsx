@@ -9,6 +9,7 @@ import Link from 'next/link'
 import PropertyCard from '@/components/PropertyCard'
 import PropertyContact from '@/components/properties/PropertyContact'
 import type { TokkoProperty, TokkoTag } from '@/lib/tokko/types'
+import ShareButton from '@/components/properties/ShareButton'
 import { formatExpenses, TAG_LABELS } from '@/lib/tokko/utils'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -45,7 +46,8 @@ export default function PropertyDetailClient({
             transition={{ duration: 0.5, ease }}
             className="mb-8 pb-8 border-b border-lx-line"
           >
-            <div className="flex flex-wrap items-center gap-2 mb-4">
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-lx-stone">
                 {propertyType}
               </span>
@@ -65,6 +67,8 @@ export default function PropertyDetailClient({
                   </span>
                 </>
               )}
+              </div>
+              <ShareButton property={property} priceLabel={priceLabel} />
             </div>
 
             <h1 className="font-serif text-[clamp(1.6rem,3vw,2.4rem)] font-normal leading-[1.15] tracking-[-0.01em] text-lx-ink mb-2">

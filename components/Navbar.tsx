@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { LinkedInIcon, InstagramIcon, FacebookIcon, YouTubeIcon } from '@/components/icons/social'
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -126,6 +127,20 @@ export default function Navbar() {
             >
               Tasar inmueble
             </a>
+            <div className="flex items-center justify-center gap-5 mt-4 pt-4 border-t border-lx-line">
+              <a href="https://www.linkedin.com/company/lexinton-propiedades/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-lx-stone hover:text-lx-ink transition-colors">
+                <LinkedInIcon className="w-5 h-5" />
+              </a>
+              <a href="https://www.instagram.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-lx-stone hover:text-lx-ink transition-colors">
+                <InstagramIcon className="w-5 h-5" />
+              </a>
+              <a href="https://www.facebook.com/LexintonPropiedadesOficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-lx-stone hover:text-lx-ink transition-colors">
+                <FacebookIcon className="w-5 h-5" />
+              </a>
+              <a href="https://www.youtube.com/@LexintonPropiedades" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-lx-stone hover:text-lx-ink transition-colors">
+                <YouTubeIcon className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </div>
       )}
