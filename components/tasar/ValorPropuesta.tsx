@@ -14,7 +14,7 @@ export default function ValorPropuesta() {
           transition={{ duration: 0.65, ease: EASE }}
           className="max-w-2xl"
         >
-          <p className="text-[17px] sm:text-[19px] text-lx-stone leading-[1.85]">
+          <p className="text-xl md:text-2xl font-light text-gray-700 leading-relaxed">
             Llevamos{' '}
             <motion.strong
               className="text-lx-ink font-semibold rounded-sm px-0.5"

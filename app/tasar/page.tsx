@@ -59,8 +59,17 @@ export default function TasarPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <SectionHeader label="Nuestra Metodología" title="¿Por qué elegirnos?" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {diferenciadores.map((d) => (
-              <FeatureCard key={d.title} title={d.title} description={d.description} />
+            {diferenciadores.map((d, i) => (
+              <FeatureCard
+                key={d.title}
+                title={d.title}
+                description={d.description}
+                icon={
+                  <span className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[#C41230]/20 font-serif select-none">
+                    {['I', 'II', 'III'][i]}
+                  </span>
+                }
+              />
             ))}
           </div>
         </div>

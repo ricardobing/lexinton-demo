@@ -1,15 +1,20 @@
 'use client'
 
+import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
 import { EASE } from '@/lib/motion'
 
 export default function TasarHero() {
-  const { scrollY } = useScroll()
-  const y = useTransform(scrollY, [0, 500], [0, 80])
+  const sectionRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
 
   return (
-    <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 relative overflow-hidden">
+    <section ref={sectionRef} className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 relative overflow-hidden">
       {/* Parallax background image */}
       <motion.div style={{ y }} className="absolute inset-0 scale-110 pointer-events-none">
         <Image

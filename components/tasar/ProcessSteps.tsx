@@ -25,9 +25,9 @@ const steps = [
   },
   {
     number: '04',
-    title: 'Decidís sin presión',
+    title: 'Vendés mejor',
     description:
-      'Si querés publicar con Lexinton, arrancamos. Si no, el informe es tuyo de todas formas.',
+      'Con difusión en todos los portales y campañas pagas, tu propiedad llega a más compradores. Más consultas, mejor precio, cierre más rápido.',
   },
 ]
 

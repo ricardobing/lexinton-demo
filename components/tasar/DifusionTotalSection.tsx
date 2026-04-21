@@ -62,32 +62,59 @@ const logoVariants = {
   }),
 }
 
-/** Animated counter: counts 0 → end with ease-out cubic using rAF */
-function AnimatedCounter({ end, duration = 2000 }: { end: number; duration?: number }) {
+/** Animated counter: counts 0 → end with ease-out cubic using rAF, then loops after pause */
+function AnimatedCounter({
+  end,
+  duration = 3500,
+  pauseDuration = 5000,
+}: {
+  end: number
+  duration?: number
+  pauseDuration?: number
+}) {
   const [count, setCount] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const isInView = useInView(ref, { once: false, margin: '-80px' })
+  const rafRef = useRef<number | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!isInView) return
-    const startTime = performance.now()
-    const tick = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      // ease out cubic — decelerates near the end
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setCount(Math.floor(eased * end))
-      if (progress < 1) requestAnimationFrame(tick)
+
+    const runAnimation = () => {
+      const startTime = performance.now()
+      const tick = (currentTime: number) => {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const eased = 1 - Math.pow(1 - progress, 3)
+        setCount(Math.floor(eased * end))
+        if (progress < 1) {
+          rafRef.current = requestAnimationFrame(tick)
+        } else {
+          // wait pauseDuration then loop
+          timerRef.current = setTimeout(() => {
+            setCount(0)
+            runAnimation()
+          }, pauseDuration)
+        }
+      }
+      rafRef.current = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
-  }, [isInView, end, duration])
+
+    runAnimation()
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [isInView, end, duration, pauseDuration])
 
   return <span ref={ref}>{count}</span>
 }
 
 export default function DifusionTotalSection() {
   return (
-    <section className="bg-white py-20 sm:py-24 border-b border-lx-line">
+    <section className="bg-gray-50 py-20 sm:py-24 border-b border-lx-line">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         {/* Section header */}
         <motion.div
@@ -118,8 +145,9 @@ export default function DifusionTotalSection() {
                 boxShadow: '0 12px 32px rgba(0,0,0,0.08)',
               }}
               transition={{ duration: 0.2 }}
-              className="group flex items-start gap-4 bg-white border border-lx-line rounded-xl p-6
-                         shadow-sm relative overflow-hidden cursor-default"
+              className="group flex items-start gap-4 bg-white border border-gray-200 rounded-xl p-6
+                         shadow-sm relative overflow-hidden cursor-default
+                         hover:border-[#C41230]/30 transition-colors duration-300"
             >
               {/* Bottom red accent line on hover */}
               <span
@@ -149,7 +177,7 @@ export default function DifusionTotalSection() {
         <div className="max-w-2xl mx-auto px-5 sm:px-8 text-center">
           {/* Animated counter — red number */}
           <p className="font-serif text-[clamp(5rem,14vw,7.5rem)] font-light text-[#C41230] leading-none mb-4">
-            <AnimatedCounter end={80} />%
+            <AnimatedCounter end={83} />%
           </p>
           <p className="text-base sm:text-lg text-lx-stone leading-relaxed max-w-md mx-auto mb-3">
             de los propietarios que tasaron con Lexinton eligieron publicar con nosotros.
