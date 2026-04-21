@@ -15,6 +15,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
+import { Icon } from '@iconify/react'
 import { cn } from '@/lib/utils'
 import type { TokkoProperty } from '@/lib/tokko/types'
 import {
@@ -27,6 +29,7 @@ import {
   formatExpenses,
   makePropertySlug,
 } from '@/lib/tokko/utils'
+import { ContactModal } from './properties/ContactModal'
 
 interface PropertyCardProps {
   property: TokkoProperty
@@ -54,12 +57,21 @@ export default function PropertyCard({
   const bathrooms = property.bathroom_amount
   const parking = (property.parking_lot_amount ?? 0) > 0 || (property.covered_parking_lot ?? 0) > 0
 
+  const [showContact, setShowContact] = useState(false)
+  const whatsappNumber = '5491131519928'
+  const whatsappText = encodeURIComponent(
+    `Hola, me interesa la propiedad en ${property.fake_address || property.address}. La vi en lexinton.com.ar`
+  )
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappText}`
+
   return (
-    <Link
-      href={href}
-      className="group block outline-none focus-visible:ring-2 focus-visible:ring-lx-accent focus-visible:ring-offset-2 rounded-xl"
-    >
-      <article className="bg-white rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer border border-lx-line/60">
+    <>
+    <article className="group outline-none rounded-xl">
+      <Link
+        href={href}
+        className="block focus-visible:ring-2 focus-visible:ring-lx-accent focus-visible:ring-offset-2 rounded-xl"
+      >
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-shadow duration-300 flex flex-col h-full cursor-pointer border border-lx-line/60">
 
         {/* ── Imagen ─────────────────────────────────────────────── */}
         <div className="relative w-full aspect-[4/3] overflow-hidden bg-lx-parchment shrink-0">
@@ -156,8 +168,39 @@ export default function PropertyCard({
             )}
           </div>
         </div>
-      </article>
-    </Link>
+          {/* Botones de contacto */}
+          <div className="flex items-center gap-2 px-4 pb-4 pt-0">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 h-9 bg-[#25D366] text-white rounded-lg
+                flex items-center justify-center gap-1.5 text-xs font-medium
+                hover:bg-[#1ea952] transition-colors"
+            >
+              <Icon icon="logos:whatsapp-icon" className="w-3.5 h-3.5" />
+              WhatsApp
+            </a>
+            <button
+              onClick={(e) => { e.stopPropagation(); e.preventDefault(); setShowContact(true) }}
+              className="flex-1 h-9 bg-[#EF6C00] text-white rounded-lg
+                flex items-center justify-center gap-1.5 text-xs font-medium
+                hover:bg-[#E65100] transition-colors"
+            >
+              Contactar
+              <Icon icon="solar:letter-bold" className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </Link>
+    </article>
+    <ContactModal
+      open={showContact}
+      onClose={() => setShowContact(false)}
+      property={property}
+    />
+    </>
   )
 }
 

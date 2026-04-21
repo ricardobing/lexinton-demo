@@ -13,6 +13,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import PropertyCard, { PropertyCardSkeleton } from '@/components/PropertyCard'
 import PropertySearch from '@/components/properties/PropertySearch'
+import { PropertyListingClient } from '@/components/properties/PropertyListingClient'
 import { getProperties } from '@/lib/tokko/queries'
 import type { PropertyFilters } from '@/lib/tokko/types'
 
@@ -121,14 +122,6 @@ async function PropertyContent({ searchParams }: PageProps) {
       {/* Contenido del listado */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
 
-        {/* Línea de contexto sobre el grid */}
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
-          <p className="text-[11px] text-lx-stone">
-            {total === 0 ? 'Sin resultados' :
-             `${currentOffset + 1}–${Math.min(currentOffset + ITEMS_PER_PAGE, total)} de ${total} propiedades`}
-          </p>
-        </div>
-
         {/* Empty state */}
         {properties.length === 0 && (
           <div className="text-center py-20 sm:py-28">
@@ -147,13 +140,14 @@ async function PropertyContent({ searchParams }: PageProps) {
           </div>
         )}
 
-        {/* Grid */}
+        {/* Toggle de vistas + listado */}
         {properties.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+          <PropertyListingClient
+            properties={properties}
+            total={total}
+            currentOffset={currentOffset}
+            itemsPerPage={ITEMS_PER_PAGE}
+          />
         )}
 
         {/* Paginación — al final del listado */}
