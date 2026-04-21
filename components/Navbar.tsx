@@ -72,15 +72,20 @@ export default function Navbar() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-5 shrink-0">
-          <a
-            href="tel:01147765003"
-            className={cn(
-              'text-[11px] font-semibold tracking-[0.08em] transition-colors duration-200',
-              dark ? 'text-lx-stone hover:text-lx-ink' : 'text-white/85 hover:text-white',
-            )}
-          >
-            011 4776-5003
-          </a>
+          <div className="flex items-center gap-3">
+            <a href="https://www.instagram.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={cn('transition-colors duration-200', dark ? 'text-gray-400 hover:text-gray-700' : 'text-white/60 hover:text-white')}>
+              <InstagramIcon className="w-4 h-4" />
+            </a>
+            <a href="https://www.facebook.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className={cn('transition-colors duration-200', dark ? 'text-gray-400 hover:text-gray-700' : 'text-white/60 hover:text-white')}>
+              <FacebookIcon className="w-4 h-4" />
+            </a>
+            <a href="https://www.linkedin.com/company/lexinton-propiedades/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className={cn('transition-colors duration-200', dark ? 'text-gray-400 hover:text-gray-700' : 'text-white/60 hover:text-white')}>
+              <LinkedInIcon className="w-4 h-4" />
+            </a>
+            <a href="https://www.youtube.com/@lexintonpropiedades" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className={cn('transition-colors duration-200', dark ? 'text-gray-400 hover:text-gray-700' : 'text-white/60 hover:text-white')}>
+              <YouTubeIcon className="w-4 h-4" />
+            </a>
+          </div>
           <a
             href="/tasar"
             className={cn(
