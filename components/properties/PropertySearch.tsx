@@ -295,21 +295,17 @@ export default function PropertySearch({ totalCount }: Props) {
   }
 
   const hasPrice = !!(cur.minPrice || cur.maxPrice)
-  const hasRooms = !!(cur.minRooms || cur.minBeds)
+  const hasRooms = !!(cur.minRooms)
   const priceLabel = fmtPrice(cur.minPrice, cur.maxPrice, cur.currency)
-  const roomsLabel = [
-    cur.minRooms ? `${cur.minRooms}+ amb` : '',
-    cur.minBeds  ? `${cur.minBeds}+ dorm` : '',
-  ].filter(Boolean).join(' · ') || 'Amb | Dorm'
+  const roomsLabel = cur.minRooms ? `${cur.minRooms}+ amb` : 'Ambientes'
 
   // Active chips
   type ChipDef = { key: string; label: string; clear: Record<string, string> }
   const chips: ChipDef[] = []
-  if (cur.operation)    chips.push({ key: 'op',   label: cur.operation === 'Sale' ? 'Comprar' : 'Alquilar', clear: { operation: '' } })
+  if (cur.operation)    chips.push({ key: 'op',   label: cur.operation === 'Sale' ? 'Comprar' : cur.operation === 'Rent' ? 'Alquilar' : 'Temporal', clear: { operation: '' } })
   if (cur.locationName) chips.push({ key: 'loc',  label: cur.locationName,                                  clear: { location: '', location_name: '' } })
   if (cur.type)         chips.push({ key: 'type', label: TYPE_LABEL[cur.type] ?? cur.type,                 clear: { type: '' } })
   if (cur.minRooms)     chips.push({ key: 'rmb',  label: `${cur.minRooms}+ amb`,                           clear: { minRooms: '' } })
-  if (cur.minBeds)      chips.push({ key: 'rmd',  label: `${cur.minBeds}+ dorm`,                           clear: { minBeds: '' } })
   if (hasPrice)         chips.push({ key: 'prc',  label: priceLabel,                                        clear: { minPrice: '', maxPrice: '', currency: '' } })
   if (cur.minSurface || cur.maxSurface) {
     const s = cur.minSurface && cur.maxSurface
@@ -319,9 +315,12 @@ export default function PropertySearch({ totalCount }: Props) {
   }
 
   // Filtered locations for barrio panel
+  const PRIORITY_BARRIOS = ['Palermo', 'Belgrano', 'Núñez', 'Recoleta']
   const filteredLocs = barrioQ
     ? locations.filter((l) => l.name.toLowerCase().includes(barrioQ.toLowerCase()))
     : locations
+  const priorityLocs = PRIORITY_BARRIOS.map((name) => locations.find((l) => l.name === name)).filter(Boolean) as LocItem[]
+  const restLocs = locations.filter((l) => !PRIORITY_BARRIOS.includes(l.name)).sort((a, b) => a.name.localeCompare(b.name, 'es'))
 
   return (
     <>
@@ -369,7 +368,23 @@ export default function PropertySearch({ totalCount }: Props) {
                     {!locLoading && filteredLocs.length === 0 && barrioQ && (
                       <p className="text-[12px] text-gray-400 text-center py-4">Sin resultados</p>
                     )}
-                    {filteredLocs.map((l) => (
+                    {!barrioQ && priorityLocs.map((l) => (
+                      <button key={l.id} type="button"
+                        onClick={() => {
+                          push({ location: String(l.id), location_name: l.name })
+                          setBarrioQ(''); setOpenDrop(null)
+                        }}
+                        className={`w-full text-left px-3 py-2 text-[12.5px] rounded-lg transition-colors ${
+                          cur.location === String(l.id)
+                            ? 'bg-red-50 text-[#C41230] font-semibold'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {l.name}
+                      </button>
+                    ))}
+                    {!barrioQ && priorityLocs.length > 0 && <div className="my-2 border-t border-gray-100" />}
+                    {(barrioQ ? filteredLocs : restLocs).map((l) => (
                       <button key={l.id} type="button"
                         onClick={() => {
                           push({ location: String(l.id), location_name: l.name })
@@ -394,14 +409,14 @@ export default function PropertySearch({ totalCount }: Props) {
             {/* Comprar / Alquilar */}
             <div ref={opRef} className="relative shrink-0">
               <PillBtn
-                label={cur.operation === 'Rent' ? 'Alquilar' : 'Comprar'}
+                label={cur.operation === 'Rent' ? 'Alquilar' : cur.operation === 'Temporary rent' ? 'Temporal' : 'Comprar'}
                 active={!!cur.operation}
                 open={openDrop === 'operation'}
                 onClick={() => toggle('operation')}
               />
               <Popover open={openDrop === 'operation'} anchorRef={opRef} onClose={() => setOpenDrop(null)} width="w-52">
                 <div className="py-2">
-                  {[{ value: 'Sale', label: 'Comprar' }, { value: 'Rent', label: 'Alquilar' }].map((o) => (
+                  {[{ value: 'Sale', label: 'Comprar' }, { value: 'Rent', label: 'Alquilar' }, { value: 'Temporary rent', label: 'Temporal' }].map((o) => (
                     <button key={o.value} type="button"
                       onClick={() => { push({ operation: o.value }); setOpenDrop(null) }}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-[13px] transition-colors ${
@@ -470,44 +485,25 @@ export default function PropertySearch({ totalCount }: Props) {
                 onClick={() => toggle('rooms')}
               />
               <Popover open={openDrop === 'rooms'} anchorRef={roomsRef} onClose={() => setOpenDrop(null)} width="w-72">
-                <div className="p-4 space-y-4">
-                  <div>
-                    <p className="text-[11px] font-semibold text-gray-500 mb-2.5">Ambientes</p>
-                    <div className="flex gap-1.5">
-                      {ROOM_OPTS.map((r) => (
-                        <button key={r} type="button"
-                          onClick={() => push({ minRooms: cur.minRooms === r ? '' : r })}
-                          className={`flex-1 py-2 text-[12px] font-semibold border rounded-full transition-colors ${
-                            cur.minRooms === r
-                              ? 'bg-[#C41230] text-white border-[#C41230]'
-                              : 'border-gray-200 text-gray-600 hover:border-gray-400'
-                          }`}
-                        >
-                          {r}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-semibold text-gray-500 mb-2.5">Dormitorios</p>
-                    <div className="flex gap-1.5">
-                      {ROOM_OPTS.map((r) => (
-                        <button key={r} type="button"
-                          onClick={() => push({ minBeds: cur.minBeds === r ? '' : r })}
-                          className={`flex-1 py-2 text-[12px] font-semibold border rounded-full transition-colors ${
-                            cur.minBeds === r
-                              ? 'bg-[#C41230] text-white border-[#C41230]'
-                              : 'border-gray-200 text-gray-600 hover:border-gray-400'
-                          }`}
-                        >
-                          {r}
-                        </button>
-                      ))}
-                    </div>
+                <div className="p-4">
+                  <p className="text-[11px] font-semibold text-gray-500 mb-2.5">Ambientes</p>
+                  <div className="flex gap-1.5">
+                    {ROOM_OPTS.map((r) => (
+                      <button key={r} type="button"
+                        onClick={() => push({ minRooms: cur.minRooms === r ? '' : r })}
+                        className={`flex-1 py-2 text-[12px] font-semibold border rounded-full transition-colors ${
+                          cur.minRooms === r
+                            ? 'bg-[#C41230] text-white border-[#C41230]'
+                            : 'border-gray-200 text-gray-600 hover:border-gray-400'
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <PopFooter
-                  onClear={() => { push({ minRooms: '', minBeds: '' }); setOpenDrop(null) }}
+                  onClear={() => { push({ minRooms: '' }); setOpenDrop(null) }}
                   onApply={() => setOpenDrop(null)}
                 />
               </Popover>
@@ -610,7 +606,7 @@ export default function PropertySearch({ totalCount }: Props) {
           {/* ── MOBILE ──────────────────────────────────────────────────── */}
           <div className="md:hidden flex items-center gap-2">
             <div className="flex-1 overflow-x-auto [&::-webkit-scrollbar]:hidden flex items-center gap-1 bg-white border border-gray-200 rounded-full shadow-sm px-2 py-1">
-              {[{ value: 'Sale', label: 'Comprar' }, { value: 'Rent', label: 'Alquilar' }].map((o) => (
+              {[{ value: 'Sale', label: 'Comprar' }, { value: 'Rent', label: 'Alquilar' }, { value: 'Temporary rent', label: 'Temporal' }].map((o) => (
                 <button key={o.value} type="button"
                   onClick={() => push({ operation: cur.operation === o.value ? '' : o.value })}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap border transition-colors ${
@@ -885,23 +881,6 @@ export default function PropertySearch({ totalCount }: Props) {
                         onClick={() => push({ minRooms: cur.minRooms === r ? '' : r })}
                         className={`flex-1 py-2.5 rounded-full text-[11px] font-semibold border transition-colors ${
                           cur.minRooms === r ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500'
-                        }`}
-                      >
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Dormitorios */}
-                <div>
-                  <p className="text-[10px] font-bold tracking-[0.16em] uppercase text-gray-500 mb-2">Dormitorios</p>
-                  <div className="flex gap-2">
-                    {ROOM_OPTS.map((r) => (
-                      <button key={r} type="button"
-                        onClick={() => push({ minBeds: cur.minBeds === r ? '' : r })}
-                        className={`flex-1 py-2.5 rounded-full text-[11px] font-semibold border transition-colors ${
-                          cur.minBeds === r ? 'bg-[#C41230] text-white border-[#C41230]' : 'border-gray-200 text-gray-500'
                         }`}
                       >
                         {r}

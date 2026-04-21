@@ -68,7 +68,7 @@ function buildFilters(sp: PageProps['searchParams']): PropertyFilters {
     offset: sp.offset ? parseInt(sp.offset, 10) : 0,
   }
   const op = sp.operation
-  if (op === 'Sale' || op === 'Rent') filters.operation = op
+  if (op === 'Sale' || op === 'Rent' || op === 'Temporary rent') filters.operation = op as PropertyFilters['operation']
   if (sp.type) filters.propertyType = parseInt(sp.type, 10)
   if (sp.location) filters.locationId = parseInt(sp.location, 10)
   if (sp.minRooms) filters.minRooms = parseInt(sp.minRooms, 10)

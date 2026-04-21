@@ -153,7 +153,7 @@ export interface TokkoProperty {
 
 export interface TokkoOperation {
   operation_id: number
-  operation_type: 'Sale' | 'Rent' | 'Temporary Rent'  // en inglés en la API
+  operation_type: 'Sale' | 'Rent' | 'Temporary Rent' | 'Temporary rent'  // en inglés en la API
   prices: TokkoPrice[]
 }
 
@@ -299,7 +299,7 @@ export interface TokkoLeadPayload {
 // ─── Filtros de búsqueda (para el proxy interno) ──────────────────────────────
 
 export interface PropertyFilters {
-  operation?: 'Sale' | 'Rent'
+  operation?: 'Sale' | 'Rent' | 'Temporary rent'
   propertyType?: number            // ID del tipo (2=Apartment, 3=House, etc.)
   locationId?: number              // ID del barrio/zona
   minRooms?: number
