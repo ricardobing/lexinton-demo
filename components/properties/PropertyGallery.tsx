@@ -1,14 +1,16 @@
 'use client'
 /**
- * PropertyGallery — Galería de imágenes con lightbox
+ * PropertyGallery — Galería estilo ZonaProp
  *
- * Grid: foto principal grande (2x2) + hasta 4 thumbnails.
- * Click en cualquier foto abre el lightbox con navegación completa.
- * En mobile muestra solo la foto principal + botón "Ver todas".
+ * Desktop: foto principal (2/3 ancho, 480px) + grid 2×2 de thumbs (1/3)
+ * Mobile: foto principal + botón "Ver todas"
+ * Click → lightbox con navegación completa.
  */
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { Icon } from '@iconify/react'
 import Lightbox from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
 import type { TokkoPhoto } from '@/lib/tokko/types'
@@ -25,74 +27,72 @@ export function PropertyGallery({ photos, title }: Props) {
   if (!photos?.length) return null
 
   const main = photos[0]
-  const thumbs = photos.slice(1, 5)     // hasta 4 thumbnails visibles
-  const remaining = photos.length - 5   // "+N fotos" en el último thumb
+  const thumbs = photos.slice(1, 5)   // up to 4 thumbnails
+  const slides = photos.map((p) => ({ src: p.image, alt: `${title} — foto` }))
 
-  const slides = photos.map((p) => ({
-    src: p.image,
-    alt: `${title} — foto`,
-  }))
-
-  function open_at(i: number) {
-    setIndex(i)
-    setOpen(true)
-  }
+  function open_at(i: number) { setIndex(i); setOpen(true) }
 
   return (
     <>
-      {/* ── DESKTOP: grid 2+2 ───────────────────────── */}
-      <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[520px]">
-
-        {/* Foto principal — 2 columnas, 2 filas */}
-        <button
-          className="col-span-2 row-span-2 relative overflow-hidden cursor-zoom-in group"
+      {/* ── DESKTOP: 2/3 main + 1/3 grid 2×2 ────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="hidden md:grid grid-cols-[2fr_1fr] gap-2 h-[480px] rounded-xl overflow-hidden"
+      >
+        {/* Foto principal */}
+        <div
+          className="relative overflow-hidden cursor-zoom-in group"
           onClick={() => open_at(0)}
-          aria-label="Ver foto principal"
         >
           <Image
             src={main.image}
             alt={`${title} — foto principal`}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
             priority
-            sizes="(max-width: 1280px) 50vw, 600px"
+            sizes="(max-width: 1280px) 55vw, 700px"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-        </button>
+        </div>
 
-        {/* Thumbnails */}
-        {thumbs.map((photo, i) => {
-          const isLast = i === thumbs.length - 1 && remaining > 0
-          return (
-            <button
-              key={i}
-              className="relative overflow-hidden cursor-zoom-in group"
-              onClick={() => open_at(i + 1)}
-              aria-label={`Ver foto ${i + 2}`}
-            >
-              <Image
-                src={photo.image}
-                alt={`${title} — foto ${i + 2}`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-400"
-                sizes="25vw"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300" />
-              {/* Overlay "+N fotos" en el último thumb si hay más */}
-              {isLast && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    +{remaining + 1} fotos
-                  </span>
-                </div>
-              )}
-            </button>
-          )
-        })}
-      </div>
+        {/* Grid 2×2 */}
+        <div className="grid grid-cols-2 grid-rows-2 gap-2">
+          {[0, 1, 2, 3].map((i) => {
+            const photo = thumbs[i]
+            if (!photo) return <div key={i} className="bg-gray-100" />
+            const isLast = i === 3 && photos.length > 5
+            return (
+              <div
+                key={i}
+                className="relative overflow-hidden cursor-zoom-in group"
+                onClick={() => open_at(i + 1)}
+              >
+                <Image
+                  src={photo.image}
+                  alt={`${title} — foto ${i + 2}`}
+                  fill
+                  className="object-cover group-hover:scale-[1.03] transition-transform duration-400"
+                  sizes="20vw"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300" />
+                {isLast && (
+                  <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium flex items-center gap-2">
+                      <Icon icon="solar:camera-bold" className="w-4 h-4" />
+                      +{photos.length - 4} fotos
+                    </span>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </motion.div>
 
-      {/* ── MOBILE: solo foto principal ─────────────── */}
-      <div className="md:hidden relative w-full aspect-[4/3] overflow-hidden">
+      {/* ── MOBILE: foto principal + botón ────────────── */}
+      <div className="md:hidden relative w-full aspect-[4/3] overflow-hidden rounded-xl">
         <Image
           src={main.image}
           alt={`${title} — foto principal`}
@@ -104,8 +104,9 @@ export function PropertyGallery({ photos, title }: Props) {
         {photos.length > 1 && (
           <button
             onClick={() => open_at(0)}
-            className="absolute bottom-4 right-4 bg-black/60 text-white text-[11px] font-bold tracking-[0.1em] uppercase px-3 py-2"
+            className="absolute bottom-4 right-4 bg-black/60 text-white text-[11px] font-semibold tracking-[0.08em] uppercase px-4 py-2 rounded-full flex items-center gap-1.5"
           >
+            <Icon icon="solar:camera-bold" className="w-3.5 h-3.5" />
             Ver {photos.length} fotos
           </button>
         )}

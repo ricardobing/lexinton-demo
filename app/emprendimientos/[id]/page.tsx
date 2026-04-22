@@ -21,6 +21,13 @@ import PropertyDetailClient from '@/components/properties/PropertyDetailClient'
 
 export const revalidate = 300
 
+const CONSTRUCTION_STATUS_LABELS: Record<number, string> = {
+  0: 'En pozo',
+  1: 'En construcción',
+  2: 'Terminado',
+  3: 'Entrega inmediata',
+}
+
 interface PageProps {
   params: { id: string }
 }
@@ -84,7 +91,7 @@ export default async function EmprendimientoDetallePage({ params }: PageProps) {
       </div>
 
       {photos.length > 0 && (
-        <section className="bg-lx-ink">
+        <section className="bg-white">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 sm:py-6">
             <PropertyGallery photos={photos} title={dev.publication_title || dev.name} />
           </div>
@@ -103,6 +110,7 @@ export default async function EmprendimientoDetallePage({ params }: PageProps) {
         coordinates={coordinates}
         isRent={false}
         similarProperties={[]}
+        constructionStatus={CONSTRUCTION_STATUS_LABELS[dev.construction_status] ?? ''}
       />
     </main>
   )

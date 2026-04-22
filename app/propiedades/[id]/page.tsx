@@ -123,7 +123,7 @@ export default async function PropiedadDetallePage({ params }: PageProps) {
 
       {/* ── GALLERY ────────────────────────────────────── */}
       {photos.length > 0 && (
-        <section className="bg-lx-ink">
+        <section className="bg-white">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 sm:py-6">
             <PropertyGallery photos={photos} title={property.address} />
           </div>
