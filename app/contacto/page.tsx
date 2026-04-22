@@ -43,6 +43,7 @@ export default function ContactoPage() {
         label="Lexinton Propiedades · Contacto"
         title="Estamos para ayudarte"
         description="Dos sucursales en Buenos Aires. Un equipo disponible para responder todas tus consultas sobre propiedades en venta, alquiler y tasaciones."
+        withImage
       />
 
       {/* ── CONTACTO + FORMULARIO ────────────────────── */}

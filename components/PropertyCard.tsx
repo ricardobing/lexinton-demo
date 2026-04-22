@@ -35,15 +35,17 @@ interface PropertyCardProps {
   property: TokkoProperty
   featured?: boolean
   priority?: boolean
+  basePath?: string
 }
 
 export default function PropertyCard({
   property,
   featured = false,
   priority = false,
+  basePath = '/propiedades',
 }: PropertyCardProps) {
   const slug = makePropertySlug(property.id, property.address)
-  const href = `/propiedades/${slug}`
+  const href = `${basePath}/${slug}`
   const coverPhoto = getCoverPhoto(property)
   const operationLabel = getOperationLabel(property)
   const priceLabel = getPropertyPriceLabel(property)

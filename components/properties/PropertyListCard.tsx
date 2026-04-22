@@ -16,9 +16,10 @@ import { ContactModal } from './ContactModal'
 
 interface Props {
   property: TokkoProperty
+  basePath?: string
 }
 
-export function PropertyListCard({ property }: Props) {
+export function PropertyListCard({ property, basePath = '/propiedades' }: Props) {
   const [currentPhoto, setCurrentPhoto] = useState(0)
   const [showContact, setShowContact] = useState(false)
 
@@ -26,7 +27,7 @@ export function PropertyListCard({ property }: Props) {
   const priceLabel = getPropertyPriceLabel(property)
   const expenses = formatExpenses(property.expenses)
   const slug = makePropertySlug(property.id, property.address)
-  const href = `/propiedades/${slug}`
+  const href = `${basePath}/${slug}`
 
   const surface = property.total_surface || property.roofed_surface || property.surface || 0
   const rooms = property.room_amount

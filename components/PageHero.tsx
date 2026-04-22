@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { fadeInUp, viewportOnce } from '@/lib/animations'
 
@@ -9,12 +10,22 @@ interface PageHeroProps {
   /** Optional italic subtitle portion */
   titleEmphasis?: string
   description?: string
+  /** Show /hero-poster.jpg parallax bg like TasarHero */
+  withImage?: boolean
 }
 
-export default function PageHero({ label, title, titleEmphasis, description }: PageHeroProps) {
+export default function PageHero({ label, title, titleEmphasis, description, withImage }: PageHeroProps) {
   return (
     <section className="bg-lx-ink text-white pt-[calc(68px+4rem)] pb-20 sm:pt-[calc(68px+6rem)] sm:pb-28 relative overflow-hidden">
-      {/* Subtle gradient overlay */}
+      {/* Optional background image */}
+      {withImage && (
+        <div className="absolute inset-0 pointer-events-none">
+          <Image src="/hero-poster.jpg" fill alt="" className="object-cover opacity-20" priority />
+        </div>
+      )}
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-lx-ink/85 via-lx-ink/65 to-lx-ink/90" />
+      {/* Subtle accent glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-lx-accent/[0.06]" />
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
         <motion.p

@@ -82,7 +82,7 @@ export default function HeroSection() {
         >
           <span className="block w-8 h-px bg-white/50" />
           <span className="text-[10.5px] font-semibold tracking-[0.28em] uppercase text-white/70">
-            Palermo · Buenos Aires · Desde 2004
+            Palermo · Buenos Aires
           </span>
           <span className="block w-8 h-px bg-white/50" />
         </motion.div>
