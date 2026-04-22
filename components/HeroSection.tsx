@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import HeroSearch from '@/components/search/HeroSearch'
+import { HomeSearchBar } from '@/components/search/HomeSearchBar'
 
 const ease = [0.22, 1, 0.36, 1] as const
 const VIDEO_SRC = 'https://videos.pexels.com/video-files/32551249/13881455_1920_1080_24fps.mp4'
@@ -116,7 +116,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, ease, delay: 0.9 }}
           className="w-full px-0"
         >
-          <HeroSearch />
+          <HomeSearchBar />
         </motion.div>
       </div>
 
