@@ -71,7 +71,13 @@ function buildFilters(sp: PageProps['searchParams']): PropertyFilters {
   const op = sp.operation
   if (op === 'Sale' || op === 'Rent' || op === 'Temporary rent') filters.operation = op as PropertyFilters['operation']
   if (sp.type) filters.propertyType = parseInt(sp.type, 10)
-  if (sp.location) filters.locationId = parseInt(sp.location, 10)
+  if (sp.location) {
+    if (sp.location.includes(',')) {
+      filters.locationIds = sp.location.split(',').map((id) => parseInt(id, 10)).filter(Boolean)
+    } else {
+      filters.locationId = parseInt(sp.location, 10)
+    }
+  }
   if (sp.minRooms) filters.minRooms = parseInt(sp.minRooms, 10)
   if (sp.maxRooms) filters.maxRooms = parseInt(sp.maxRooms, 10)
   if (sp.minPrice) filters.minPrice = parseInt(sp.minPrice, 10)

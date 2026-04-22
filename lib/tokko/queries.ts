@@ -54,6 +54,7 @@ export async function getProperties(
     operation,
     propertyType,
     locationId,
+    locationIds,
     minRooms,
     maxRooms,
     minPrice,
@@ -65,12 +66,12 @@ export async function getProperties(
   } = filters
 
   // Params que la API acepta nativamente
-  // NOTA: order_by no funciona en la API de Tokko (retorna 400 para todos los valores).
-  // El ordenamiento se aplica post-fetch server-side.
   const apiParams: Record<string, string | number | boolean> = {}
 
-  if (locationId) {
-    apiParams['current_localization_id'] = locationId
+  // Para múltiples ubicaciones, usar la primera para la API y filtrar las demás post-fetch
+  const primaryLocationId = locationIds?.length ? locationIds[0] : locationId
+  if (primaryLocationId) {
+    apiParams['current_localization_id'] = primaryLocationId
     apiParams['current_localization_type'] = 'location'
   }
 
@@ -120,8 +121,10 @@ export async function getProperties(
 
   let filtered = allObjects
 
-  // Filtro por ubicación (post-fetch — Tokko a veces ignora current_localization_id)
-  if (locationId) {
+  // Filtro por ubicación (post-fetch)
+  if (locationIds && locationIds.length > 0) {
+    filtered = filtered.filter((p) => p.location?.id != null && locationIds.includes(p.location.id))
+  } else if (locationId) {
     filtered = filtered.filter((p) => p.location?.id === locationId)
   }
 

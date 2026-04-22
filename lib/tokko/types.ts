@@ -301,7 +301,8 @@ export interface TokkoLeadPayload {
 export interface PropertyFilters {
   operation?: 'Sale' | 'Rent' | 'Temporary rent'
   propertyType?: number            // ID del tipo (2=Apartment, 3=House, etc.)
-  locationId?: number              // ID del barrio/zona
+  locationId?: number              // ID del barrio/zona (único)
+  locationIds?: number[]           // IDs múltiples (para grupos como Palermo)
   minRooms?: number
   maxRooms?: number
   minPrice?: number

@@ -314,13 +314,43 @@ export default function PropertySearch({ totalCount }: Props) {
     chips.push({ key: 'surf', label: s, clear: { minSurface: '', maxSurface: '' } })
   }
 
-  // Filtered locations for barrio panel
-  const PRIORITY_BARRIOS = ['Palermo', 'Belgrano', 'Núñez', 'Recoleta']
+  // Grupos prioritarios de barrios — agrupan variantes bajo una sola etiqueta
+  const PRIORITY_GROUPS = [
+    { label: 'Palermo',  matches: ['Palermo', 'Palermo Soho', 'Palermo Hollywood', 'Palermo Chico'] },
+    { label: 'Belgrano', matches: ['Belgrano', 'Belgrano C', 'Belgrano R', 'Belgrano Barrancas'] },
+    { label: 'Nuñez',   matches: ['Nuñez'] },
+    { label: 'Recoleta', matches: ['Recoleta'] },
+  ]
+  // Todos los nombres que pertenecen a algún grupo prioritario
+  const allPriorityNames = PRIORITY_GROUPS.flatMap((g) => g.matches)
+
   const filteredLocs = barrioQ
     ? locations.filter((l) => l.name.toLowerCase().includes(barrioQ.toLowerCase()))
     : locations
-  const priorityLocs = PRIORITY_BARRIOS.map((name) => locations.find((l) => l.name === name)).filter(Boolean) as LocItem[]
-  const restLocs = locations.filter((l) => !PRIORITY_BARRIOS.includes(l.name)).sort((a, b) => a.name.localeCompare(b.name, 'es'))
+
+  // Barrios no-prioritarios en orden alfabético
+  const restLocs = locations
+    .filter((l) => !allPriorityNames.some((m) => m.toLowerCase() === l.name.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+
+  // Helpers para grupos
+  function groupLocationIds(group: typeof PRIORITY_GROUPS[0]) {
+    return locations
+      .filter((l) => group.matches.some((m) => m.toLowerCase() === l.name.toLowerCase()))
+      .map((l) => l.id)
+  }
+  function groupCount(group: typeof PRIORITY_GROUPS[0]) {
+    return groupLocationIds(group).length
+  }
+  // El location param es "active" para este grupo si la location_name coincide con el label
+  function groupIsActive(group: typeof PRIORITY_GROUPS[0]) {
+    return cur.locationName === group.label
+  }
+  function selectGroup(group: typeof PRIORITY_GROUPS[0]) {
+    const ids = groupLocationIds(group)
+    push({ location: ids.join(','), location_name: group.label })
+    setBarrioQ(''); setOpenDrop(null)
+  }
 
   return (
     <>
@@ -368,22 +398,20 @@ export default function PropertySearch({ totalCount }: Props) {
                     {!locLoading && filteredLocs.length === 0 && barrioQ && (
                       <p className="text-[12px] text-gray-400 text-center py-4">Sin resultados</p>
                     )}
-                    {!barrioQ && priorityLocs.map((l) => (
-                      <button key={l.id} type="button"
-                        onClick={() => {
-                          push({ location: String(l.id), location_name: l.name })
-                          setBarrioQ(''); setOpenDrop(null)
-                        }}
-                        className={`w-full text-left px-3 py-2 text-[12.5px] rounded-lg transition-colors ${
-                          cur.location === String(l.id)
+                    {!barrioQ && PRIORITY_GROUPS.map((group) => (
+                      <button key={group.label} type="button"
+                        onClick={() => selectGroup(group)}
+                        className={`w-full flex items-center justify-between px-3 py-2 text-[12.5px] rounded-lg transition-colors ${
+                          groupIsActive(group)
                             ? 'bg-red-50 text-[#C41230] font-semibold'
                             : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >
-                        {l.name}
+                        <span>{group.label}</span>
+                        <span className="text-[11px] text-gray-400">{groupCount(group)}</span>
                       </button>
                     ))}
-                    {!barrioQ && priorityLocs.length > 0 && <div className="my-2 border-t border-gray-100" />}
+                    {!barrioQ && PRIORITY_GROUPS.length > 0 && <div className="my-2 border-t border-gray-100" />}
                     {(barrioQ ? filteredLocs : restLocs).map((l) => (
                       <button key={l.id} type="button"
                         onClick={() => {
