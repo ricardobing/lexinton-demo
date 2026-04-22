@@ -5,6 +5,7 @@ import FeaturedProperties from '@/components/FeaturedProperties'
 import { TrustStrip } from '@/components/home/TrustStrip'
 import { TestimonialsSection } from '@/components/home/TestimonialsSection'
 import { DualCTA } from '@/components/home/DualCTA'
+import { TasacionCTA } from '@/components/home/TasacionCTA'
 import { DevelopmentsCarousel } from '@/components/DevelopmentsCarousel'
 import { getDevelopments } from '@/lib/tokko/queries'
 
@@ -15,6 +16,7 @@ export default async function HomePage() {
     <main>
       <HeroSection />
       <DevelopmentsCarousel developments={developments} />
+      <TasacionCTA />
       <CredibilityBar />
       <TrustStrip />
       <MetodoSection />

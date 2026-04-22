@@ -185,9 +185,9 @@ export default function PropertyCard({
         </a>
         <button
           onClick={() => setShowContact(true)}
-          className="flex-1 h-9 bg-[#EF6C00] text-white rounded-lg
+          className="flex-1 h-9 bg-[#374151] text-white rounded-lg
             flex items-center justify-center gap-1.5 text-xs font-medium
-            hover:bg-[#E65100] transition-colors"
+            hover:bg-[#1f2937] transition-colors"
         >
           Contactar
           <Icon icon="solar:letter-bold" className="w-3.5 h-3.5" />

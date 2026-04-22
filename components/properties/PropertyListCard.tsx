@@ -196,9 +196,9 @@ export function PropertyListCard({ property }: Props) {
               {/* Contactar */}
               <button
                 onClick={() => setShowContact(true)}
-                className="h-10 px-4 bg-[#EF6C00] text-white rounded-lg
+                className="h-10 px-4 bg-[#374151] text-white rounded-lg
                   flex items-center gap-2 text-sm font-medium
-                  hover:bg-[#E65100] transition-colors"
+                  hover:bg-[#1f2937] transition-colors"
               >
                 Contactar
                 <Icon icon="solar:letter-bold" className="w-4 h-4" />

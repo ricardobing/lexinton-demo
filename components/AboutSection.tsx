@@ -8,7 +8,7 @@ const ease = [0.22, 1, 0.36, 1] as const
 
 const checks = [
   'Líderes en operaciones simultáneas venta + compra',
-  'Tasación gratuita y sin compromiso',
+  'Tasación profesional y sin compromiso',
   'Equipo jurídico y financiero propio',
   'Atención personalizada en Palermo y Vicente López',
   'Más de 5.000 clientes que confían en nosotros',

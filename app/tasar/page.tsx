@@ -7,6 +7,7 @@ import { LeadForm } from '@/components/LeadForm'
 import SectionHeader from '@/components/ui/SectionHeader'
 import TasarHero from '@/components/tasar/TasarHero'
 import ValorPropuesta from '@/components/tasar/ValorPropuesta'
+import { ComoVendemos } from '@/components/tasar/ComoVendemos'
 import { ProcessSteps } from '@/components/tasar/ProcessSteps'
 import { WhyUs } from '@/components/tasar/WhyUs'
 import DifusionTotalSection from '@/components/tasar/DifusionTotalSection'
@@ -14,11 +15,11 @@ import { StatHighlight } from '@/components/tasar/StatHighlight'
 import SEOBarrios from '@/components/tasar/SEOBarrios'
 
 export const metadata: Metadata = {
-  title: 'Tasación Gratuita de Propiedades en Palermo y Zona Norte CABA | Lexinton',
+  title: 'Tasación de Propiedades en Palermo y Zona Norte CABA | Lexinton',
   description:
-    'Tasación profesional y gratuita en Palermo, Belgrano, Núñez, Recoleta, Saavedra y Villa Urquiza. Corredores matriculados con 20 años en zona norte. Sin compromiso.',
+    'Tasación profesional en Palermo, Belgrano, Núñez, Recoleta, Saavedra y Villa Urquiza. Corredores matriculados con 20 años en zona norte.',
   keywords:
-    'tasación gratuita Palermo, tasar departamento Belgrano, tasación inmuebles zona norte CABA, precio m2 Palermo 2025, tasar propiedad Buenos Aires',
+    'tasación Palermo, tasar departamento Belgrano, tasación inmuebles zona norte CABA, precio m2 Palermo 2025, tasar propiedad Buenos Aires',
   alternates: { canonical: 'https://lexinton.com.ar/tasar' },
 }
 
@@ -29,9 +30,9 @@ export default function TasarPage() {
       {/* ── 1. HERO con parallax ─────────────────────── */}
       <TasarHero />
 
-      {/* ── 2. PROPUESTA DE VALOR ────────────────────── */}
+      {/* ── 2. CÓMO VENDEMOS TU PROPIEDAD ───────────── */}
       <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-      <ValorPropuesta />
+      <ComoVendemos />
 
       {/* ── 3. PROCESO EN PASOS ──────────────────────── */}
       <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
@@ -56,7 +57,7 @@ export default function TasarPage() {
               de saber qué tenés.
             </p>
             <SectionHeader
-              label="Tasación Gratuita"
+              label="Tasación"
               title="Solicitá tu tasación"
               description="Completá el formulario y un broker de tu zona te contactará en menos de 24hs hábiles."
               center

@@ -93,7 +93,7 @@ export function DualCTA() {
                 <em className="not-italic font-normal">cuánto vale la mía</em>
               </h3>
               <p className="text-white/80 mb-6 leading-relaxed">
-                Tasación gratuita con un corredor de tu barrio. Respuesta en menos de 24 horas.
+                Tasación con un corredor de tu barrio. Respuesta en menos de 24 horas.
               </p>
               <Link href="/tasar"
                 className="inline-flex items-center gap-2 bg-white text-[#C41230]

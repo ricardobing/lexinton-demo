@@ -71,7 +71,7 @@ export default function QuieroVenderPage() {
             <SectionHeader
               label="Quiero Vender"
               title="Comenzá el proceso"
-              description="Completá el formulario y te contactamos para coordinar la tasación gratuita y sin compromiso."
+              description="Completá el formulario y te contactamos para coordinar la tasación sin compromiso."
               center
             />
             <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
