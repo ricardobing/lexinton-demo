@@ -7,7 +7,7 @@ import { ContactForm } from './ContactForm'
 interface Props {
   open: boolean
   onClose: () => void
-  property: TokkoProperty
+  property?: TokkoProperty
 }
 
 export function ContactModal({ open, onClose, property }: Props) {

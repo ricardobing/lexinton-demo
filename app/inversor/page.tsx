@@ -4,13 +4,12 @@
  */
 
 import type { Metadata } from 'next'
-import { LeadForm } from '@/components/LeadForm'
+import { ContactForm } from '@/components/properties/ContactForm'
 import PageHero from '@/components/PageHero'
 import SectionHeader from '@/components/ui/SectionHeader'
 import NumberedSteps from '@/components/ui/NumberedSteps'
 import FeatureCard from '@/components/ui/FeatureCard'
 import StatsCounter from '@/components/ui/StatsCounter'
-import AnimatedSection from '@/components/AnimatedSection'
 
 export const metadata: Metadata = {
   title: 'Inversión Inmobiliaria en Palermo | Lexinton Propiedades',
@@ -99,21 +98,28 @@ export default function InversorPage() {
       </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <section className="bg-lx-ink py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-            <AnimatedSection>
-              <SectionHeader
-                label="Inversión Inmobiliaria"
-                title="Hablemos de"
-                titleEmphasis="tu inversión"
-                description="Contanos con qué presupuesto contás y qué objetivos tenés. Te presentamos las mejores opciones del mercado actual."
-                labelColor="white"
+      <section className="py-24 bg-[#f8f6f2]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div>
+              <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] mb-3">
+                Inversión · Inmobiliaria
+              </p>
+              <h2 className="text-4xl font-light text-gray-900 mb-6">
+                Hablemos de<br />
+                <em className="not-italic font-normal">tu inversión</em>
+              </h2>
+              <p className="text-gray-500 leading-relaxed">
+                Contanos con qué presupuesto contás y qué objetivos tenés.
+                Te presentamos las mejores opciones del mercado actual.
+              </p>
+            </div>
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+              <ContactForm
+                customTitle="Consultar sobre inversiones"
+                customMessage="Hola Lexinton, estoy interesado/a en invertir en propiedades. Me gustaría recibir información sobre las opciones disponibles."
               />
-            </AnimatedSection>
-            <AnimatedSection>
-              <LeadForm tipo="Inversores" showPresupuesto showTipoPropiedad theme="dark" messagePlaceholder="Contanos sobre tu búsqueda (zona, tipo, plazo...)" />
-            </AnimatedSection>
+            </div>
           </div>
         </div>
       </section>

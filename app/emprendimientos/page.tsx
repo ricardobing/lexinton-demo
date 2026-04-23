@@ -7,11 +7,10 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { getDevelopments } from '@/lib/tokko/queries'
 import { developmentToProperty } from '@/lib/tokko/utils'
-import { LeadForm } from '@/components/LeadForm'
+import { ContactForm } from '@/components/properties/ContactForm'
 import PageHero from '@/components/PageHero'
 import SectionHeader from '@/components/ui/SectionHeader'
 import FeatureCard from '@/components/ui/FeatureCard'
-import AnimatedSection from '@/components/AnimatedSection'
 import { EmprendimientosClient } from '@/components/emprendimientos/EmprendimientosClient'
 
 export const metadata: Metadata = {
@@ -95,21 +94,22 @@ export default function EmprendimientosPage() {
       </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <section className="bg-lx-ink py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-            <AnimatedSection>
-              <SectionHeader
-                label="Inversión · Emprendimientos"
-                title="¿Querés invertir"
-                titleEmphasis="en un emprendimiento?"
-                description="Contanos tu situación y te asesoramos sobre los proyectos que mejor se adaptan a tu presupuesto y objetivos de inversión."
-                labelColor="white"
-              />
-            </AnimatedSection>
-            <AnimatedSection>
-              <LeadForm tipo="Emprendimientos" showPresupuesto theme="dark" />
-            </AnimatedSection>
+      <section className="py-24 bg-[#f8f6f2]">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] mb-3">
+              Contacto
+            </p>
+            <h2 className="text-4xl font-light text-gray-900">
+              ¿Querés saber más sobre<br />
+              <em className="not-italic">algún proyecto?</em>
+            </h2>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm max-w-xl mx-auto">
+            <ContactForm
+              customTitle="Consultar sobre emprendimientos"
+              customMessage="Hola Lexinton, me interesa recibir información sobre sus emprendimientos disponibles."
+            />
           </div>
         </div>
       </section>

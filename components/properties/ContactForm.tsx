@@ -9,17 +9,23 @@ import type { TokkoProperty } from '@/lib/tokko/types'
 import { PhoneInput } from '@/components/ui/PhoneInput'
 
 interface Props {
-  property: TokkoProperty
+  property?: TokkoProperty
+  customTitle?: string
+  customMessage?: string
   onSuccess?: () => void
 }
 
-export function ContactForm({ property, onSuccess }: Props) {
-  const address = property.fake_address || property.address || 'esta propiedad'
+export function ContactForm({ property, customTitle, customMessage, onSuccess }: Props) {
+  const address = property ? (property.fake_address || property.address || 'esta propiedad') : null
+  const initialMessage = customMessage ||
+    (address
+      ? `¡Hola! Quiero que se comuniquen conmigo por esta propiedad en ${address} que vi en Lexinton Propiedades.`
+      : 'Hola Lexinton, me gustaría recibir más información sobre sus servicios.')
   const [form, setForm] = useState({
     nombre: '',
     email: '',
     telefono: '',
-    mensaje: `¡Hola! Quiero que se comuniquen conmigo por esta propiedad en ${address} que vi en Lexinton Propiedades.`,
+    mensaje: initialMessage,
   })
   const [phonePrefix, setPhonePrefix] = useState('+54')
   const [sending, setSending] = useState(false)
@@ -37,8 +43,8 @@ export function ContactForm({ property, onSuccess }: Props) {
           email: form.email,
           telefono: form.telefono ? `${phonePrefix} ${form.telefono}` : '',
           mensaje: form.mensaje,
-          tipo: 'Consulta de propiedad',
-          propiedad_id: property.id,
+          tipo: property ? 'Consulta de propiedad' : 'Consulta general',
+          propiedad_id: property?.id ?? null,
         }),
       })
       setSent(true)
@@ -64,14 +70,13 @@ export function ContactForm({ property, onSuccess }: Props) {
       {/* Header */}
       <div className="px-6 pt-6 pb-4 border-b border-gray-100">
         <h3 className="text-lg font-medium text-gray-900">
-          Contactate con Lexinton Propiedades
+          {customTitle || 'Contactate con Lexinton Propiedades'}
         </h3>
-        <p className="text-sm text-gray-500 mt-1">
-          por la propiedad en {property.location?.name || 'Buenos Aires'}
-        </p>
-      </div>
-
-      <div className="p-6 space-y-4">
+        {property && (
+          <p className="text-sm text-gray-500 mt-1">
+            por la propiedad en {property.location?.name || 'Buenos Aires'}
+          </p>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs text-gray-500 mb-1 block">Nombre</label>
