@@ -60,8 +60,6 @@ export function TrustStrip() {
           <Stat value="5.000+" label="clientes" />
           <div className="w-px h-10 bg-gray-200 hidden md:block" />
           <Stat value="N°1" label="operaciones simultáneas" />
-          <div className="w-px h-10 bg-gray-200 hidden md:block" />
-          <Stat value="4.9" label="calificación Google" star />
         </div>
 
       </div>
@@ -69,24 +67,15 @@ export function TrustStrip() {
   )
 }
 
-function Stat({ value, label, star }: { value: string; label: string; star?: boolean }) {
+function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex items-center gap-3">
       <span className="text-2xl md:text-3xl font-light text-[#C41230]">
         {value}
       </span>
-      <div className="flex flex-col">
-        <span className="text-xs text-gray-500 uppercase tracking-wide">
-          {label}
-        </span>
-        {star && (
-          <div className="flex gap-0.5 mt-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Icon key={i} icon="solar:star-bold" className="w-3 h-3 text-[#FBBF24]" />
-            ))}
-          </div>
-        )}
-      </div>
+      <span className="text-xs text-gray-500 uppercase tracking-wide">
+        {label}
+      </span>
     </div>
   )
 }

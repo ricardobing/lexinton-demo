@@ -1,5 +1,4 @@
 import HeroSection from '@/components/HeroSection'
-import CredibilityBar from '@/components/StatsBar'
 import MetodoSection from '@/components/MetodoSection'
 import FeaturedProperties from '@/components/FeaturedProperties'
 import { TrustStrip } from '@/components/home/TrustStrip'
@@ -18,7 +17,6 @@ export default async function HomePage() {
       <HeroSection />
       <DevelopmentsCarousel developments={developments} />
       <TasacionCTA />
-      <CredibilityBar />
       <TrustStrip />
       <MetodoSection />
       <FeaturedProperties />

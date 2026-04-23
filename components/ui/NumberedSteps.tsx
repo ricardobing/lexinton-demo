@@ -29,7 +29,7 @@ export default function NumberedSteps({ steps, columns }: NumberedStepsProps) {
   const cols = columns ?? (Math.min(steps.length, 5) as 3 | 4 | 5)
 
   return (
-    <div className={`grid grid-cols-1 ${colsClass[cols]} gap-px bg-lx-line`}>
+    <div className={`grid grid-cols-1 ${colsClass[cols]} gap-4`}>
       {steps.map((step, i) => {
         const num = String(i + 1).padStart(2, '0')
         return (
@@ -39,15 +39,17 @@ export default function NumberedSteps({ steps, columns }: NumberedStepsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VIEWPORT}
             transition={{ duration: 0.55, ease: EASE, delay: i * STAGGER.normal }}
-            className="bg-lx-cream p-8 sm:p-10 group hover:bg-lx-parchment transition-colors duration-300"
+            className="relative bg-[#ede9e3] rounded-xl p-8
+              border border-[#d4cfc8]
+              hover:bg-[#e5e0d8] transition-colors duration-200"
           >
-            <span className="block font-serif text-[3.5rem] font-normal text-lx-line leading-none mb-6 group-hover:text-lx-line/60 transition-colors duration-300">
+            <span className="block text-5xl font-light text-[#C41230]/25 mb-4 leading-none select-none">
               {num}
             </span>
-            <h3 className="text-[17px] font-bold text-lx-ink tracking-tight mb-4 leading-tight">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">
               {step.title}
             </h3>
-            <p className="text-[14px] text-lx-stone leading-[1.8]">
+            <p className="text-sm text-gray-600 leading-relaxed">
               {step.description}
             </p>
           </motion.div>
