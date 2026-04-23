@@ -3,8 +3,7 @@
  */
 
 import type { Metadata } from 'next'
-import { LeadForm } from '@/components/LeadForm'
-import SectionHeader from '@/components/ui/SectionHeader'
+import { ContactForm } from '@/components/properties/ContactForm'
 import TasarHero from '@/components/tasar/TasarHero'
 import ValorPropuesta from '@/components/tasar/ValorPropuesta'
 import { ComoVendemos } from '@/components/tasar/ComoVendemos'
@@ -48,29 +47,26 @@ export default function TasarPage() {
       <StatHighlight />
 
       {/* ── 7. FORMULARIO ────────────────────────────── */}
-      <section className="bg-lx-cream py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="max-w-xl mx-auto">
-            {/* CTA contextual F-2 */}
-            <p className="text-sm text-lx-stone italic text-center mb-6">
-              El mercado de zona norte está activo. Si estás pensando en vender, este es el momento
-              de saber qué tenés.
+      <section className="py-24 bg-[#f8f6f2]">
+        <div className="max-w-xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] mb-3">
+              Tasación
             </p>
-            <SectionHeader
-              label="Tasación"
-              title="Solicitá tu tasación"
-              description="Completá el formulario y un broker de tu zona te contactará en menos de 24hs hábiles."
-              center
+            <h2 className="text-4xl font-light text-gray-900 mb-4">
+              Solicitá tu tasación
+            </h2>
+            <p className="text-gray-500">
+              Completá el formulario y un corredor de tu zona te contactará en menos de 24hs hábiles.
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            <ContactForm
+              customTitle="Querés tasar tu propiedad"
+              customMessage="Hola Lexinton, me gustaría tasar mi propiedad."
+              showPropertyType={true}
+              showBarrio={true}
             />
-            <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
-              <LeadForm
-                tipo="Tasación"
-                showTipoPropiedad
-                showBarrio
-                theme="light"
-                messagePlaceholder="¿Qué querés tasar? Indicanos dirección o barrio, m² y características."
-              />
-            </div>
           </div>
         </div>
       </section>

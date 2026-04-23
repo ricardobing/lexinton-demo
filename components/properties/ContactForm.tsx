@@ -12,10 +12,12 @@ interface Props {
   property?: TokkoProperty
   customTitle?: string
   customMessage?: string
+  showPropertyType?: boolean
+  showBarrio?: boolean
   onSuccess?: () => void
 }
 
-export function ContactForm({ property, customTitle, customMessage, onSuccess }: Props) {
+export function ContactForm({ property, customTitle, customMessage, showPropertyType, showBarrio, onSuccess }: Props) {
   const address = property ? (property.fake_address || property.address || 'esta propiedad') : null
   const initialMessage = customMessage ||
     (address
@@ -28,12 +30,15 @@ export function ContactForm({ property, customTitle, customMessage, onSuccess }:
     mensaje: initialMessage,
   })
   const [phonePrefix, setPhonePrefix] = useState('+54')
+  const [tipoPropiedad, setTipoPropiedad] = useState('')
+  const [barrio, setBarrio] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
   const handleSubmit = async () => {
     if (!form.nombre || !form.email) return
     setSending(true)
+    const mensajeFinal = `${form.mensaje}${tipoPropiedad ? `\nTipo: ${tipoPropiedad}` : ''}${barrio ? `\nBarrio: ${barrio}` : ''}`
     try {
       await fetch('/api/leads', {
         method: 'POST',
@@ -42,7 +47,7 @@ export function ContactForm({ property, customTitle, customMessage, onSuccess }:
           nombre: form.nombre,
           email: form.email,
           telefono: form.telefono ? `${phonePrefix} ${form.telefono}` : '',
-          mensaje: form.mensaje,
+          mensaje: mensajeFinal,
           tipo: property ? 'Consulta de propiedad' : 'Consulta general',
           propiedad_id: property?.id ?? null,
         }),
@@ -113,6 +118,42 @@ export function ContactForm({ property, customTitle, customMessage, onSuccess }:
             inputClassName="w-full px-4 py-3 border border-gray-200 rounded-lg text-base focus:border-gray-400 focus:outline-none transition-colors"
           />
         </div>
+
+        {showBarrio && (
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Barrio</label>
+            <input
+              type="text"
+              value={barrio}
+              onChange={e => setBarrio(e.target.value)}
+              placeholder="Ej: Palermo, Belgrano..."
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                text-sm focus:border-gray-400 focus:outline-none"
+            />
+          </div>
+        )}
+
+        {showPropertyType && (
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Tipo de propiedad</label>
+            <select
+              value={tipoPropiedad}
+              onChange={e => setTipoPropiedad(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                text-sm text-gray-700 focus:border-gray-400 focus:outline-none bg-white"
+            >
+              <option value="">Selección un tipo</option>
+              <option value="Departamento">Departamento</option>
+              <option value="Casa">Casa</option>
+              <option value="PH">PH</option>
+              <option value="Local comercial">Local comercial</option>
+              <option value="Oficina">Oficina</option>
+              <option value="Terreno">Terreno</option>
+              <option value="Cochera">Cochera</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="text-xs text-gray-500 mb-1 block">Mensaje</label>

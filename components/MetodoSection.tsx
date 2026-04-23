@@ -89,7 +89,7 @@ export default function MetodoSection() {
           className="mt-10 text-center sm:text-left"
         >
           <a
-            href="#tasacion"
+            href="/tasar"
             className="inline-flex items-center gap-3 text-[12px] font-bold tracking-[0.14em] uppercase text-lx-accent hover:text-lx-ink transition-colors duration-200 group"
           >
             Iniciar mi proceso
