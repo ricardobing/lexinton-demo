@@ -50,7 +50,7 @@ export function DualCTA() {
               from-black/90 via-black/30 to-transparent" />
 
             {/* Contenido */}
-            <div className="relative h-full flex flex-col justify-end p-10">
+            <div className="relative h-full flex flex-col justify-end p-6 md:p-10">
               <Icon icon="solar:home-2-bold-duotone"
                 className="w-12 h-12 text-white mb-6 opacity-80" />
               <h3 className="text-3xl font-light text-white mb-3">
@@ -85,7 +85,7 @@ export function DualCTA() {
                 backgroundSize: '24px 24px'
               }} />
 
-            <div className="relative h-full flex flex-col justify-end p-10">
+            <div className="relative h-full flex flex-col justify-end p-6 md:p-10">
               <Icon icon="solar:wallet-money-bold-duotone"
                 className="w-12 h-12 text-white mb-6 opacity-90" />
               <h3 className="text-3xl font-light text-white mb-3">

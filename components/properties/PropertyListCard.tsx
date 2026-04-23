@@ -80,7 +80,7 @@ export function PropertyListCard({ property, basePath = '/propiedades' }: Props)
                 className="absolute left-2 top-1/2 -translate-y-1/2
                   w-8 h-8 rounded-full bg-black/30 text-white
                   flex items-center justify-center text-lg
-                  opacity-0 group-hover/img:opacity-80 hover:!opacity-100 transition-opacity"
+                  opacity-60 md:opacity-0 md:group-hover/img:opacity-80 hover:!opacity-100 transition-opacity"
               >
                 ‹
               </button>
@@ -89,7 +89,7 @@ export function PropertyListCard({ property, basePath = '/propiedades' }: Props)
                 className="absolute right-2 top-1/2 -translate-y-1/2
                   w-8 h-8 rounded-full bg-black/30 text-white
                   flex items-center justify-center text-lg
-                  opacity-0 group-hover/img:opacity-80 hover:!opacity-100 transition-opacity"
+                  opacity-60 md:opacity-0 md:group-hover/img:opacity-80 hover:!opacity-100 transition-opacity"
               >
                 ›
               </button>

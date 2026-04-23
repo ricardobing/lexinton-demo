@@ -79,7 +79,7 @@ export function ContactForm({ property, onSuccess }: Props) {
               value={form.nombre}
               onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg
-                text-sm focus:border-gray-400 focus:outline-none transition-colors"
+                text-base focus:border-gray-400 focus:outline-none transition-colors"
             />
           </div>
           <div>
@@ -90,7 +90,7 @@ export function ContactForm({ property, onSuccess }: Props) {
               value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg
-                text-sm focus:border-gray-400 focus:outline-none transition-colors"
+                text-base focus:border-gray-400 focus:outline-none transition-colors"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export function ContactForm({ property, onSuccess }: Props) {
             value={form.mensaje}
             onChange={e => setForm(f => ({ ...f, mensaje: e.target.value }))}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg
-              text-sm focus:border-gray-400 focus:outline-none transition-colors resize-none"
+              text-base focus:border-gray-400 focus:outline-none transition-colors resize-none"
           />
         </div>
 

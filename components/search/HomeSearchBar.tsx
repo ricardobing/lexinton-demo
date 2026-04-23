@@ -148,15 +148,15 @@ export function HomeSearchBar() {
         </div>
 
         {/* ── Fila 2: Tipo + Barrio + Botón ─────────────────────────── */}
-        <div className="flex items-center gap-2 p-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3">
 
           {/* Select de tipo */}
-          <div className="relative flex-shrink-0">
+          <div className="relative sm:flex-shrink-0">
             <select
               value={typeValue}
               onChange={(e) => setTypeValue(e.target.value)}
               className="appearance-none bg-white border border-gray-200 rounded-xl
-                px-4 py-3 pr-8 text-sm text-gray-700 min-w-[150px]
+                px-4 py-3 pr-8 text-sm text-gray-700 w-full sm:min-w-[150px]
                 focus:outline-none focus:border-gray-400 cursor-pointer"
             >
               {TYPES.map((t) => (
@@ -252,9 +252,9 @@ export function HomeSearchBar() {
           <button
             type="button"
             onClick={handleSearch}
-            className="flex-shrink-0 bg-[#C41230] text-white
+            className="w-full sm:flex-shrink-0 sm:w-auto bg-[#C41230] text-white
               px-5 py-3 rounded-xl text-sm font-semibold
-              flex items-center gap-2
+              flex items-center justify-center gap-2
               hover:bg-[#a30f28] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

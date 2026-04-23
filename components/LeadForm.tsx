@@ -132,7 +132,7 @@ export function LeadForm({
             name="tipoConsulta"
             value={form.tipoConsulta}
             onChange={handleChange}
-            className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+            className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
           >
             <option value="Tasación">Quiero tasar mi propiedad</option>
             <option value="Quiero Vender">Quiero vender mi propiedad</option>
@@ -155,7 +155,7 @@ export function LeadForm({
           onChange={handleChange}
           required
           placeholder="Tu nombre completo"
-          className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+          className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
         />
       </div>
 
@@ -171,7 +171,7 @@ export function LeadForm({
           onChange={handleChange}
           required
           placeholder="tu@email.com"
-          className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+          className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
         />
       </div>
 
@@ -186,7 +186,7 @@ export function LeadForm({
           value={form.telefono}
           onChange={handleChange}
           placeholder="11 1234-5678"
-          className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+          className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
         />
       </div>
 
@@ -200,7 +200,7 @@ export function LeadForm({
             name="presupuesto"
             value={form.presupuesto}
             onChange={handleChange}
-            className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+            className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
           >
             <option value="">Seleccioná un rango</option>
             <option value="Hasta USD 100.000">Hasta USD 100.000</option>
@@ -221,7 +221,7 @@ export function LeadForm({
             name="tipoPropiedad"
             value={form.tipoPropiedad}
             onChange={handleChange}
-            className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+            className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
           >
             <option value="">Seleccioná un tipo</option>
             <option value="Departamento">Departamento</option>
@@ -247,7 +247,7 @@ export function LeadForm({
             value={form.barrio}
             onChange={handleChange}
             placeholder="Ej: Palermo, Belgrano..."
-            className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+            className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
           />
         </div>
       )}
@@ -262,7 +262,7 @@ export function LeadForm({
             name="plazo"
             value={form.plazo}
             onChange={handleChange}
-            className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors ${input}`}
+            className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
           >
             <option value="">Seleccioná una opción</option>
             <option value="Lo antes posible">Lo antes posible</option>
@@ -284,7 +284,7 @@ export function LeadForm({
           onChange={handleChange}
           rows={4}
           placeholder={messagePlaceholder}
-          className={`w-full border px-4 py-3 text-[14px] focus:outline-none transition-colors resize-none ${input}`}
+          className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors resize-none ${input}`}
         />
       </div>
 

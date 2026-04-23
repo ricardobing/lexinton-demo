@@ -26,13 +26,14 @@ export function ContactModal({ open, onClose, property }: Props) {
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-              z-50 bg-white rounded-2xl shadow-2xl w-[90vw] max-w-[480px]
-              max-h-[90vh] overflow-y-auto"
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 60 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-2xl
+              rounded-t-2xl max-h-[90vh] overflow-y-auto
+              md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2
+              md:rounded-2xl md:w-[90vw] md:max-w-[480px]"
           >
             <button
               onClick={onClose}
