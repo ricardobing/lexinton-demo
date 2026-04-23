@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
 import type { TokkoProperty } from '@/lib/tokko/types'
+import { PhoneInput } from '@/components/ui/PhoneInput'
 
 interface Props {
   property: TokkoProperty
@@ -20,6 +21,7 @@ export function ContactForm({ property, onSuccess }: Props) {
     telefono: '',
     mensaje: `¡Hola! Quiero que se comuniquen conmigo por esta propiedad en ${address} que vi en Lexinton Propiedades.`,
   })
+  const [phonePrefix, setPhonePrefix] = useState('+54')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
@@ -33,7 +35,7 @@ export function ContactForm({ property, onSuccess }: Props) {
         body: JSON.stringify({
           nombre: form.nombre,
           email: form.email,
-          telefono: form.telefono,
+          telefono: form.telefono ? `${phonePrefix} ${form.telefono}` : '',
           mensaje: form.mensaje,
           tipo: 'Consulta de propiedad',
           propiedad_id: property.id,
@@ -97,21 +99,14 @@ export function ContactForm({ property, onSuccess }: Props) {
 
         <div>
           <label className="text-xs text-gray-500 mb-1 block">Teléfono</label>
-          <div className="flex gap-2">
-            <div className="flex items-center gap-1 px-3 border border-gray-200
-              rounded-lg text-sm text-gray-500 bg-gray-50 shrink-0">
-              <span>🇦🇷</span>
-              <span>+54</span>
-            </div>
-            <input
-              type="tel"
-              placeholder="11 1234-5678"
-              value={form.telefono}
-              onChange={e => setForm(f => ({ ...f, telefono: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg
-                text-sm focus:border-gray-400 focus:outline-none transition-colors"
-            />
-          </div>
+          <PhoneInput
+            prefix={phonePrefix}
+            onPrefixChange={setPhonePrefix}
+            value={form.telefono}
+            onChange={v => setForm(f => ({ ...f, telefono: v }))}
+            prefixClassName="flex items-center gap-1.5 px-3 py-3 border border-gray-200 rounded-lg bg-gray-50 min-w-[84px]"
+            inputClassName="w-full px-4 py-3 border border-gray-200 rounded-lg text-base focus:border-gray-400 focus:outline-none transition-colors"
+          />
         </div>
 
         <div>

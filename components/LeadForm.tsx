@@ -10,6 +10,7 @@
  */
 
 import { useState } from 'react'
+import { PhoneInput } from '@/components/ui/PhoneInput'
 
 export type LeadFormTipo =
   | 'Tasación'
@@ -45,6 +46,7 @@ export function LeadForm({
   theme = 'light',
 }: LeadFormProps) {
   const [state, setState] = useState<FormState>('idle')
+  const [phonePrefix, setPhonePrefix] = useState('+54')
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -91,7 +93,7 @@ export function LeadForm({
         body: JSON.stringify({
           nombre: form.nombre,
           email: form.email,
-          telefono: form.telefono,
+          telefono: form.telefono ? `${phonePrefix} ${form.telefono}` : '',
           mensaje: form.mensaje,
           tipo: showTipoSelector ? form.tipoConsulta : tipo,
           extra: extraParts.join(' | ') || undefined,
@@ -180,13 +182,17 @@ export function LeadForm({
         <label className={`block text-[11px] font-bold tracking-[0.16em] uppercase mb-2 ${label}`}>
           Teléfono
         </label>
-        <input
-          type="tel"
-          name="telefono"
+        <PhoneInput
+          prefix={phonePrefix}
+          onPrefixChange={setPhonePrefix}
           value={form.telefono}
-          onChange={handleChange}
-          placeholder="11 1234-5678"
-          className={`w-full border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
+          onChange={v => setForm(prev => ({ ...prev, telefono: v }))}
+          prefixClassName={`flex items-center gap-1.5 px-3 border min-w-[84px] ${
+            dark
+              ? 'border-white/20 bg-white/10'
+              : 'border-lx-line bg-white'
+          }`}
+          inputClassName={`flex-1 border px-4 py-3 text-[16px] focus:outline-none transition-colors ${input}`}
         />
       </div>
 

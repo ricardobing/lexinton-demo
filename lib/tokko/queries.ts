@@ -212,7 +212,7 @@ export async function getFeaturedProperties(limit = 6): Promise<TokkoProperty[]>
   const response = await tokkoFetch<TokkoPropertyListResponse>(
     'property',
     { limit: 50 },
-    300
+    600
   )
 
   // IDs más altos = más recientes en Tokko
@@ -419,7 +419,7 @@ export async function getDevelopments() {
   const response = await tokkoFetch<TokkoDevelopmentListResponse>(
     'development',
     { limit: 20 },
-    300
+    600
   )
   return response.objects.filter((d) => {
     if (!d.display_on_web) return false
