@@ -26,7 +26,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
+.env.local
 .env*.local
+.env.production
+
+# private docs (contain real API keys)
+docs/VERCEL_DEPLOY_GUIDE.md
 
 # vercel
 .vercel
