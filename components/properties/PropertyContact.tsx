@@ -182,11 +182,6 @@ export default function PropertyContact({
             <Icon icon="logos:whatsapp-icon" className="w-4 h-4" />
             CONSULTAR POR WHATSAPP
           </a>
-
-          <p className="text-xs text-gray-400 text-center">
-            Al enviar aceptás los{' '}
-            <a href="/terminos" className="underline hover:text-gray-600">términos de uso</a>.
-          </p>
         </form>
       </div>
     </div>

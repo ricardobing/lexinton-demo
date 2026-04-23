@@ -84,8 +84,8 @@ export default function EmprendimientosPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="flex items-end justify-between mb-10">
             <SectionHeader label="Proyectos Activos" title="Proyectos disponibles" />
-            <Link href="/propiedades" className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors mb-16">
-              Ver todas las propiedades →
+            <Link href="/emprendimientos" className="hidden sm:block text-[10.5px] font-bold tracking-[0.14em] uppercase text-lx-stone hover:text-lx-ink transition-colors mb-16">
+              Ver todos los emprendimientos →
             </Link>
           </div>
           <Suspense fallback={<DevelopmentsSkeleton />}>

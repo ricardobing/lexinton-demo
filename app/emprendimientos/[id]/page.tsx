@@ -14,7 +14,7 @@ import {
   developmentToProperty,
   getSortedPhotos, getPropertyTypeLabel,
   cleanDescription, getDisplayTags, getCoordinates,
-  getNeighborhood, CONDITION_LABELS,
+  getNeighborhood, CONDITION_LABELS, parseSlugId, makePropertySlug,
 } from '@/lib/tokko/utils'
 import { PropertyGallery } from '@/components/properties/PropertyGallery'
 import PropertyDetailClient from '@/components/properties/PropertyDetailClient'
@@ -35,12 +35,12 @@ interface PageProps {
 /* Static params */
 export async function generateStaticParams() {
   const devs = await getDevelopments()
-  return devs.map((d) => ({ id: String(d.id) }))
+  return devs.map((d) => ({ id: makePropertySlug(d.id, d.fake_address || d.address || d.name || '') }))
 }
 
 /* Metadata */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const dev = await getDevelopmentById(Number(params.id))
+  const dev = await getDevelopmentById(parseSlugId(params.id))
   if (!dev) return { title: 'Emprendimiento | Lexinton' }
   const title = dev.publication_title || dev.name
   const description = cleanDescription(dev.description ?? '').slice(0, 155)
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 /* Page */
 export default async function EmprendimientoDetallePage({ params }: PageProps) {
-  const dev = await getDevelopmentById(Number(params.id))
+  const dev = await getDevelopmentById(parseSlugId(params.id))
   if (!dev) notFound()
 
   const property = developmentToProperty(dev)

@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Icon } from '@iconify/react'
 import PropertyCard from '@/components/PropertyCard'
-import PropertyContact from '@/components/properties/PropertyContact'
+import { ContactForm } from '@/components/properties/ContactForm'
 import type { TokkoProperty, TokkoTag } from '@/lib/tokko/types'
 import ShareButton from '@/components/properties/ShareButton'
 import { formatExpenses, TAG_LABELS } from '@/lib/tokko/utils'
@@ -286,12 +286,7 @@ export default function PropertyDetailClient({
           className="lg:sticky lg:top-24 lg:self-start"
         >
           <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-            <PropertyContact
-              propertyId={property.id}
-              propertyAddress={property.fake_address || property.address}
-              agentName={property.producer?.name}
-              agentPhoto={property.producer?.picture ?? undefined}
-            />
+            <ContactForm property={property} />
           </div>
         </motion.aside>
       </div>
