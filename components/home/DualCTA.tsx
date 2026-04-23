@@ -38,10 +38,11 @@ export function DualCTA() {
             <div className="absolute inset-0 opacity-40 group-hover:opacity-50
               group-hover:scale-105 transition-all duration-700">
               <Image
-                src="/home-buy-bg.jpg"
+                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80"
                 alt=""
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
 
