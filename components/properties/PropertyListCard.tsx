@@ -12,6 +12,7 @@ import {
   TAG_LABELS,
   makePropertySlug,
   getOperationBadgeStyle,
+  cleanDescription,
 } from '@/lib/tokko/utils'
 import { ContactModal } from './ContactModal'
 
@@ -44,7 +45,7 @@ export function PropertyListCard({ property, basePath = '/propiedades' }: Props)
   const badgeStyle = getOperationBadgeStyle(operationType)
   const neighborhood = property.location?.name ?? ''
 
-  const description = (property.description ?? '').split('Consulta por esta propiedad')[0].trim()
+  const description = cleanDescription(property.description ?? '')
 
   const whatsappNumber = '5491131519928'
   const whatsappText = encodeURIComponent(

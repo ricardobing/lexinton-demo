@@ -428,16 +428,29 @@ export function getPropertyTypeLabel(property: TokkoProperty): string {
 export function cleanDescription(description: string): string {
   if (!description) return ''
 
-  // El footer empieza siempre con "Consulta por esta propiedad AHORA."
-  const footerMarker = 'Consulta por esta propiedad AHORA.'
-  const idx = description.indexOf(footerMarker)
-  if (idx > -1) {
-    const before = description.slice(0, idx).trim()
-    // Si no hay texto real antes del footer, devolver la descripción completa
-    if (!before) return description.trim()
-    return before
+  const FOOTER_MARKERS = [
+    'Consulta por esta propiedad AHORA.',
+    'Consulta por esta propiedad AHORA!',
+    'VENDE y COMPRA con LEXINTON',
+    'WhatsApp: 1131519928',
+  ]
+
+  let cleanText = description
+
+  // Cortar todo lo que viene desde el primer marcador de footer
+  for (const marker of FOOTER_MARKERS) {
+    const idx = cleanText.indexOf(marker)
+    if (idx > -1) {
+      cleanText = cleanText.slice(0, idx).trim()
+      break
+    }
   }
-  return description.trim()
+
+  // Si no quedó texto real (la descripción empezaba directo con el footer),
+  // devolver vacío — la UI ocultará la sección correctamente
+  if (cleanText.length < 20) return ''
+
+  return cleanText
 }
 
 /**
