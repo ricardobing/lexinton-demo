@@ -195,10 +195,12 @@ export async function getProperties(
 
 /**
  * Obtiene el detalle completo de una propiedad por ID.
+ * lang=es es necesario para que Tokko devuelva la descripción real
+ * en lugar de solo el footer de la agencia.
  */
 export async function getPropertyById(id: number, revalidate = 300): Promise<TokkoProperty | null> {
   try {
-    return await tokkoFetch<TokkoProperty>(`property/${id}`, {}, revalidate)
+    return await tokkoFetch<TokkoProperty>(`property/${id}`, { lang: 'es' }, revalidate)
   } catch {
     return null
   }
