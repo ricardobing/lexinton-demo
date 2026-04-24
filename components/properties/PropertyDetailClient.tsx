@@ -12,7 +12,7 @@ import PropertyCard from '@/components/PropertyCard'
 import { ContactForm } from '@/components/properties/ContactForm'
 import type { TokkoProperty, TokkoTag } from '@/lib/tokko/types'
 import ShareButton from '@/components/properties/ShareButton'
-import { formatExpenses, TAG_LABELS } from '@/lib/tokko/utils'
+import { formatExpenses, TAG_LABELS, getOperationBadgeStyle } from '@/lib/tokko/utils'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -63,6 +63,8 @@ export default function PropertyDetailClient({
   const [expanded, setExpanded] = useState(false)
   const COLLAPSE_AT = 300
   const shouldCollapse = description.length > COLLAPSE_AT
+  const operationType = property.operations?.[0]?.operation_type ?? ''
+  const badgeStyle = getOperationBadgeStyle(operationType)
 
   return (
     <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
@@ -79,8 +81,11 @@ export default function PropertyDetailClient({
             className="flex flex-wrap items-center gap-2 mb-4"
           >
             {operationLabel && operationLabel !== 'Emprendimiento' && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-[#C41230] text-white">
-                {operationLabel}
+              <span
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
+                style={{ backgroundColor: badgeStyle.bg, color: badgeStyle.text }}
+              >
+                {badgeStyle.label}
               </span>
             )}
             {propertyType && (

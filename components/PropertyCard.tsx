@@ -28,6 +28,7 @@ import {
   formatArea,
   formatExpenses,
   makePropertySlug,
+  getOperationBadgeStyle,
 } from '@/lib/tokko/utils'
 import { ContactModal } from './properties/ContactModal'
 
@@ -54,6 +55,8 @@ export default function PropertyCard({
   const expenses = formatExpenses(property.expenses)
 
   const isAlquiler = operationLabel.toLowerCase().includes('alquiler')
+  const operationType = property.operations?.[0]?.operation_type ?? ''
+  const badgeStyle = getOperationBadgeStyle(operationType)
   const surface = property.total_surface || property.roofed_surface || property.surface || 0
   const rooms = property.room_amount
   const bathrooms = property.bathroom_amount
@@ -100,13 +103,11 @@ export default function PropertyCard({
 
           {/* Badges top-left */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            <span className={cn(
-              'text-[9px] font-bold tracking-[0.16em] uppercase px-2.5 py-1 rounded-sm',
-              isAlquiler
-                ? 'bg-lx-ink/85 text-white backdrop-blur-sm'
-                : 'bg-lx-accent/90 text-white backdrop-blur-sm'
-            )}>
-              {operationLabel}
+            <span
+              className="text-[9px] font-bold tracking-[0.16em] uppercase px-2.5 py-1 rounded-sm backdrop-blur-sm"
+              style={{ backgroundColor: badgeStyle.bg, color: badgeStyle.text }}
+            >
+              {badgeStyle.label}
             </span>
             {neighborhood && (
               <span className="text-[9px] font-bold tracking-[0.12em] uppercase px-2.5 py-1 rounded-sm bg-black/50 text-white backdrop-blur-sm w-fit">

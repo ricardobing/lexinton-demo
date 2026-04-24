@@ -11,6 +11,7 @@ import {
   getDisplayTags,
   TAG_LABELS,
   makePropertySlug,
+  getOperationBadgeStyle,
 } from '@/lib/tokko/utils'
 import { ContactModal } from './ContactModal'
 
@@ -38,6 +39,10 @@ export function PropertyListCard({ property, basePath = '/propiedades' }: Props)
   const displayTags = getDisplayTags(property.tags ?? [], 3)
   const firstTag = displayTags[0]
   const tagLabel = firstTag ? (TAG_LABELS[firstTag.name] ?? firstTag.name) : null
+
+  const operationType = property.operations?.[0]?.operation_type ?? ''
+  const badgeStyle = getOperationBadgeStyle(operationType)
+  const neighborhood = property.location?.name ?? ''
 
   const description = (property.description ?? '').split('Consulta por esta propiedad')[0].trim()
 
@@ -111,13 +116,27 @@ export function PropertyListCard({ property, basePath = '/propiedades' }: Props)
             </div>
           )}
 
-          {/* Badge de amenity */}
-          {tagLabel && (
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm
-              text-xs font-medium text-gray-800 px-2.5 py-1 rounded-md shadow-sm">
-              {tagLabel}
-            </div>
-          )}
+          {/* Badges top-left */}
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+            {operationType && (
+              <span
+                className="text-[9px] font-bold tracking-[0.16em] uppercase px-2.5 py-1 rounded-sm backdrop-blur-sm w-fit"
+                style={{ backgroundColor: badgeStyle.bg, color: badgeStyle.text }}
+              >
+                {badgeStyle.label}
+              </span>
+            )}
+            {neighborhood && (
+              <span className="text-[9px] font-bold tracking-[0.12em] uppercase px-2.5 py-1 rounded-sm bg-black/50 text-white backdrop-blur-sm w-fit">
+                {neighborhood}
+              </span>
+            )}
+            {tagLabel && (
+              <span className="text-[9px] font-medium text-gray-800 px-2.5 py-1 rounded-sm bg-white/90 backdrop-blur-sm w-fit shadow-sm">
+                {tagLabel}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* === DATOS derecha === */}

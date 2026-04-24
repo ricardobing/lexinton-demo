@@ -432,9 +432,24 @@ export function cleanDescription(description: string): string {
   const footerMarker = 'Consulta por esta propiedad AHORA.'
   const idx = description.indexOf(footerMarker)
   if (idx > -1) {
-    return description.slice(0, idx).trim()
+    const before = description.slice(0, idx).trim()
+    // Si no hay texto real antes del footer, devolver la descripción completa
+    if (!before) return description.trim()
+    return before
   }
   return description.trim()
+}
+
+/**
+ * Devuelve colores y etiqueta para el badge de operación.
+ * Sale → verde, Rent → azul, Temporary Rent → ámbar
+ */
+export function getOperationBadgeStyle(operationType: string): { bg: string; text: string; label: string } {
+  const op = operationType ?? ''
+  if (op === 'Sale') return { bg: '#16a34a', text: '#ffffff', label: 'Venta' }
+  if (op === 'Temporary Rent') return { bg: '#d97706', text: '#ffffff', label: 'Temporal' }
+  if (op === 'Rent') return { bg: '#2563eb', text: '#ffffff', label: 'Alquiler' }
+  return { bg: '#6b7280', text: '#ffffff', label: op }
 }
 
 /**
