@@ -152,7 +152,9 @@ export function HomeSearchBar() {
 
           {/* Select de tipo */}
           <div className="relative sm:flex-shrink-0">
+            <label htmlFor="home-property-type" className="sr-only">Tipo de propiedad</label>
             <select
+              id="home-property-type"
               value={typeValue}
               onChange={(e) => setTypeValue(e.target.value)}
               className="appearance-none bg-white border border-gray-200 rounded-xl

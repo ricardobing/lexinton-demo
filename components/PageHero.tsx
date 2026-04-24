@@ -46,7 +46,7 @@ export default function PageHero({ label, title, titleEmphasis, description, wit
           {titleEmphasis && (
             <>
               <br />
-              <em className="italic text-white/50">{titleEmphasis}</em>
+              <em className="italic text-white/70">{titleEmphasis}</em>
             </>
           )}
         </motion.h1>
@@ -55,7 +55,7 @@ export default function PageHero({ label, title, titleEmphasis, description, wit
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-            className="text-[16px] text-white/60 leading-[1.85] max-w-xl"
+            className="text-[16px] text-white/80 leading-[1.85] max-w-xl"
           >
             {description}
           </motion.p>

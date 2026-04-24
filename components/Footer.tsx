@@ -36,28 +36,28 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex flex-col leading-[1.1] mb-5">
               <span className="text-[15px] font-bold tracking-[0.28em] text-white">LEXINTON</span>
-              <span className="text-[8px] tracking-[0.38em] font-semibold text-white/35">PROPIEDADES</span>
+              <span className="text-[8px] tracking-[0.38em] font-semibold text-white/60">PROPIEDADES</span>
             </Link>
-            <p className="text-[13px] text-white/40 leading-[1.8] mb-5 max-w-[220px]">
+            <p className="text-[13px] text-white/65 leading-[1.8] mb-5 max-w-[220px]">
               20 años asesorando a familias en compra, venta y operaciones simultáneas en CABA y GBA.
             </p>
             <a
               href="mailto:info@lexinton.com.ar"
-              className="text-[12px] text-white/35 hover:text-white/60 transition-colors duration-200"
+              className="text-[12px] text-white/60 hover:text-white/90 transition-colors duration-200"
             >
               info@lexinton.com.ar
             </a>
             <div className="flex items-center gap-3 mt-5">
-              <a href="https://www.linkedin.com/company/lexinton-propiedades/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+              <a href="https://www.linkedin.com/company/lexinton-propiedades/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/60 hover:text-white/90 transition-colors duration-200">
                 <LinkedInIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.instagram.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+              <a href="https://www.instagram.com/lexintonpropiedades/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/60 hover:text-white/90 transition-colors duration-200">
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.facebook.com/LexintonPropiedadesOficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+              <a href="https://www.facebook.com/LexintonPropiedadesOficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/60 hover:text-white/90 transition-colors duration-200">
                 <FacebookIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.youtube.com/@LexintonPropiedades" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/30 hover:text-white/70 transition-colors duration-200">
+              <a href="https://www.youtube.com/@LexintonPropiedades" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/60 hover:text-white/90 transition-colors duration-200">
                 <YouTubeIcon className="w-4 h-4" />
               </a>
             </div>
@@ -65,7 +65,7 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/30 mb-5">
+            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/65 mb-5">
               Servicios
             </h4>
             <ul className="space-y-3">
@@ -73,7 +73,7 @@ export default function Footer() {
                 <li key={l.label}>
                   <Link
                     href={l.href}
-                    className="text-[13px] text-white/40 hover:text-white/70 transition-colors duration-200"
+                    className="text-[13px] text-white/65 hover:text-white/90 transition-colors duration-200"
                   >
                     {l.label}
                   </Link>
@@ -84,17 +84,17 @@ export default function Footer() {
 
           {/* Offices */}
           <div>
-            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/30 mb-5">
+            <h4 className="text-[10px] font-bold tracking-[0.22em] uppercase text-white/65 mb-5">
               Sucursales
             </h4>
             <div className="space-y-6">
               {officeLinks.map((o) => (
                 <div key={o.label}>
                   <p className="text-[12px] font-semibold text-white/60 mb-1">{o.label}</p>
-                  <p className="text-[12px] text-white/35">{o.address}</p>
+                  <p className="text-[12px] text-white/60">{o.address}</p>
                   <a
                     href={o.href}
-                    className="text-[12px] text-white/35 hover:text-white/60 transition-colors duration-200 mt-0.5 inline-block"
+                    className="text-[12px] text-white/60 hover:text-white/90 transition-colors duration-200 mt-0.5 inline-block"
                   >
                     {o.phone}
                   </a>
@@ -105,13 +105,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/25">
+        <div className="mt-12 pt-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/55">
           <span>© {new Date().getFullYear()} Lexinton Propiedades. Todos los derechos reservados.</span>
           <a
             href="https://wa.me/5491131519928"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-white/25 hover:text-white/50 transition-colors duration-200"
+            className="flex items-center gap-2 text-white/55 hover:text-white/80 transition-colors duration-200"
           >
             <WhatsAppIcon />
             WhatsApp

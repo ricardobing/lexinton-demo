@@ -183,17 +183,21 @@ export function DevelopmentsCarousel({ developments }: Props) {
         {/* Dots */}
         <div className="flex justify-center items-center gap-2 mt-8">
           {developments.map((_, i) => (
-            <motion.button
+            <button
               key={i}
               onClick={() => goTo(i)}
-              animate={{
-                width: i === current ? 28 : 8,
-                backgroundColor: i === current ? '#C41230' : 'rgba(255,255,255,0.3)',
-              }}
-              transition={{ duration: 0.3 }}
-              className="h-2 rounded-full"
+              className="p-3 -m-3 flex items-center justify-center"
               aria-label={`Ir a slide ${i + 1}`}
-            />
+            >
+              <motion.span
+                animate={{
+                  width: i === current ? 28 : 8,
+                  backgroundColor: i === current ? '#C41230' : 'rgba(255,255,255,0.3)',
+                }}
+                transition={{ duration: 0.3 }}
+                className="h-2 rounded-full block"
+              />
+            </button>
           ))}
         </div>
 

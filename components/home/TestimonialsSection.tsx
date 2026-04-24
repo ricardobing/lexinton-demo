@@ -104,20 +104,40 @@ export function TestimonialsSection() {
           </AnimatePresence>
         </div>
 
-        {/* Dots de navegación */}
-        <div className="flex justify-center gap-2 mt-10">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === active
-                  ? 'w-10 bg-[#C41230]'
-                  : 'w-2 bg-gray-300 hover:bg-gray-400'
-              }`}
-              aria-label={`Ver testimonio ${i + 1}`}
-            />
-          ))}
+        {/* Dots de navegación con flechas */}
+        <div className="flex justify-center items-center gap-6 mt-10">
+          <button
+            onClick={() => setActive((active - 1 + testimonials.length) % testimonials.length)}
+            className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:border-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Testimonio anterior"
+          >
+            <Icon icon="solar:arrow-left-linear" className="w-5 h-5" />
+          </button>
+
+          <div className="flex gap-2 items-center">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className="p-3 -m-3 flex items-center justify-center"
+                aria-label={`Ver testimonio ${i + 1}`}
+              >
+                <span
+                  className={`h-2 rounded-full block transition-all duration-300 ${
+                    i === active ? 'w-10 bg-[#C41230]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setActive((active + 1) % testimonials.length)}
+            className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:border-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Siguiente testimonio"
+          >
+            <Icon icon="solar:arrow-right-linear" className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Link a Google reviews real */}

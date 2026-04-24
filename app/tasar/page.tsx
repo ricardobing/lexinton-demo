@@ -8,7 +8,6 @@ import TasarHero from '@/components/tasar/TasarHero'
 import ValorPropuesta from '@/components/tasar/ValorPropuesta'
 import { ComoVendemos } from '@/components/tasar/ComoVendemos'
 import { ProcessSteps } from '@/components/tasar/ProcessSteps'
-import { WhyUs } from '@/components/tasar/WhyUs'
 import DifusionTotalSection from '@/components/tasar/DifusionTotalSection'
 import { StatHighlight } from '@/components/tasar/StatHighlight'
 import SEOBarrios from '@/components/tasar/SEOBarrios'
@@ -36,9 +35,6 @@ export default function TasarPage() {
       {/* ── 3. PROCESO EN PASOS ──────────────────────── */}
       <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
       <ProcessSteps />
-
-      {/* ── 4. POR QUÉ ELEGIRNOS ─────────────────────── */}
-      <WhyUs />
 
       {/* ── 5. DIFUSIÓN TOTAL ────────────────────────── */}
       <DifusionTotalSection />

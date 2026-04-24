@@ -3,9 +3,9 @@ import { Inter, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { SocialFollowBar } from '@/components/ui/SocialFollowBar'
 import MobileSticky from '@/components/MobileSticky'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
-import { CliengoScript } from '@/components/CliengoScript'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -54,10 +54,10 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-lx-cream text-lx-ink">
         <Navbar />
         {children}
+        <SocialFollowBar />
         <Footer />
         <MobileSticky />
         <WhatsAppButton />
-        <CliengoScript />
       </body>
     </html>
   )
