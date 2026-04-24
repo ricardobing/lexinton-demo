@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Icon } from '@iconify/react'
@@ -107,24 +107,6 @@ export function DualCTA() {
           </motion.div>
 
         </div>
-
-        {/* Teléfono de urgencia abajo — opción C */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center mt-10 pt-10 border-t border-gray-100"
-        >
-          <p className="text-sm text-gray-500 mb-2">
-            ¿Necesitás hablar con alguien ahora?
-          </p>
-          <a href="tel:+541147765003"
-            className="inline-flex items-center gap-2 text-xl font-light text-gray-900
-              hover:text-[#C41230] transition-colors">
-            <Icon icon="solar:phone-bold" className="w-5 h-5" />
-            011 4776-5003
-          </a>
-        </motion.div>
 
       </div>
     </section>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * /quiero-vender — Propietarios que quieren vender su inmueble
  * Design system: SectionHeader, NumberedSteps, FeatureCard
  */
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 }
 
 const pasos = [
-  { title: 'Tasación sin cargo', description: 'Analizamos el valor real de mercado de tu propiedad con comparables reales, no fórmulas genéricas.' },
+  { title: 'Tasación', description: 'Analizamos el valor real de mercado de tu propiedad con comparables reales, no fórmulas genéricas.' },
   { title: 'Difusión premium', description: 'Publicamos en los principales portales, redes sociales y nuestra base de compradores activos.' },
   { title: 'Consultas y visitas', description: 'Gestionamos todos los contactos y visitas. Vos solo recibís compradores serios y calificados.' },
   { title: 'Cierre y escritura', description: 'Negociamos en tu nombre y coordinamos escribanos, abogados y todo el proceso de cierre.' },
