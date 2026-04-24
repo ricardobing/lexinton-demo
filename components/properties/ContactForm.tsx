@@ -14,10 +14,12 @@ interface Props {
   customMessage?: string
   showPropertyType?: boolean
   showBarrio?: boolean
+  showPlazoVenta?: boolean
+  showAyuda?: boolean
   onSuccess?: () => void
 }
 
-export function ContactForm({ property, customTitle, customMessage, showPropertyType, showBarrio, onSuccess }: Props) {
+export function ContactForm({ property, customTitle, customMessage, showPropertyType, showBarrio, showPlazoVenta, showAyuda, onSuccess }: Props) {
   const address = property ? (property.fake_address || property.address || 'esta propiedad') : null
   const initialMessage = customMessage ||
     (address
@@ -32,13 +34,22 @@ export function ContactForm({ property, customTitle, customMessage, showProperty
   const [phonePrefix, setPhonePrefix] = useState('+54')
   const [tipoPropiedad, setTipoPropiedad] = useState('')
   const [barrio, setBarrio] = useState('')
+  const [plazoVenta, setPlazoVenta] = useState('')
+  const [ayuda, setAyuda] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
   const handleSubmit = async () => {
     if (!form.nombre || !form.email) return
     setSending(true)
-    const mensajeFinal = `${form.mensaje}${tipoPropiedad ? `\nTipo: ${tipoPropiedad}` : ''}${barrio ? `\nBarrio: ${barrio}` : ''}`
+    const mensajeFinal = [
+      form.mensaje,
+      tipoPropiedad ? `Tipo de propiedad: ${tipoPropiedad}` : '',
+      barrio ? `Barrio: ${barrio}` : '',
+      plazoVenta ? `Plazo de venta: ${plazoVenta}` : '',
+      ayuda ? `Consulta sobre: ${ayuda}` : '',
+    ].filter(Boolean).join('\n')
+    const tipoFinal = ayuda || (property ? 'Consulta de propiedad' : tipoPropiedad || 'Consulta general')
     try {
       await fetch('/api/leads', {
         method: 'POST',
@@ -48,7 +59,7 @@ export function ContactForm({ property, customTitle, customMessage, showProperty
           email: form.email,
           telefono: form.telefono ? `${phonePrefix} ${form.telefono}` : '',
           mensaje: mensajeFinal,
-          tipo: property ? 'Consulta de propiedad' : 'Consulta general',
+          tipo: tipoFinal,
           propiedad_id: property?.id ?? null,
         }),
       })
@@ -151,6 +162,43 @@ export function ContactForm({ property, customTitle, customMessage, showProperty
               <option value="Terreno">Terreno</option>
               <option value="Cochera">Cochera</option>
               <option value="Otro">Otro</option>
+            </select>
+          </div>
+        )}
+
+        {showPlazoVenta && (
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">¿En qué plazo pensás vender?</label>
+            <select
+              value={plazoVenta}
+              onChange={e => setPlazoVenta(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                text-sm text-gray-700 focus:border-gray-400 focus:outline-none bg-white"
+            >
+              <option value="">Seleccioná una opción</option>
+              <option value="Lo antes posible">Lo antes posible</option>
+              <option value="1 a 3 meses">1 a 3 meses</option>
+              <option value="3 a 6 meses">3 a 6 meses</option>
+              <option value="Sin apuro definido">Sin apuro definido</option>
+            </select>
+          </div>
+        )}
+
+        {showAyuda && (
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">¿En qué te podemos ayudar? *</label>
+            <select
+              value={ayuda}
+              onChange={e => setAyuda(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                text-sm text-gray-700 focus:border-gray-400 focus:outline-none bg-white"
+            >
+              <option value="">Seleccioná una opción</option>
+              <option value="Tasación">Quiero tasar mi propiedad</option>
+              <option value="Quiero Vender">Quiero vender mi propiedad</option>
+              <option value="Consulta de propiedad">Consulta sobre una propiedad</option>
+              <option value="Inversores">Información para inversores</option>
+              <option value="Emprendimientos">Información sobre emprendimientos</option>
             </select>
           </div>
         )}

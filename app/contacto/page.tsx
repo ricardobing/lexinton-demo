@@ -4,7 +4,7 @@
  */
 
 import type { Metadata } from 'next'
-import { LeadForm } from '@/components/LeadForm'
+import { ContactForm } from '@/components/properties/ContactForm'
 import PageHero from '@/components/PageHero'
 import SectionHeader from '@/components/ui/SectionHeader'
 import AnimatedSection, { AnimatedItem } from '@/components/AnimatedSection'
@@ -81,8 +81,12 @@ export default function ContactoPage() {
 
             <div>
               <SectionHeader label="Envianos un mensaje" title="Escribinos" />
-              <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
-                <LeadForm tipo="Contacto" showTipoSelector theme="light" messagePlaceholder="¿En qué podemos ayudarte?" />
+              <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                <ContactForm
+                  customTitle="Envianos tu consulta"
+                  customMessage="Hola Lexinton, me comunico desde el sitio web."
+                  showAyuda={true}
+                />
               </div>
             </div>
           </div>

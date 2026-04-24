@@ -4,7 +4,7 @@
  */
 
 import type { Metadata } from 'next'
-import { LeadForm } from '@/components/LeadForm'
+import { ContactForm } from '@/components/properties/ContactForm'
 import PageHero from '@/components/PageHero'
 import SectionHeader from '@/components/ui/SectionHeader'
 import NumberedSteps from '@/components/ui/NumberedSteps'
@@ -74,8 +74,14 @@ export default function QuieroVenderPage() {
               description="Completá el formulario y te contactamos para coordinar la tasación sin compromiso."
               center
             />
-            <div className="bg-white rounded-xl border border-lx-line p-6 sm:p-8 shadow-sm">
-              <LeadForm tipo="Quiero Vender" showTipoPropiedad showBarrio showPlazo theme="light" messagePlaceholder="Contanos sobre tu propiedad (m², ambientes, estado, piso...)" />
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+              <ContactForm
+                customTitle="Quiero vender mi propiedad"
+                customMessage="Hola Lexinton, quiero vender mi propiedad."
+                showPropertyType={true}
+                showBarrio={true}
+                showPlazoVenta={true}
+              />
             </div>
           </div>
         </div>
