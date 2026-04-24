@@ -5,12 +5,13 @@ import { LinkedInIcon, InstagramIcon, FacebookIcon, YouTubeIcon } from '@/compon
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Icon } from '@iconify/react'
 
 const navLinks = [
-  { label: 'Propiedades', href: '/propiedades' },
-  { label: 'Emprendimientos', href: '/emprendimientos' },
-  { label: 'Inversores', href: '/inversor' },
-  { label: 'Contacto', href: '/contacto' },
+  { label: 'Propiedades', href: '/propiedades', icon: 'solar:home-2-linear' },
+  { label: 'Emprendimientos', href: '/emprendimientos', icon: 'solar:buildings-2-linear' },
+  { label: 'Inversores', href: '/inversor', icon: 'solar:chart-square-linear' },
+  { label: 'Contacto', href: '/contacto', icon: 'solar:phone-linear' },
 ]
 
 export default function Navbar() {
@@ -121,15 +122,18 @@ export default function Navbar() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-[12px] font-semibold tracking-[0.12em] uppercase py-3 border-b border-lx-line last:border-0 text-lx-stone hover:text-lx-ink transition-colors"
+                className="flex items-center gap-3 py-3 border-b border-lx-line last:border-0 text-lx-stone hover:text-lx-ink transition-colors"
               >
-                {link.label}
+                <Icon icon={link.icon} className="w-5 h-5 text-[#C41230] flex-shrink-0" />
+                <span className="text-[12px] font-semibold tracking-[0.12em] uppercase">{link.label}</span>
               </Link>
             ))}
             <a
               href="/tasar"
-              className="mt-3 text-center text-[11px] font-bold tracking-[0.14em] uppercase px-5 py-3 border border-lx-ink text-lx-ink"
+              onClick={() => setMenuOpen(false)}
+              className="mt-3 flex items-center justify-center gap-2 text-center text-[11px] font-bold tracking-[0.14em] uppercase px-5 py-3 border border-lx-ink text-lx-ink"
             >
+              <Icon icon="solar:home-angle-linear" className="w-4 h-4 text-[#C41230]" />
               Tasar inmueble
             </a>
             <div className="flex items-center justify-center gap-5 mt-4 pt-4 border-t border-lx-line">

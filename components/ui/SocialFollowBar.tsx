@@ -39,7 +39,7 @@ const socials = [
 
 export function SocialFollowBar() {
   return (
-    <section className="bg-lx-cream py-12 px-4">
+    <section className="bg-lx-cream py-12 px-4 overflow-hidden">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
