@@ -93,19 +93,15 @@ export default async function PropiedadDetallePage({ params }: PageProps) {
 
   const isRent = operationValue === 'Rent' || operationValue === 'Temporary Rent'
 
-  /* Stats */
-  const stats: { label: string; value: string | number }[] = []
-  if (property.total_surface) stats.push({ label: 'Sup. total', value: formatArea(property.total_surface) })
-  if (property.roofed_surface) stats.push({ label: 'Sup. cubierta', value: formatArea(property.roofed_surface) })
-  if (property.unroofed_surface) stats.push({ label: 'Sup. descubierta', value: formatArea(property.unroofed_surface) })
-  if (property.room_amount) stats.push({ label: 'Ambientes', value: property.room_amount })
-  if (property.suite_amount) stats.push({ label: 'Dormitorios', value: property.suite_amount })
-  if (property.bathroom_amount) stats.push({ label: 'Baños', value: property.bathroom_amount })
-  if (property.toilet_amount) stats.push({ label: 'Toilettes', value: property.toilet_amount })
-  if (property.parking_lot_amount) stats.push({ label: 'Cocheras', value: property.parking_lot_amount })
-  if (property.floors_amount != null && property.floors_amount > 0) stats.push({ label: 'Piso', value: property.floors_amount })
-  if (property.age) stats.push({ label: 'Antigüedad', value: property.age === 0 ? 'A estrenar' : `${property.age} años` })
-  if (condition) stats.push({ label: 'Estado', value: condition })
+  /* Stats — 6 campos exactos */
+  const stats: { label: string; value: string | number }[] = [
+    { label: 'Sup. total',       value: property.total_surface   ? formatArea(property.total_surface)   : 0 },
+    { label: 'Sup. cubierta',    value: property.roofed_surface  ? formatArea(property.roofed_surface)  : 0 },
+    { label: 'Sup. descubierta', value: (property.semiroofed_surface ?? property.unroofed_surface) ? formatArea((property.semiroofed_surface ?? property.unroofed_surface)!) : 0 },
+    { label: 'Ambientes',        value: property.room_amount   ?? 0 },
+    { label: 'Dormitorios',      value: property.suite_amount  ?? 0 },
+    { label: 'Baños',            value: property.bathroom_amount ?? 0 },
+  ].filter(f => f.value !== 0 && f.value !== '' && f.value !== null)
 
   return (
     <main className="min-h-screen bg-white">

@@ -78,6 +78,11 @@ export default function PropertyDetailClient({
             transition={{ duration: 0.4, ease }}
             className="flex flex-wrap items-center gap-2 mb-4"
           >
+            {operationLabel && operationLabel !== 'Emprendimiento' && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-[#C41230] text-white">
+                {operationLabel}
+              </span>
+            )}
             {propertyType && (
               <span className="bg-gray-100 text-gray-600 text-[10px] font-bold tracking-[0.14em] uppercase px-2.5 py-1 rounded">
                 {propertyType}

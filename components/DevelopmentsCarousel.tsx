@@ -180,25 +180,22 @@ export function DevelopmentsCarousel({ developments }: Props) {
           </button>
         </div>
 
-        {/* Dots */}
-        <div className="flex justify-center items-center gap-2 mt-8">
-          {developments.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className="p-3 -m-3 flex items-center justify-center"
-              aria-label={`Ir a slide ${i + 1}`}
-            >
-              <motion.span
-                animate={{
-                  width: i === current ? 28 : 8,
-                  backgroundColor: i === current ? '#C41230' : 'rgba(255,255,255,0.3)',
-                }}
-                transition={{ duration: 0.3 }}
-                className="h-2 rounded-full block"
-              />
-            </button>
-          ))}
+        {/* Dots — estilo cápsula/pill */}
+        <div className="flex justify-center mt-8">
+          <div className="inline-flex items-center gap-2 px-3 py-2.5 rounded-full bg-gray-100 border border-gray-200">
+            {developments.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                aria-label={`Ir a slide ${i + 1}`}
+                className="relative flex items-center justify-center w-10 h-6"
+              >
+                <span className={`rounded-full transition-all duration-300 ${
+                  i === current ? 'w-3 h-3 bg-gray-900' : 'w-2.5 h-2.5 bg-gray-300'
+                }`} />
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Counter */}

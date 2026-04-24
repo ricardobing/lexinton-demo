@@ -29,9 +29,14 @@ export function TasacionCTA() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="bg-[#0f1923] px-10 py-20 md:px-16 md:py-24 flex flex-col gap-8"
       >
-        <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] font-medium">
-          Vendé con Lexinton
-        </p>
+<div className="flex flex-col gap-1">
+          <p className="text-xs text-gray-400 uppercase tracking-[0.15em]">
+            Vendé con éxito
+          </p>
+          <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] font-medium">
+            Vendé con Lexinton
+          </p>
+        </div>
 
         <h2 className="text-4xl md:text-5xl font-light text-white leading-tight">
           La venta de tu propiedad<br />

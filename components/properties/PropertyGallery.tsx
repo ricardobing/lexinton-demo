@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { Icon } from '@iconify/react'
 import Lightbox from 'yet-another-react-lightbox'
 import 'yet-another-react-lightbox/styles.css'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import type { TokkoPhoto } from '@/lib/tokko/types'
 
 interface Props {
@@ -154,6 +155,8 @@ export function PropertyGallery({ photos, title }: Props) {
         close={() => setOpen(false)}
         index={index}
         slides={slides}
+        plugins={[Zoom]}
+        zoom={{ maxZoomPixelRatio: 3, zoomInMultiplier: 2, doubleTapDelay: 300, scrollToZoom: false }}
         styles={{ root: { '--yarl__color_backdrop': 'rgba(0,0,0,0.92)' } }}
       />
     </>
