@@ -36,7 +36,7 @@ const steps = [
 
 export function ProcessSteps() {
   return (
-    <section className="py-24 bg-[#fafaf7] relative overflow-hidden">
+    <section className="py-24 bg-[#f5f5f5] relative overflow-hidden">
       {/* Pattern decorativo de fondo MUY sutil */}
       <div
         className="absolute inset-0 opacity-[0.015]"

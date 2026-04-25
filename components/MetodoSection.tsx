@@ -63,9 +63,9 @@ export default function MetodoSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.55, ease, delay: i * 0.1 }}
-              className="relative bg-[#ede9e3] rounded-xl p-8
-                border border-[#d4cfc8]
-                hover:bg-[#e5e0d8] transition-colors duration-200"
+              className="relative bg-[#f0f0f0] rounded-xl p-8
+                border border-[#e5e5e5]
+                hover:bg-[#e8e8e8] transition-colors duration-200"
             >
               <span className="block text-5xl font-light text-[#C41230]/25 mb-4 leading-none select-none">
                 {step.num}

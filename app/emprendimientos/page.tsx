@@ -94,7 +94,7 @@ export default function EmprendimientosPage() {
       </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <section className="py-24 bg-[#f8f6f2]">
+      <section className="py-24 bg-[#f5f5f5]">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-12">
             <p className="text-xs text-[#C41230] uppercase tracking-[0.2em] mb-3">

@@ -35,7 +35,7 @@ export function TestimonialsSection() {
   const current = testimonials[active]
 
   return (
-    <section className="py-24 bg-[#faf8f4] relative overflow-hidden">
+    <section className="py-24 bg-[#f5f5f5] relative overflow-hidden">
 
       {/* Elemento decorativo — comilla gigante de fondo */}
       <div className="absolute top-20 left-10 text-[320px] text-[#C41230]/5

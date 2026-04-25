@@ -39,9 +39,9 @@ export default function NumberedSteps({ steps, columns }: NumberedStepsProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VIEWPORT}
             transition={{ duration: 0.55, ease: EASE, delay: i * STAGGER.normal }}
-            className="relative bg-[#ede9e3] rounded-xl p-8
-              border border-[#d4cfc8]
-              hover:bg-[#e5e0d8] transition-colors duration-200"
+            className="relative bg-[#f0f0f0] rounded-xl p-8
+              border border-[#e5e5e5]
+              hover:bg-[#e8e8e8] transition-colors duration-200"
           >
             <span className="block text-5xl font-light text-[#C41230]/25 mb-4 leading-none select-none">
               {num}

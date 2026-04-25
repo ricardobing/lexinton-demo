@@ -98,7 +98,7 @@ export default function InversorPage() {
       </section>
 
       {/* ── FORMULARIO ───────────────────────────────── */}
-      <section className="py-24 bg-[#f8f6f2]">
+      <section className="py-24 bg-[#f5f5f5]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <div>

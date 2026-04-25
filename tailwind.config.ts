@@ -18,11 +18,11 @@ const config: Config = {
         'lx-border': '#e5e5e5',
         // Premium palette
         'lx-ink':    '#111111',
-        'lx-stone':  '#7a7570',
-        'lx-cream':  '#f8f6f2',
-        'lx-parchment': '#f0ede6',
+        'lx-stone':  '#6e6e6e',
+        'lx-cream':  '#ffffff',
+        'lx-parchment': '#f5f5f5',
         'lx-accent': '#3d5a6c',   // blue-grey petróleo
-        'lx-line':   '#ddd9d0',
+        'lx-line':   '#e5e5e5',
       },
       fontFamily: {
         sans:  ['var(--font-inter)',   'system-ui', 'sans-serif'],
