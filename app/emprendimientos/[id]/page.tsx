@@ -74,7 +74,7 @@ export default async function EmprendimientoDetallePage({ params }: PageProps) {
   const condition = CONDITION_LABELS[property.property_condition ?? ''] ?? property.property_condition
 
   const stats: { label: string; value: string | number }[] = []
-  if (dev.type?.name) stats.push({ label: 'Tipo', value: dev.type.name })
+  if (dev.type?.name) stats.push({ label: 'Tipo', value: propertyType })
   if (condition) stats.push({ label: 'Estado de obra', value: condition })
   if (dev.location?.name) stats.push({ label: 'Barrio', value: dev.location.name })
 

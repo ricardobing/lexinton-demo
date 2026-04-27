@@ -420,7 +420,7 @@ export async function getPropertyLocations() {
 export async function getDevelopments() {
   const response = await tokkoFetch<TokkoDevelopmentListResponse>(
     'development',
-    { limit: 20 },
+    { limit: 20, lang: 'es' },
     600
   )
   return response.objects.filter((d) => {
@@ -443,7 +443,7 @@ export async function getDevelopments() {
  */
 export async function getDevelopmentById(id: number): Promise<TokkoDevelopment | null> {
   try {
-    return await tokkoFetch<TokkoDevelopment>(`development/${id}`, {}, 300)
+    return await tokkoFetch<TokkoDevelopment>(`development/${id}`, { lang: 'es' }, 300)
   } catch {
     return null
   }

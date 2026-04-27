@@ -20,7 +20,7 @@ const steps = [
   },
   {
     number: '03',
-    icon: 'line-md:chart-bar-increasing',
+    icon: 'line-md:clipboard-check',
     title: 'Recibís la tasación',
     description:
       'Análisis comparativo real, con propiedades similares cerradas recientemente en la zona.',
