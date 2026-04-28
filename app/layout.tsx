@@ -7,6 +7,7 @@ import { SocialFollowBar } from '@/components/ui/SocialFollowBar'
 import MobileSticky from '@/components/MobileSticky'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { CliengoScript } from '@/components/CliengoScript'
+import { IconPreloader } from '@/components/IconPreloader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -60,6 +61,7 @@ export default function RootLayout({
         <MobileSticky />
         <WhatsAppButton />
         <CliengoScript />
+        <IconPreloader />
       </body>
     </html>
   )
