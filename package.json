@@ -9,10 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@iconify-json/line-md": "^1.2.16",
-    "@iconify-json/logos": "^1.2.11",
-    "@iconify-json/skill-icons": "^1.2.4",
-    "@iconify-json/solar": "^1.2.5",
     "@iconify/react": "^6.0.2",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
